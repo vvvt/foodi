@@ -34,6 +34,13 @@ Follow the instructions based on Google Maps to find the closest canteen.
 * [React Native](https://facebook.github.io/react-native/)
 * [Expo](https://expo.io/)
 
+### How do develop
+
+Install [NodeJS](https://nodejs.org/).
+
+Run `npm install` in the project folder to install the project dependencies
+Run `expo start` in the project folder and scan the QR-Code with your smarphone
+
 ## Authors
 
 * **Louis Wilke** - *Prototype Development* - [SoulKa](https://github.com/SoulKa)
