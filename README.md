@@ -38,10 +38,16 @@ Follow the instructions based on Google Maps to find the closest canteen.
 
 ### React Navigation
 
-[The API](https://reactnavigation.org/docs/en/api-reference.html)
+[The API documentation](https://reactnavigation.org/docs/en/api-reference.html)
 
 The management system of all screens. This package displays the current screen and switches between screens.
 It is also used to display a consistent header bar on each screen.
+
+### Open Mensa API v2
+
+[The API documentation](https://doc.openmensa.org/api/v2/)
+
+This is an open source collection of data about mensa meals.
 
 ## Developing
 
