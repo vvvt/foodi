@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 export default class HomeScreen extends React.Component {
 
@@ -7,7 +7,7 @@ export default class HomeScreen extends React.Component {
 
         return (
             <View>
-                
+                <Text>Test</Text>
             </View>
         );
 
