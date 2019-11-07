@@ -34,12 +34,22 @@ Follow the instructions based on Google Maps to find the closest canteen.
 * [React Native](https://facebook.github.io/react-native/)
 * [Expo](https://expo.io/)
 
-### How do develop
+## Main Dependencies
+
+### React Navigation
+
+[The API](https://reactnavigation.org/docs/en/api-reference.html)
+
+The management system of all screens. This package displays the current screen and switches between screens.
+It is also used to display a consistent header bar on each screen.
+
+## Developing
 
 Install [NodeJS](https://nodejs.org/).
 
-Run `npm install` in the project folder to install the project dependencies
-Run `expo start` in the project folder and scan the QR-Code with your smarphone
+Run `npm install` in the project folder to install the project dependencies.
+
+Run `expo start` in the project folder and scan the QR-Code with your smartphone. Install the [developer app](https://expo.io/tools#client) if you haven't already.
 
 ## Authors
 
