@@ -23,12 +23,22 @@ export default class DatabaseManager {
     }
 
     /**
+     * Executes an array of SQL commands. Only use when necessary eg. for "PRAGMA" statements
+     * @param {string []} sqlCommands The SQL commands to execute
+     */
+    exec( sqlCommands = [] ) {
+        return new Promise( resolve => this.db.exec( sqlCommands.map( sql => ({ sql, args: [] }) ), false, resolve) );
+    }
+
+    /**
      * Creates all database tables if they don't exist
      */
     async initialize() {
+        await this.exec([STATEMENTS.ENABLE_FOREIGN_KEYS]);
         await this.run(STATEMENTS.CREATE_TABLE_CANTEENS);
         await this.run(STATEMENTS.CREATE_TABLE_MEALS);
         await this.run(STATEMENTS.CREATE_TABLE_MEAL_NOTES);
+        await this.run(STATEMENTS.CREATE_TABLE_MEAL_PRICES);
     }
 
     /**
@@ -46,9 +56,8 @@ export default class DatabaseManager {
                     (_, resultSet) => {
                         resolve(resultSet.rowsAffected);
                     },
-                    reject
-                ),
-                reject
+                    (_, err) => err ? reject(err) : null
+                )
             )
         });
     }
@@ -68,9 +77,8 @@ export default class DatabaseManager {
                     (_, resultSet) => {
                         resolve(resultSet.rows);
                     },
-                    reject
-                ),
-                reject
+                    (_, err) => err ? reject(err) : null
+                )
             )
         });
     }
@@ -90,9 +98,8 @@ export default class DatabaseManager {
                     (_, resultSet) => {
                         resolve(resultSet.rows.item(0));
                     },
-                    reject
-                ),
-                reject
+                    (_, err) => err ? reject(err) : null
+                )
             )
         });
     }

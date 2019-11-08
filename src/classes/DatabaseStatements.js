@@ -1,6 +1,8 @@
 export default Object.freeze({
+    ENABLE_FOREIGN_KEYS: `PRAGMA foreign_keys = ON`,
+
     CREATE_TABLE_CANTEENS: `
-        CREATE TABLE IF NOT EXIST canteens (
+        CREATE TABLE IF NOT EXISTS canteens (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             city TEXT NOT NULL,
@@ -34,7 +36,7 @@ export default Object.freeze({
         CREATE TABLE IF NOT EXISTS mealPrices (
             id INTEGER PRIMARY KEY,
             mealId INTEGER NOT NULL,
-            group TEXT NOT NULL,
+            priceGroup TEXT NOT NULL,
             price FLOAT NOT NULL,
             FOREIGN KEY (mealId) REFERENCES meals (id)
         )
