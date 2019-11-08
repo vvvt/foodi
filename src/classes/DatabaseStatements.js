@@ -13,6 +13,7 @@ export default Object.freeze({
     CREATE_TABLE_MEALS: `
         CREATE TABLE IF NOT EXISTS meals (
             id INTEGER PRIMARY KEY,
+            date DATE NOT NULL,
             name TEXT NOT NULL,
             notes TEXT NOT NULL,
             prices TEXT NOT NULL,
@@ -21,10 +22,20 @@ export default Object.freeze({
     `,
 
     CREATE_TABLE_MEAL_NOTES: `
-        CREATE TABLE IF NOT EXISTS mealNotesMapping (
+        CREATE TABLE IF NOT EXISTS mealNotes (
             id INTEGER PRIMARY KEY,
             mealId INTEGER NOT NULL,
             note TEXT NOT NULL,
+            FOREIGN KEY (mealId) REFERENCES meals (id)
+        )
+    `,
+
+    CREATE_TABLE_MEAL_PRICES: `
+        CREATE TABLE IF NOT EXISTS mealPrices (
+            id INTEGER PRIMARY KEY,
+            mealId INTEGER NOT NULL,
+            group TEXT NOT NULL,
+            price FLOAT NOT NULL,
             FOREIGN KEY (mealId) REFERENCES meals (id)
         )
     `
