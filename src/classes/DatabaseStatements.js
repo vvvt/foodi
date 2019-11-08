@@ -23,20 +23,22 @@ export default Object.freeze({
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (
-            id INTEGER PRIMARY KEY,
             mealId INTEGER NOT NULL,
             note TEXT NOT NULL,
-            FOREIGN KEY (mealId) REFERENCES meals (id)
+            FOREIGN KEY (mealId)
+                REFERENCES meals (id)
+                ON DELETE CASCADE
         )
     `,
 
     CREATE_TABLE_MEAL_PRICES: `
         CREATE TABLE IF NOT EXISTS mealPrices (
-            id INTEGER PRIMARY KEY,
             mealId INTEGER NOT NULL,
             priceGroup TEXT NOT NULL,
             price FLOAT NOT NULL,
-            FOREIGN KEY (mealId) REFERENCES meals (id)
+            FOREIGN KEY (mealId)
+                REFERENCES meals (id)
+                ON DELETE CASCADE
         )
     `
 });
