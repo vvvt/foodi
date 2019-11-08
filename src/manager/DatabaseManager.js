@@ -42,6 +42,17 @@ export default class DatabaseManager {
     }
 
     /**
+     * Drops all database tables. Use with caution!
+     */
+    async dropAllTables() {
+        console.warn("Dropping all database tables!");
+        await this.run(STATEMENTS.DROP_TABLE_CANTEENS);
+        await this.run(STATEMENTS.DROP_TABLE_MEALS);
+        await this.run(STATEMENTS.DROP_TABLE_MEAL_NOTES);
+        await this.run(STATEMENTS.DROP_TABLE_MEAL_PRICES);
+    }
+
+    /**
      * Runs a given sql command
      * @param {string} sql The SQL command to execute
      * @param {(string | number)[]} args Arguments to insert for "?" inside the SQL string

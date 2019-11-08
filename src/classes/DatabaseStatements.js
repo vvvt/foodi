@@ -11,6 +11,7 @@ export default Object.freeze({
             lng DOUBLE 
         )
     `,
+    DROP_TABLE_CANTEENS: `DROP TABLE IF EXISTS canteens`,
 
     CREATE_TABLE_MEALS: `
         CREATE TABLE IF NOT EXISTS meals (
@@ -20,6 +21,7 @@ export default Object.freeze({
             category TEXT NOT NULL
         )
     `,
+    DROP_TABLE_MEALS: `DROP TABLE IF EXISTS meals`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (
@@ -30,6 +32,7 @@ export default Object.freeze({
                 ON DELETE CASCADE
         )
     `,
+    DROP_TABLE_MEAL_NOTES: `DROP TABLE IF EXISTS mealNotes`,
 
     CREATE_TABLE_MEAL_PRICES: `
         CREATE TABLE IF NOT EXISTS mealPrices (
@@ -40,5 +43,6 @@ export default Object.freeze({
                 REFERENCES meals (id)
                 ON DELETE CASCADE
         )
-    `
+    `,
+    DROP_TABLE_MEAL_PRICES: `DROP TABLE IF EXISTS mealPrices`,
 });
