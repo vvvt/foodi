@@ -45,7 +45,6 @@ export default class App extends React.PureComponent {
                     <AppLoading
                         startAsync={() => DatabaseManager.instance.initialize()}
                         onError={err => {
-                            console.log(JSON.stringify(err))
                             console.error("Could not initialize the database manager:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
                         }}
