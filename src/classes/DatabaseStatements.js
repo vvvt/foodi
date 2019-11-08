@@ -17,8 +17,6 @@ export default Object.freeze({
             id INTEGER PRIMARY KEY,
             date DATE NOT NULL,
             name TEXT NOT NULL,
-            notes TEXT NOT NULL,
-            prices TEXT NOT NULL,
             category TEXT NOT NULL
         )
     `,
