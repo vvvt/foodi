@@ -70,9 +70,30 @@ export default class MealManager {
                 ...m.notes.map( note => [DatabaseManager.STATEMENTS.INSERT_INTO_MEAL_NOTES, m.id, note]),
                 ...Object.keys(m.prices).map( priceGroup => [DatabaseManager.STATEMENTS.INSERT_INTO_MEAL_PRICES, m.id, priceGroup, m.prices[priceGroup]] )
             )
-        )
+        );
 
         await databaseManager.runInTransaction( statements );
+    }
+
+    async loadMeals() {
+        /** @type {import("../classes/Meal").MealDatabaseRow[]} */
+        const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_MEALS);
+        const meals = await Promise.all(
+            rows.map( async r => {
+                const [
+                    notes,
+                    prices
+                ] = await Promise.all([
+                    databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_MEAL_NOTES_OF_MEAL, [r.id]),
+                    databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_MEAL_PRICES_OF_MEAL, [r.id])
+                ]);
+
+                return Meal.fromDatabase(r, notes, prices);
+            })
+        );
+        
+        console.log(meals);
+        //return rows.map( r => Meal.fromDatabase(r) );
     }
 
     /**
@@ -85,6 +106,11 @@ export default class MealManager {
                 [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinates[0], c.coordinates[1]]
             )
         );
+    }
+
+    async loadCanteens() {
+        const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_CANTEENS);
+        return rows.map( r => Canteen.fromDatabase(r) );
     }
 
 }

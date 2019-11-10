@@ -123,7 +123,7 @@ export default class DatabaseManager {
                     sql,
                     args,
                     (_, resultSet) => {
-                        resolve(resultSet.rows);
+                        resolve(resultSet.rows._array);
                     },
                     (_, err) => err ? reject(err) : null
                 )

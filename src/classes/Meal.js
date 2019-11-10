@@ -1,5 +1,5 @@
 /** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string }} MealObj */
-/** @typedef {{ id: number, canteenId: number, name: string, date: string, notes: string, prices: string, category: string }} MealDatabaseRow */
+/** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string }} MealDatabaseRow */
 
 export default class Meal {
 
@@ -15,6 +15,7 @@ export default class Meal {
      */
     constructor( id, canteenId, name, date, category, prices = {}, notes = [] ) {
         if (!Meal.isValidMealDate(date)) throw new Error(`Invalid date format! Must be of format "YYYY-MM-DD" but was "${date}"`);
+        Object.keys( prices ).forEach( priceGroup => prices[priceGroup] == null ? delete prices[priceGroup] : null );
 
         this.id = id;
         this.canteenId = canteenId;
@@ -38,9 +39,17 @@ export default class Meal {
     /**
      * Creates an instance of a meal by a given database result row
      * @param {MealDatabaseRow} row The result row as loaded from the database
+     * @param {{ note: string }[]} notes The notes as loaded from the table "mealNotes"
+     * @param {{ price: number, priceGroup: string }[]} prices The prices as loaded from the table "mealPrices"
      */
-    static fromDatabase( row ) {
-        return new Meal( row.id, row.canteenId, row.name, row.date, row.category, JSON.parse(`[${row.prices}]`), {} );
+    static fromDatabase( row, notes, prices ) {
+        const pricesObj = {};
+        prices.forEach( p => pricesObj[p.priceGroup] = p.price );
+
+        return new Meal( row.id, row.canteenId, row.name, row.date, row.category,
+            pricesObj,
+            notes.map( n => n.note )
+        );
     }
 
     /**

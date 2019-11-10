@@ -12,7 +12,8 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_CANTEENS: `DROP TABLE IF EXISTS canteens`,
-    INSERT_INTO_CANTEENS: `INSERT INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
+    INSERT_INTO_CANTEENS: `INSERT OR REPLACE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
+    LOAD_ALL_CANTEENS: `SELECT * FROM canteens`,
 
     CREATE_TABLE_MEALS: `
         CREATE TABLE IF NOT EXISTS meals (
@@ -27,7 +28,8 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEALS: `DROP TABLE IF EXISTS meals`,
-    INSERT_INTO_MEALS: `INSERT INTO meals (id, name, date, category) VALUES (?,?,?,?)`,
+    INSERT_INTO_MEALS: `INSERT OR REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,?,?)`,
+    LOAD_ALL_MEALS: `SELECT * FROM meals`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (
@@ -40,7 +42,8 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEAL_NOTES: `DROP TABLE IF EXISTS mealNotes`,
-    INSERT_INTO_MEAL_NOTES: `INSERT INTO mealNotes (mealId, note) VALUES (?,?)`,
+    INSERT_INTO_MEAL_NOTES: `INSERT OR REPLACE INTO mealNotes (mealId, note) VALUES (?,?)`,
+    LOAD_MEAL_NOTES_OF_MEAL: `SELECT note FROM mealNotes WHERE mealId=?`,
 
     CREATE_TABLE_MEAL_PRICES: `
         CREATE TABLE IF NOT EXISTS mealPrices (
@@ -54,5 +57,6 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEAL_PRICES: `DROP TABLE IF EXISTS mealPrices`,
-    INSERT_INTO_MEAL_PRICES: `INSERT INTO mealPrices (mealId, priceGroup, price) VALUES (?,?,?)`
+    INSERT_INTO_MEAL_PRICES: `INSERT OR REPLACE INTO mealPrices (mealId, priceGroup, price) VALUES (?,?,?)`,
+    LOAD_MEAL_PRICES_OF_MEAL: `SELECT priceGroup, price FROM mealPrices WHERE mealId=?`
 });
