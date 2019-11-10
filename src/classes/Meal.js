@@ -28,7 +28,7 @@ export default class Meal {
     /**
      * Creates a meal instance from a given object and date
      * @param {MealObj} obj The object containing all meal properties as returned from the OpenMensa API
-     * @param {Date | string} date The date this meals is in the canteen
+     * @param {string} date The date this meals is in the canteen
      */
     static fromObject( obj, date ) {
         return new Meal(obj.id, obj.name, date, obj.category, obj.prices, obj.notes);

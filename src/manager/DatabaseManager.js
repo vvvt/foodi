@@ -7,6 +7,8 @@ import * as SQLite from "expo-sqlite";
  */
 export default class DatabaseManager {
 
+    static get STATEMENTS() { return STATEMENTS; }
+
     constructor() {
         if (DatabaseManager._instance) throw new Error("This is a singleton! Use DatabaseManager.instance to access this class instance.");
 
@@ -69,6 +71,41 @@ export default class DatabaseManager {
                     },
                     (_, err) => err ? reject(err) : null
                 )
+            )
+        });
+    }
+
+    /**
+     * Runs all the given SQL statements in a single transaction
+     * @param {[string, ...(number|string)][]} statements The SQL statements given as an array. Each statement is built like this: [sql, arg1, arg2, ..., argn]
+     * @returns {Promise<number>} The amount of affected rows
+     */
+    runInTransaction( statements = [] ) {
+        let rowsAffected = 0;
+
+        return new Promise( (resolve, reject) => {
+            /**
+             * @param {SQLite.SQLTransaction} transaction
+             */
+            function executeNext( transaction ) {
+                if (statements.length === 0) return resolve(rowsAffected);
+                
+                const statement = statements.splice(0, 1)[0];
+                const sql = statement[0];
+                const args = statement.slice(1);
+                transaction.executeSql(
+                    sql,
+                    args,
+                    (tx, resultSet) => {
+                        rowsAffected += resultSet.rowsAffected;
+                        executeNext(tx);
+                    }
+                );
+            }
+
+            this.db.transaction(
+                executeNext,
+                err => err ? reject(err) : null
             )
         });
     }
