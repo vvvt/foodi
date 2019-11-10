@@ -20,7 +20,7 @@ export default Object.freeze({
             canteenId INTEGER NOT NULL,
             date DATE NOT NULL,
             name TEXT NOT NULL,
-            category TEXT NOT NULL
+            category TEXT NOT NULL,
             FOREIGN KEY (canteenId)
                 REFERENCES canteens (id)
                 ON DELETE CASCADE
