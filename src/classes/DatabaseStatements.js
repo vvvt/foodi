@@ -30,6 +30,7 @@ export default Object.freeze({
     DROP_TABLE_MEALS: `DROP TABLE IF EXISTS meals`,
     INSERT_INTO_MEALS: `INSERT OR REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,?,?)`,
     LOAD_ALL_MEALS: `SELECT * FROM meals`,
+    LOAD_MEALS_OF_CANTEEN: `SELECT * FROM meals WHERE canteenId=?`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (

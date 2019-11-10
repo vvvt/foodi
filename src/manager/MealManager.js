@@ -75,10 +75,19 @@ export default class MealManager {
         await databaseManager.runInTransaction( statements );
     }
 
-    async loadMeals() {
+
+    /**
+     * Loads all cached (persisted) meals from the database
+     * @param canteenId Optional. If given, only the meals of the canteen will be returned
+     */
+    async loadMeals( canteenId = 0 ) {
+
+        // load meals from database
         /** @type {import("../classes/Meal").MealDatabaseRow[]} */
-        const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_MEALS);
-        const meals = await Promise.all(
+        const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS[canteenId > 0 ? "LOAD_MEALS_OF_CANTEEN" : "LOAD_ALL_MEALS"], canteenId > 0 ? [canteenId] : []);
+        
+        // load the notes and prices of each meal and return the fully composed meal object
+        return await Promise.all(
             rows.map( async r => {
                 const [
                     notes,
@@ -91,9 +100,7 @@ export default class MealManager {
                 return Meal.fromDatabase(r, notes, prices);
             })
         );
-        
-        console.log(meals);
-        //return rows.map( r => Meal.fromDatabase(r) );
+
     }
 
     /**
@@ -108,6 +115,9 @@ export default class MealManager {
         );
     }
 
+    /**
+     * Loads all cached (persisted) canteens from the database
+     */
     async loadCanteens() {
         const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_CANTEENS);
         return rows.map( r => Canteen.fromDatabase(r) );
