@@ -26,14 +26,14 @@ export default class MealManager {
      * @param {number} canteenId The canteen id to fetch the meals of
      * @param {string} day The day to fetch the meals in format "YYYY-MM-DD". Default is today
      */
-    fetchMeals( canteenId, day ) {
+    async fetchMeals( canteenId, day ) {
         if (typeof day !== "string") day = day.toUTCString();
 
         /** @type {import("../classes/Meal").MealObj[]} */
         const mealsObjs = await networkManager.fetchWithParams( NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals` );
         
         // add date property
-        return mealsObjs.map( m => Meal.fromObject( m, day ) );
+        return mealsObjs.map( m => Meal.fromObject( m, canteenId, day ) );
     }
 
     /**
@@ -41,7 +41,9 @@ export default class MealManager {
      * @param {import("../classes/Canteen").Coordinate} position The position to find canteens from
      * @param distance Default: 7.5. The maximum distance in km to the given position a returned canteen can have
      */
-    fetchCanteens( position, distance = 7.5 ) {
+    async fetchCanteens( position, distance = 7.5 ) {
+        if (!Array.isArray(position) || position.length !== 2) throw new TypeError("The position must be an array containing 2 elements!");
+
         /** @type {import("../classes/Canteen").CanteenObj[]} */
         const canteenObjs = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens`,

@@ -7,15 +7,24 @@ import DatabaseManager from "./src/manager/DatabaseManager";
 
 // screen imports
 import HomeScreen from "./src/screens/HomeScreen";
+import TestScreen from "./src/screens/TestScreen";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
  * * * * * * * * * * * */
-const AppNavigator = createStackNavigator({
-    home: {
-        screen: HomeScreen
+const AppNavigator = createStackNavigator(
+    {
+        home: {
+            screen: HomeScreen
+        },
+        test: {
+            screen: TestScreen
+        }
+    },
+    {
+        initialRouteName: "test"
     }
-});
+);
 
 // the actual content of the app
 const AppContainer = createAppContainer(AppNavigator);
