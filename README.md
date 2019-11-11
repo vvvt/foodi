@@ -20,7 +20,7 @@ Set your meal preferences through various toggles and checkboxes. The app aims a
 
 Configure general app settings, such as language or data use. 
 
-<img src="assets/mockup-preferences.png" style="zoom:10%;" />
+<img src="assets/mockup-preferences.png" height="400" />
 
 
 
@@ -28,7 +28,7 @@ Configure general app settings, such as language or data use.
 
 Scroll through the list of meals to find your favorite one. The meals are ordered from top to bottom by distance from your location to the respective canteen. Pick a meal to see a more detailed view and to start navigating there.
 
-<img src="assets/mockup-finder.png" style="zoom:10%;" />
+<img src="assets/mockup-finder.png" height="400" />
 
 
 
@@ -36,7 +36,7 @@ Scroll through the list of meals to find your favorite one. The meals are ordere
 
 Follow the instructions based on Google Maps to find the closest canteen.
 
-<img src="assets/mockup-navigation.png" style="zoom:10%;" />
+<img src="assets/mockup-navigation.png" height="400" />
 
 
 
