@@ -1,6 +1,6 @@
 # foodi
 
-<img src="https://img.shields.io/badge/React--61DBFB.svg?logo=React" /> <img src="https://img.shields.io/badge/npm--CC3534.svg?logo=Npm" /> <img src="https://img.shields.io/badge/Expo--4630EB.svg?logo=Expo" />
+<img src="https://img.shields.io/badge/React-16.8.3-61DBFB.svg?logo=React" /> <img src="https://img.shields.io/badge/npm-6.12.1-CC3534.svg?logo=Npm" /> <img src="https://img.shields.io/badge/Expo-^35.0.0-4630EB.svg?logo=Expo" />
 
 Prototypical app for getting canteen recommendations based on user's location and set preferences.
 
@@ -14,19 +14,31 @@ As part of the course work [Application Development for Mobile and Ubiquitous Co
 
 #### Meal Preferences
 
-Set your meal preferences through various toggles and checkboxes. The app aims at the most common eating habits, such as Vegetarianism or Veganism 
+Set your meal preferences through various toggles and checkboxes. The app aims at the most common eating habits, such as vegetarianism or veganism 
 
 #### Settings
 
 Configure general app settings, such as language or data use. 
 
+<img src="assets/mockup-preferences.png" style="zoom:10%;" />
+
+
+
 #### Meal Finder
 
-Scroll through the list of meals to find your favourite one. The meals are ordered from top to bottom by distance from your location to the respective canteen. Pick a meal to see a more detailed view and to start navigating there.
+Scroll through the list of meals to find your favorite one. The meals are ordered from top to bottom by distance from your location to the respective canteen. Pick a meal to see a more detailed view and to start navigating there.
+
+<img src="assets/mockup-finder.png" style="zoom:10%;" />
+
+
 
 #### Canteen Navigation
 
 Follow the instructions based on Google Maps to find the closest canteen.
+
+<img src="assets/mockup-navigation.png" style="zoom:10%;" />
+
+
 
 ## Built with
 
