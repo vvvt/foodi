@@ -1,3 +1,5 @@
+import NetInfo from "@react-native-community/netinfo";
+
 const ENDPOINTS = Object.freeze({
     OPEN_MENSA_API: "https://openmensa.org/api/v2"
 });
