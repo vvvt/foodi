@@ -15,10 +15,16 @@ import TestScreen from "./src/screens/TestScreen";
 const AppNavigator = createStackNavigator(
     {
         home: {
-            screen: HomeScreen
+            screen: HomeScreen,
+            navigationOptions: () => ({
+                title: "Home"
+            })
         },
         test: {
-            screen: TestScreen
+            screen: TestScreen,
+            navigationOptions: () => ({
+                title: "Test Screen"
+            })
         }
     },
     {
