@@ -111,7 +111,7 @@ export default class MealManager {
     async saveCanteens( canteens ) {
         await databaseManager.runInTransaction(
             canteens.map( c =>
-                [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate[0], c.coordinate[1]]
+                [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude]
             )
         );
     }
@@ -132,7 +132,7 @@ export default class MealManager {
             const boundingBox = Coordinate.getBoundingCoordinates( position, distance );
             rows = await databaseManager.getAll(
                 DatabaseManager.STATEMENTS.LOAD_CANTEENS_BETWEEN_COORDINATES,
-                [boundingBox[0][0], boundingBox[1][0], boundingBox[0][1], boundingBox[1][1]]
+                [boundingBox[0].latitude, boundingBox[1].latitude, boundingBox[0].longitude, boundingBox[1].longitude]
             );
 
             // sadly SQLite does not have any SQRT() function, so we have to do further filtering here

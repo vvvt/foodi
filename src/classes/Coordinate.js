@@ -3,6 +3,7 @@ const EARTH_HORIZONTAL = 40074;
 
 /** @typedef {[number, number]} CoordinateArray An array containing latitude and longitude in this order */
 /** @typedef {{ lat: number, lng: number }} CoordinateDatabaseRow */
+/** @typedef {{ latitude: number, longitude: number }} CoordinateObj */
 
 export default class Coordinate {
     
@@ -36,6 +37,14 @@ export default class Coordinate {
     static fromArray( arr ) {
         if (!Array.isArray(arr) || arr.length !== 2) throw new TypeError("The given object must be an array of length 2!");
         return new Coordinate( arr[0], arr[1] );
+    }
+
+    /**
+     * Creates a new coordinate from an object as returned from the Location tracking
+     * @param {CoordinateObj} obj The object
+     */
+    static fromObject( obj ) {
+        return new Coordinate( obj.latitude, obj.longitude );
     }
 
     /**
@@ -81,22 +90,22 @@ export default class Coordinate {
      * outside of this square are definetly not inside the desired radius
      * @param {Coordinate} c The coordinate to get the bounds around
      * @param d The distance in km
-     * @returns {[Coordinate, Coordinate]} [leftTopCoordinate, bottomRightCoordinate]
+     * @returns {[Coordinate, Coordinate]} An array: [bottomLeftCoordinate, topRightCoordinate]
      */
     static getBoundingCoordinates( c, d = 7.5 ) {
 
-        const c1 = [NaN, NaN];
-        const c2 = [NaN, NaN];
+        const c1 = new Coordinate(0, 0);
+        const c2 = new Coordinate(0, 0);
 
-        const lngSum = (d / EARTH_HORIZONTAL / Math.cos(c[0])) * 360;
-        const lngs = [c[1] + lngSum, c[1] - lngSum];
-        c1[1] = Math.min(...lngs);
-        c2[1] = Math.max(...lngs);
+        const lngDist = (d / EARTH_HORIZONTAL / Math.cos(c[0])) * 360;
+        const lngs = [c.longitude + lngDist, c.longitude - lngDist];
+        c1.longitude = Math.min(...lngs);
+        c2.longitude = Math.max(...lngs);
 
-        const latSum = (d / EARTH_VERTICAL) * 180;
-        const lats = [c[0] + latSum, c[0] - latSum];
-        c1[0] = Math.min(...lats);
-        c2[0] = Math.max(...lats);
+        const latDist = (d / EARTH_VERTICAL) * 180;
+        const lats = [c.latitude + latDist, c.latitude - latDist];
+        c1.latitude = Math.min(...lats);
+        c2.latitude = Math.max(...lats);
 
         return [c1, c2];
 
