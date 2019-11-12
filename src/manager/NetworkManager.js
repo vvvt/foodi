@@ -10,8 +10,8 @@ const NETWORK_TRAFFIC_LIMIT = Object.freeze({
 });
 
 const NETWORK_SPEED = Object.freeze({
-    FAST: 0,
-    SLOW: 1
+    SLOW: 1,
+    FAST: 0
 });
 
 /**
@@ -36,12 +36,14 @@ export default class NetworkManager {
         if (NetworkManager._instance) throw new Error("This is a singleton! Use NetworkManager.instance to access this class instance.");
 
         // set dummy network state properties
-        this.isOnline = false;
-        this.networkTrafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
-        this.networkSpeed = NETWORK_SPEED.SLOW;
-
-        // handle network state changes
-        NetInfo.addEventListener( this.handleNetworkStateChange.bind(this) );
+        this.networkState = {
+            /** True if the device has an internet connection, false otherwise */
+            isOnline: false,
+            /** One of NEWORK_TRAFFIC_LIMIT */
+            trafficLimit: NETWORK_TRAFFIC_LIMIT.LIMITED,
+            /** One of NEWORK_SPEED */
+            speed: NETWORK_SPEED.SLOW
+        };
     }
 
     /**
@@ -51,40 +53,42 @@ export default class NetworkManager {
     handleNetworkStateChange( state ) {
 
         // has internet?
-        this.isOnline = state.isConnected;
+        this.networkState.isOnline = state.isConnected;
 
         // if has internet => determine network speed and traffic limit
-        if (this.isOnline) {
+        if (this.networkState.isOnline) {
             switch (state.type) {
                 case "wifi":
                 case "vpn":
                 case "ethernet":
                 case "wimax":
-                    this.networkTrafficLimit = NETWORK_TRAFFIC_LIMIT.UNLIMITED;
-                    this.networkSpeed = NETWORK_SPEED.FAST;
+                    this.networkState.trafficLimit = NETWORK_TRAFFIC_LIMIT.UNLIMITED;
+                    this.networkState.speed = NETWORK_SPEED.FAST;
                     break;
                 
                 case "cellular":
                     // get specific cellular connection status
                     const cellularGeneration = state.details.cellularGeneration;
-                    this.networkTrafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
+                    this.networkState.trafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
                     
                     switch (cellularGeneration) {
                         case "3g":
                         case "4g":
-                            this.networkSpeed = NETWORK_SPEED.FAST;
+                            this.networkState.speed = NETWORK_SPEED.FAST;
                             break;
 
                         default:
-                            this.networkSpeed = NETWORK_SPEED.SLOW;
+                            this.networkState.speed = NETWORK_SPEED.SLOW;
                     }
                     break;
 
                 default:
-                    this.networkTrafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
-                    this.networkSpeed = NETWORK_SPEED.SLOW;
+                    this.networkState.trafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
+                    this.networkState.speed = NETWORK_SPEED.SLOW;
             }
         }
+
+        console.log(`Current network state:\n[has internet]:\t\t${this.isOnline}\n[network speed]:\t${this.networkSpeed}\n[traffic limit]:\t${this.networkTrafficLimit}\n`);
 
     }
 
@@ -96,6 +100,9 @@ export default class NetworkManager {
 
         // set the initial network state
         this.handleNetworkStateChange( await NetInfo.fetch() );
+
+        // handle network state changes
+        NetInfo.addEventListener( this.handleNetworkStateChange.bind(this) );
 
     }
 
