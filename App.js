@@ -8,6 +8,7 @@ import DatabaseManager from "./src/manager/DatabaseManager";
 // screen imports
 import HomeScreen from "./src/screens/HomeScreen";
 import TestScreen from "./src/screens/TestScreen";
+import NetworkManager from "./src/manager/NetworkManager";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -58,7 +59,7 @@ export default class App extends React.PureComponent {
             case LOADING_STATES.LOADING:
                 return (
                     <AppLoading
-                        startAsync={() => DatabaseManager.instance.initialize()}
+                        startAsync={this.initialize}
                         onError={err => {
                             console.error("Could not initialize the database manager:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
@@ -67,6 +68,18 @@ export default class App extends React.PureComponent {
                     />
                 );
         }
+    }
+
+    /**
+     * Initializes all managers
+     */
+    async initialize() {
+        await Promise.all([
+            DatabaseManager.instance.initialize(),
+            NetworkManager.instance.initialize()
+        ]);
+
+        console.log("Successfully intialized the app");
     }
 
 }
