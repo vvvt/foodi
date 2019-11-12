@@ -14,6 +14,7 @@ export default Object.freeze({
     DROP_TABLE_CANTEENS: `DROP TABLE IF EXISTS canteens`,
     INSERT_INTO_CANTEENS: `INSERT OR REPLACE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
     LOAD_ALL_CANTEENS: `SELECT * FROM canteens`,
+    LOAD_CANTEENS_BETWEEN_COORDINATES: `SELECT * FROM canteens WHERE lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?`,
 
     CREATE_TABLE_MEALS: `
         CREATE TABLE IF NOT EXISTS meals (
