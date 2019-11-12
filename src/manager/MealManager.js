@@ -3,11 +3,10 @@ import DatabaseManager from "./DatabaseManager";
 
 import Meal from "../classes/Meal";
 import Canteen from "../classes/Canteen";
+import Coordinate from "../classes/Coordinate";
 
 const networkManager = NetworkManager.instance;
 const databaseManager = DatabaseManager.instance;
-
-/** @typedef {import("../classes/Canteen").Coordinate} Coordinate */
 
 export default class MealManager {
 
@@ -112,7 +111,7 @@ export default class MealManager {
     async saveCanteens( canteens ) {
         await databaseManager.runInTransaction(
             canteens.map( c =>
-                [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinates[0], c.coordinates[1]]
+                [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate[0], c.coordinate[1]]
             )
         );
     }
@@ -124,19 +123,20 @@ export default class MealManager {
      * @param distance Default: 7.5. The search radius around the given position in km 
      */
     async loadCanteens( position = null, distance = 7.5 ) {
+        /** @type {import("../classes/Canteen").CanteenDatabaseRow[]} */
         let rows = [];
 
         if (position == null) {
             rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_CANTEENS);
         } else {
-            const boundingBox = Canteen.getBoundingCoordinates( position, distance );
+            const boundingBox = Coordinate.getBoundingCoordinates( position, distance );
             rows = await databaseManager.getAll(
                 DatabaseManager.STATEMENTS.LOAD_CANTEENS_BETWEEN_COORDINATES,
                 [boundingBox[0][0], boundingBox[1][0], boundingBox[0][1], boundingBox[1][1]]
             );
 
-            // sadly SQLite does not have any SQRT() function, so we have to filter here
-            rows = rows.filter( r => Canteen.calcDistance( r.coordinates, position ) <= distance );
+            // sadly SQLite does not have any SQRT() function, so we have to do further filtering here
+            rows = rows.filter( r => Coordinate.calcDistance( Coordinate.fromDatabase(r), position ) <= distance );
         }
 
         return rows.map( r => Canteen.fromDatabase(r) );

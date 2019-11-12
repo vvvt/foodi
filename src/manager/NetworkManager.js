@@ -39,9 +39,9 @@ export default class NetworkManager {
         this.networkState = {
             /** True if the device has an internet connection, false otherwise */
             isOnline: false,
-            /** One of NEWORK_TRAFFIC_LIMIT */
+            /** One of NEWORK_TRAFFIC_LIMIT. Invalid if isOnly is false */
             trafficLimit: NETWORK_TRAFFIC_LIMIT.LIMITED,
-            /** One of NEWORK_SPEED */
+            /** One of NEWORK_SPEED. Invalid if isOnly is false */
             speed: NETWORK_SPEED.SLOW
         };
     }
