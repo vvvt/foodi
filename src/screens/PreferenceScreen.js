@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, SectionList, SafeAreaView, Switch } from "react-native";
+import React from "react";
+import { Text, StyleSheet, SectionList, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
+import ToggleItem from '../components/ToggleItem'
 
 const DATA = [
     {
@@ -77,23 +78,6 @@ const DATA = [
     }
 ];
 
-function Item({ title }) {
-  const [toggleValue, setValue] = useState(0);
-  
-  return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-      <Switch  
-        value={toggleValue}  
-        onValueChange={(switchValue) => {
-          setValue(switchValue);
-          alert(switchValue + " " + title);
-        }}
-      />  
-    </View>
-  );
-}
-
 export default class PreferenceScreen extends React.Component {
 
     render() {
@@ -101,7 +85,7 @@ export default class PreferenceScreen extends React.Component {
             <SafeAreaView style={styles.container}>
               <SectionList
                 sections={DATA}
-                renderItem={({ item }) => item.name ? <Item title={item.code + " - " + item.name}/> : <Item title={item} />}
+                renderItem={({ item }) => item.name ? <ToggleItem title={item.code + " - " + item.name}/> : <ToggleItem title={item} />}
                 renderSectionHeader={({ section: { title } }) => (
                   <Text style={styles.header}>{title}</Text>
                 )}
@@ -117,20 +101,9 @@ const styles = StyleSheet.create({
       marginTop: Constants.statusBarHeight,
       marginHorizontal: 16,
     },
-    item: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      backgroundColor: '#f9f9f9',
-      padding: 16,
-      marginVertical: 2,
-    },
     header: {
       fontSize: 24,
       marginBottom: 8,
       marginTop: 16
-    },
-    title: {
-      fontSize: 16,
-    },
+    }
   });

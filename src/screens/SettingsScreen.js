@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, FlatList, Picker, StyleSheet, SafeAreaView, Switch } from "react-native";
 import Constants from 'expo-constants';
+import ToggleItem from '../components/ToggleItem'
 
 const DATA = [
   {
@@ -37,23 +38,6 @@ const DATA = [
   }
 
 ];
-
-function ToggleItem({ title }) {
-  const [toggleValue, setToggleValue] = useState(0);
-
-  return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-      <Switch
-        value={toggleValue}
-        onValueChange={(val) => {
-          setToggleValue(val);
-          alert(title + " " + val);
-        }}
-      />
-    </View>
-  );
-}
 
 function SelectItem({ title, options }) {
   const [selectValue, setSelectValue] = useState("wifi");
