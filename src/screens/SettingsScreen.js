@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, Picker, StyleSheet, SafeAreaView, Switch } from "react-native";
+import React from "react";
+import { FlatList, StyleSheet, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
-import ToggleItem from '../components/ToggleItem'
+import ToggleItem from '../components/ToggleItem';
+import SelectItem from '../components/SelectItem';
 
 const DATA = [
   {
@@ -39,35 +40,15 @@ const DATA = [
 
 ];
 
-function SelectItem({ title, options }) {
-  const [selectValue, setSelectValue] = useState("wifi");
-
-  return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-      <Picker
-          style={styles.picker}
-          selectedValue={selectValue}
-          onValueChange={(itemValue) =>
-            {
-              alert(title + " " + itemValue);
-              setSelectValue(itemValue);
-            }
-          }
-      >
-        {options.map((v) => {
-          return <Picker.Item label={v.label} value={v.value} />
-        })}
-      </Picker>
-        </View >
-    )
-}
-
 export default class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{
+        flex: 1,
+        marginTop: Constants.statusBarHeight,
+        marginHorizontal: 16
+      }}>
         <FlatList
           data={DATA}
           renderItem={({ item }) => item.options ? <SelectItem title={item.title} options={item.options} /> : <ToggleItem title={item.title} />}
@@ -75,28 +56,4 @@ export default class SettingsScreen extends React.Component {
       </SafeAreaView>
     );
   }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: Constants.statusBarHeight,
-    marginHorizontal: 16,
-  },
-  item: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#f9f9f9',
-    padding: 16,
-    marginVertical: 2,
-  },
-  title: {
-    fontSize: 16,
-  },
-  picker: {
-    height: 60,
-    width: 200
-  }
-  
-});
+};
