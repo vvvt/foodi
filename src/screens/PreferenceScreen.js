@@ -2,12 +2,6 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, SectionList, SafeAreaView, Switch } from "react-native";
 import Constants from 'expo-constants';
 
-let state = {switchValue:true};
-
-function toggleSwitch(value) {
-      alert(value);
-   }
-
 const DATA = [
     {
         title: "Preferences",
