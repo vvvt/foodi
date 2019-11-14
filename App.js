@@ -50,7 +50,7 @@ const AppNavigator = createStackNavigator(
 
     },
     {
-        initialRouteName: "test"
+        initialRouteName: "home"
     }
 );
 
