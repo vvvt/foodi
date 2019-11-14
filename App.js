@@ -3,7 +3,9 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { AppLoading } from "expo";
 
+// manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
+import NetworkManager from "./src/manager/NetworkManager";
 
 // screen imports
 import HomeScreen from "./src/screens/HomeScreen";
@@ -80,7 +82,7 @@ export default class App extends React.PureComponent {
             case LOADING_STATES.LOADING:
                 return (
                     <AppLoading
-                        startAsync={() => DatabaseManager.instance.initialize()}
+                        startAsync={this.initialize}
                         onError={err => {
                             console.error("Could not initialize the database manager:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
@@ -89,6 +91,18 @@ export default class App extends React.PureComponent {
                     />
                 );
         }
+    }
+
+    /**
+     * Initializes all managers
+     */
+    async initialize() {
+        await Promise.all([
+            DatabaseManager.instance.initialize(),
+            NetworkManager.instance.initialize()
+        ]);
+
+        console.log("Successfully intialized the app");
     }
 
 }
