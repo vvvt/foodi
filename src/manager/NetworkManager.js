@@ -1,3 +1,4 @@
+import EventEmitter from "events";
 import NetInfo from "@react-native-community/netinfo";
 
 const ENDPOINTS = Object.freeze({
@@ -18,7 +19,7 @@ const NETWORK_SPEED = Object.freeze({
  * This singleton class is responsible for all HTTP(S) requests
  * and other duties that belong to the networking.
  */
-export default class NetworkManager {
+export default class NetworkManager extends EventEmitter {
 
     static get ENDPOINTS() { return ENDPOINTS; }
     static get NETWORK_SPEED() { return NETWORK_SPEED; }
@@ -89,6 +90,7 @@ export default class NetworkManager {
         }
 
         console.log(`Current network state:\n[has internet]:\t\t${this.isOnline}\n[network speed]:\t${this.networkSpeed}\n[traffic limit]:\t${this.networkTrafficLimit}\n`);
+        this.emit("networkStateChanged", this.networkState);
 
     }
 
