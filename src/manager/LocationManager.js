@@ -2,6 +2,11 @@ import * as Location from "expo-location";
 import EventEmitter from "events";
 
 import Coordinate from "../classes/Coordinate";
+import Canteen from "../classes/Canteen";
+
+import CanteenManager from "./CanteenManager";
+
+const canteenManager = CanteenManager.instance;
 
 /**
  * @type {VoidFunction} The callback to stop location tracking
@@ -9,10 +14,23 @@ import Coordinate from "../classes/Coordinate";
 var stopLocationTracking = null;
 
 /**
+ * A mapping of canteen distances to semantic distances (contexts)
+ */
+const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
+    INSIDE: 0.2,
+    VERY_CLOSE: 0.3,
+    NEAR_BY: 0.6,
+    FAR: 5,
+    VERY_FAR: Number.POSITIVE_INFINITY
+});
+
+/**
  * This singleton class is responsible for the location tracking
  * of the device.
  */
 export default class LocationManager extends EventEmitter {
+
+    static get CANTEEN_DISTANCE_THRESHOLDS() { return CANTEEN_DISTANCE_THRESHOLDS; }
 
     /**
      * @returns {LocationManager} The instance of the location manager singleton
@@ -40,6 +58,13 @@ export default class LocationManager extends EventEmitter {
             accuracy: Location.Accuracy.Balanced,
             mayShowUserSettingsDialog: true
         };
+
+        /**
+         * @type {{ canteen: Canteen, distance: number }[]} An array with canteens that are
+         * within a certain distance, ordered by the distance ascending
+         */
+        this.surroundingCanteens = [];
+        this.canteenTrackingRadius = 7.5;
     }
 
     /**
@@ -47,18 +72,14 @@ export default class LocationManager extends EventEmitter {
      */
     async initialize() {
         this.hasPermission = await this.requestPermission();
-
-        // prefetch an initial position
-        Location.getCurrentPositionAsync(this.locationTrackingOptions)
-            .then( this.handlePositionChange.bind(this) )
-            .catch( e => {} );
-        
     }
 
     /**
      * Starts the location tracking
      */
     async startLocationTracking() {
+        if (!this.hasPermission) return console.warn("Tried to start the location tracking without having the user permission.");
+
         const { remove: stopFunction } = await Location.watchPositionAsync(
             this.locationTrackingOptions,
             this.handlePositionChange.bind(this)
@@ -80,17 +101,27 @@ export default class LocationManager extends EventEmitter {
      * Gets called when the tracked location of the device changed
      * @param {Location.LocationData} newPosition The new tracked location
      */
-    handlePositionChange( newPosition ) {
+    async handlePositionChange( newPosition ) {
         this.lastDevicePosition.timestamp = newPosition.timestamp;
         this.lastDevicePosition.coordinate = Coordinate.fromObject( newPosition.coords );
-        
+
         // emit the "position" event
         this.emit("position", this.lastDevicePosition);
+
+        try {
+            // get the canteens that are near by
+            this.surroundingCanteens = await canteenManager.loadCanteens(this.lastDevicePosition.coordinate, this.canteenTrackingRadius);
+            this.surroundingCanteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
+            this.emit("canteensChanged", this.surroundingCanteens);
+        } catch(e) {
+            console.error("Could not load the surrounding canteens from the database:", e);
+        }
     }
 
     /**
      * Requests user permission for using the location tracking service and sets the
-     * "hasPermission" property of this class accordingly
+     * "hasPermission" property of this class accordingly. If no initial device position
+     * was received yet it tries to fetch one.
      */
     async requestPermissions() {
         try {
@@ -98,7 +129,14 @@ export default class LocationManager extends EventEmitter {
             this.hasPermission = true;
         } catch(e) {
             this.hasPermission = false;
+            return;
         }
+
+        // prefetch an initial position if not done yet
+        if (this.lastDevicePosition.timestamp !== 0) return;
+        Location.getCurrentPositionAsync(this.locationTrackingOptions)
+            .then( this.handlePositionChange.bind(this) )
+            .catch( e => {} );
     }
 
 }
