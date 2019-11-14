@@ -1,4 +1,4 @@
-import EventEmitter from "EventEmitter";
+import EventEmitter from "events";
 import NetInfo from "@react-native-community/netinfo";
 
 const ENDPOINTS = Object.freeze({

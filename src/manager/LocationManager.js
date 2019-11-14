@@ -1,5 +1,5 @@
 import * as Location from "expo-location";
-import EventEmitter from "EventEmitter";
+import EventEmitter from "events";
 
 import Coordinate from "../classes/Coordinate";
 import Canteen from "../classes/Canteen";
