@@ -8,6 +8,9 @@ import DatabaseManager from "./src/manager/DatabaseManager";
 // screen imports
 import HomeScreen from "./src/screens/HomeScreen";
 import TestScreen from "./src/screens/TestScreen";
+import SettingsScreen from "./src/screens/SettingsScreen";
+import PreferencesScreen from "./src/screens/PreferencesScreen";
+import MapScreen from "./src/screens/MapScreen";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -25,7 +28,26 @@ const AppNavigator = createStackNavigator(
             navigationOptions: () => ({
                 title: "Test Screen"
             })
+        },
+        settings: {
+            screen: SettingsScreen,
+            navigationOptions: () => ({
+                title: "Settings Screen"
+            })
+        },
+        preferences: {
+            screen: PreferencesScreen,
+            navigationOptions: () => ({
+                title: "Preferenes Screen"
+            })
+        },
+        map: {
+            screen: MapScreen,
+            navigationOptions: () => ({
+                title: "Map Screen"
+            })
         }
+
     },
     {
         initialRouteName: "test"
