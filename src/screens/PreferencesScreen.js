@@ -78,7 +78,7 @@ const DATA = [
     }
 ];
 
-export default class PreferenceScreen extends React.Component {
+export default class PreferencesScreen extends React.Component {
 
     render() {
         return (
