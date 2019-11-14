@@ -16,8 +16,8 @@ export default class SelectItem extends React.Component {
                         alert(this.props.title + " " + itemValue);
                     }}
                 >
-                    {this.props.options.map((v) => {
-                        return <Picker.Item label={v.label} value={v.value} />
+                    {this.props.options.map((v, i) => {
+                        return <Picker.Item key={v+i} label={v.label} value={v.value} />
                     })}
                 </Picker>
             </View >

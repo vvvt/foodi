@@ -51,6 +51,7 @@ export default class SettingsScreen extends React.Component {
       }}>
         <FlatList
           data={DATA}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => item.options ? <SelectItem title={item.title} options={item.options} /> : <ToggleItem title={item.title} />}
         />
       </SafeAreaView>

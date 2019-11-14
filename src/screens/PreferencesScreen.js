@@ -85,6 +85,7 @@ export default class PreferencesScreen extends React.Component {
             <SafeAreaView style={styles.container}>
               <SectionList
                 sections={DATA}
+                keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => item.name ? <ToggleItem title={item.code + " - " + item.name}/> : <ToggleItem title={item} />}
                 renderSectionHeader={({ section: { title } }) => (
                   <Text style={styles.header}>{title}</Text>
