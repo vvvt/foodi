@@ -1,4 +1,4 @@
-import EventEmitter from "events";
+import EventEmitter from "EventEmitter";
 import NetInfo from "@react-native-community/netinfo";
 
 const ENDPOINTS = Object.freeze({
@@ -34,6 +34,7 @@ export default class NetworkManager extends EventEmitter {
     }
 
     constructor() {
+        super();
         if (NetworkManager._instance) throw new Error("This is a singleton! Use NetworkManager.instance to access this class instance.");
 
         // set dummy network state properties
@@ -89,7 +90,11 @@ export default class NetworkManager extends EventEmitter {
             }
         }
 
-        console.log(`Current network state:\n[has internet]:\t\t${this.isOnline}\n[network speed]:\t${this.networkSpeed}\n[traffic limit]:\t${this.networkTrafficLimit}\n`);
+        console.log(`Current network state:\n` +
+            `[has internet]:\t\t${this.networkState.isOnline}\n` +
+            `[network speed]:\t${this.networkState.speed}\n` +
+            `[traffic limit]:\t${this.networkState.trafficLimit}\n`
+        );
         this.emit("networkStateChanged", this.networkState);
 
     }

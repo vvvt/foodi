@@ -1,5 +1,5 @@
 import * as Location from "expo-location";
-import EventEmitter from "events";
+import EventEmitter from "EventEmitter";
 
 import Coordinate from "../classes/Coordinate";
 import Canteen from "../classes/Canteen";
@@ -41,6 +41,7 @@ export default class LocationManager extends EventEmitter {
     }
 
     constructor() {
+        super();
         if (LocationManager._instance) throw new Error("This is a singleton! Use LocationManager.instance to access this class instance.");
 
         /** True if this app has permission to use location tracking */
