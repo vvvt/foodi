@@ -21,13 +21,7 @@ export default class TestScreen extends React.Component {
     }
 
     async test() {
-        const canteens = await mealManager.fetchCanteens([51.050407, 13.737262], 15);
-        await mealManager.saveCanteens(canteens);
-        console.log(await mealManager.loadCanteens());
-
-        const meals = await mealManager.fetchMeals(79, "2019-11-11");
-        await mealManager.saveMeals(meals);
-        console.log(await mealManager.loadMeals());
+        
     }
 
 }
