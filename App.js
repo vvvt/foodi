@@ -1,6 +1,7 @@
 import React from "react";
 import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import { Icon } from 'react-native-elements'
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
 
 // manager imports
@@ -8,7 +9,6 @@ import DatabaseManager from "./src/manager/DatabaseManager";
 import NetworkManager from "./src/manager/NetworkManager";
 
 // screen imports
-import HomeScreen from "./src/screens/HomeScreen";
 import TestScreen from "./src/screens/TestScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
@@ -17,42 +17,80 @@ import MapScreen from "./src/screens/MapScreen";
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
  * * * * * * * * * * * */
-const AppNavigator = createStackNavigator(
+const AppNavigator = createBottomTabNavigator(
     {
-        home: {
-            screen: HomeScreen,
-            navigationOptions: () => ({
-                title: "Home"
-            })
-        },
         test: {
             screen: TestScreen,
             navigationOptions: () => ({
-                title: "Test Screen"
-            })
+                title: "Test",
+                tabBarIcon: () => (
+                    <Icon
+                        name="search"
+                        type="feather"
+                    />
+                )
+            }),
+            tabBarOptions: {
+                activeTintColor: "purple",
+                inactiveTintColor: "grey",
+                labelPosition: "below-icon"
+            }
         },
         settings: {
             screen: SettingsScreen,
             navigationOptions: () => ({
-                title: "Settings Screen"
-            })
+                title: "Settings",
+                tabBarIcon: () => (
+                    <Icon
+                        name="settings"
+                        type="feather"
+                    />
+                )
+            }),
+            tabBarOptions: {
+                activeTintColor: "purple",
+                inactiveTintColor: "grey",
+                labelPosition: "below-icon"
+            }
         },
         preferences: {
             screen: PreferencesScreen,
             navigationOptions: () => ({
-                title: "Preferenes Screen"
-            })
+                title: "Preferences",
+                tabBarIcon: () => (
+                    <Icon
+                        name="sliders"
+                        type="feather"
+                    />
+                )
+            }),
+            tabBarOptions: {
+                activeTintColor: "purple",
+                inactiveTintColor: "grey",
+                labelPosition: "below-icon"
+            }
         },
         map: {
             screen: MapScreen,
             navigationOptions: () => ({
-                title: "Map Screen"
-            })
+                title: "Navigation",
+                tabBarIcon: () => (
+                    <Icon
+                        name="map"
+                        type="feather"
+                    />
+                )
+            }),
+            tabBarOptions: {
+                activeTintColor: "purple",
+                inactiveTintColor: "grey",
+                labelPosition: "below-icon"
+            }
         }
 
     },
     {
-        initialRouteName: "home"
+        initialRouteName: "map"
     }
 );
 
