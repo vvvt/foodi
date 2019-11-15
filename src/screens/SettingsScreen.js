@@ -1,7 +1,8 @@
 import React from "react";
-import { FlatList, SafeAreaView, StyleSheet } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 import Item from "../components/Item";
 import DATA from "../classes/Settings";
+import styles from "./SettingsScreen.css";
 
 export default class SettingsScreen extends React.Component {
 
@@ -11,20 +12,9 @@ export default class SettingsScreen extends React.Component {
         <FlatList
           data={DATA}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <Item title={item.title} id={item.id}/>}
+          renderItem={({ item }) => <Item title={item.title} id={item.id} />}
         />
       </SafeAreaView>
     );
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16
-  },
-  header: {
-    fontSize: 24,
-    marginVertical: 8
-  }
-});
