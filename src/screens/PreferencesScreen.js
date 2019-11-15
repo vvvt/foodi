@@ -1,6 +1,5 @@
 import React from "react";
 import { Text, StyleSheet, SectionList, SafeAreaView } from "react-native";
-import Constants from 'expo-constants';
 import Item from "../components/Item";
 import DATA from "../classes/Preferences";
 
@@ -25,12 +24,10 @@ export default class PreferencesScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: Constants.statusBarHeight,
-      marginHorizontal: 16,
+      paddingHorizontal: 16
     },
     header: {
       fontSize: 24,
-      marginBottom: 8,
-      marginTop: 16
+      marginVertical: 8
     }
-  });
+});
