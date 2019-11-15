@@ -31,8 +31,6 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                activeTintColor: "purple",
-                inactiveTintColor: "grey",
                 labelPosition: "below-icon"
             }
         },
@@ -48,8 +46,6 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                activeTintColor: "purple",
-                inactiveTintColor: "grey",
                 labelPosition: "below-icon"
             }
         },
@@ -65,8 +61,6 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                activeTintColor: "purple",
-                inactiveTintColor: "grey",
                 labelPosition: "below-icon"
             }
         },
@@ -82,8 +76,6 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                activeTintColor: "purple",
-                inactiveTintColor: "grey",
                 labelPosition: "below-icon"
             }
         }
