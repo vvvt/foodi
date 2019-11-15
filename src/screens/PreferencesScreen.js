@@ -7,71 +7,89 @@ const DATA = [
     {
         title: "Preferences",
         data: [
-            "Beef",
-            "Pork",
-            "Poultry",
-            "Fish",
-            "Alcohol",
-            "Garlic"
+            {
+                id: "beef",
+                name: "Beef"
+            },
+            {
+                id: "pork",
+                name: "Pork"
+            },
+            {
+                id: "poultry",
+                name: "Poultry"
+            },
+            {
+                id: "fish",
+                name: "Fish"
+            },
+            {
+                id: "alcohol",
+                name: "Alcohol"
+            },
+            {
+                id: "garlic",
+                name: "Garlic"
+            }
         ]
     },
     {
         title: "Allergies",
         data: [
             {
-                code: "A",
+                id: "A",
                 name: "glutenhaltiges Getreide"
             },
             {
-                code: "B",
+                id: "B",
                 name: "Krebstiere"
             },
             {
-                code: "C",
+                id: "C",
                 name: "Eier"
             },
             {
-                code: "D",
+                id: "D",
                 name: "Fisch"
             },
             {
-                code: "E",
+                id: "E",
                 name: "Erdnüsse"
             },
             {
-                code: "F",
+                id: "F",
                 name: "Soja"
             },
             {
-                code: "G",
+                id: "G",
                 name: "Milch/Milchzucker (Laktose)"
             },
             {
-                code: "H",
+                id: "H",
                 name: "Schalenfrüchte (Nüsse)"
             },
             {
-                code: "I",
+                id: "I",
                 name: "Sellerie"
             },
             {
-                code: "J",
+                id: "J",
                 name: "Senf"
             },
             {
-                code: "K",
+                id: "K",
                 name: "Sesam"
             },
             {
-                code: "L",
+                id: "L",
                 name: "Sulfit/Schwefeldioxid"
             },
             {
-                code: "M",
+                id: "M",
                 name: "Lupine"
             },
             {
-                code: "N",
+                id: "N",
                 name: "Weichtiere"
             }
         ]
@@ -86,7 +104,7 @@ export default class PreferencesScreen extends React.Component {
               <SectionList
                 sections={DATA}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => item.name ? <ToggleItem title={item.code + " - " + item.name}/> : <ToggleItem title={item} />}
+                renderItem={({ item }) => <ToggleItem title={item.id + " - " + item.name} id={item.id}/>}
                 renderSectionHeader={({ section: { title } }) => (
                   <Text style={styles.header}>{title}</Text>
                 )}
