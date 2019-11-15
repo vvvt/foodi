@@ -38,59 +38,59 @@ const DATA = [
         data: [
             {
                 id: "A",
-                name: "glutenhaltiges Getreide"
+                name: "A - glutenhaltiges Getreide"
             },
             {
                 id: "B",
-                name: "Krebstiere"
+                name: "B - Krebstiere"
             },
             {
                 id: "C",
-                name: "Eier"
+                name: "C - Eier"
             },
             {
                 id: "D",
-                name: "Fisch"
+                name: "D - Fisch"
             },
             {
                 id: "E",
-                name: "Erdnüsse"
+                name: "E - Erdnüsse"
             },
             {
                 id: "F",
-                name: "Soja"
+                name: "F - Soja"
             },
             {
                 id: "G",
-                name: "Milch/Milchzucker (Laktose)"
+                name: "G - Milch/Milchzucker (Laktose)"
             },
             {
                 id: "H",
-                name: "Schalenfrüchte (Nüsse)"
+                name: "H - Schalenfrüchte (Nüsse)"
             },
             {
                 id: "I",
-                name: "Sellerie"
+                name: "I - Sellerie"
             },
             {
                 id: "J",
-                name: "Senf"
+                name: "J - Senf"
             },
             {
                 id: "K",
-                name: "Sesam"
+                name: "K - Sesam"
             },
             {
                 id: "L",
-                name: "Sulfit/Schwefeldioxid"
+                name: "L - LSulfit/Schwefeldioxid"
             },
             {
                 id: "M",
-                name: "Lupine"
+                name: "M - Lupine"
             },
             {
                 id: "N",
-                name: "Weichtiere"
+                name: "N - Weichtiere"
             }
         ]
     }
@@ -104,7 +104,7 @@ export default class PreferencesScreen extends React.Component {
               <SectionList
                 sections={DATA}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <Item title={item.id + " - " + item.name} id={item.id}/>}
+                renderItem={({ item }) => <Item title={item.name} id={item.id}/>}
                 renderSectionHeader={({ section: { title } }) => (
                   <Text style={styles.header}>{title}</Text>
                 )}
