@@ -1,8 +1,7 @@
 import React from "react";
-import { FlatList, StyleSheet, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
 import ToggleItem from '../components/ToggleItem';
-import SelectItem from '../components/SelectItem';
 
 const DATA = [
   {
@@ -11,31 +10,11 @@ const DATA = [
   },
   {
     id: "fetch-week",
-    title: "Fetch week's menu via",
-    options: [
-      {
-        label: "WiFi only",
-        value: "wifi"
-      },
-      {
-        label: "WiFi/Cellular",
-        value: "data"
-      }
-    ]
+    title: "Fetch week using cellular"
   },
   {
     id: "fetch-images",
-    title: "Fetch meal images via",
-    options: [
-      {
-        label: "WiFi only",
-        value: "wifi"
-      },
-      {
-        label: "WiFi/Cellular",
-        value: "data"
-      }
-    ]
+    title: "Download images using cellular"
   }
 
 ];
@@ -52,7 +31,7 @@ export default class SettingsScreen extends React.Component {
         <FlatList
           data={DATA}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => item.options ? <SelectItem title={item.title} options={item.options} /> : <ToggleItem title={item.title} />}
+          renderItem={({ item }) => <ToggleItem title={item.title} />}
         />
       </SafeAreaView>
     );
