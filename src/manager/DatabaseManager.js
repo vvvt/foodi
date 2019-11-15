@@ -41,6 +41,7 @@ export default class DatabaseManager {
         await this.run(STATEMENTS.CREATE_TABLE_MEALS);
         await this.run(STATEMENTS.CREATE_TABLE_MEAL_NOTES);
         await this.run(STATEMENTS.CREATE_TABLE_MEAL_PRICES);
+        await this.run(STATEMENTS.DELETE_MEALS_BEFORE_TODAY);
     }
 
     /**
