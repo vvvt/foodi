@@ -11,8 +11,9 @@ const NETWORK_TRAFFIC_LIMIT = Object.freeze({
 });
 
 const NETWORK_SPEED = Object.freeze({
+    NONE: 0,
     SLOW: 1,
-    FAST: 0
+    FAST: 2
 });
 
 /**
@@ -39,13 +40,25 @@ export default class NetworkManager extends EventEmitter {
 
         // set dummy network state properties
         this.networkState = {
-            /** True if the device has an internet connection, false otherwise */
-            isOnline: false,
-            /** One of NEWORK_TRAFFIC_LIMIT. Invalid if isOnly is false */
+            /** One of NEWORK_TRAFFIC_LIMIT */
             trafficLimit: NETWORK_TRAFFIC_LIMIT.LIMITED,
-            /** One of NEWORK_SPEED. Invalid if isOnly is false */
+            /** One of NEWORK_SPEED */
             speed: NETWORK_SPEED.SLOW
         };
+    }
+
+    /**
+     * Asynchronously prepares everything that is needed to use this singleton
+     * class.
+     */
+    async initialize() {
+
+        // set the initial network state
+        this.handleNetworkStateChange( await NetInfo.fetch() );
+
+        // handle network state changes
+        NetInfo.addEventListener( this.handleNetworkStateChange.bind(this) );
+
     }
 
     /**
@@ -54,11 +67,8 @@ export default class NetworkManager extends EventEmitter {
      */
     handleNetworkStateChange( state ) {
 
-        // has internet?
-        this.networkState.isOnline = state.isConnected;
-
         // if has internet => determine network speed and traffic limit
-        if (this.networkState.isOnline) {
+        if (state.isConnected) {
             switch (state.type) {
                 case "wifi":
                 case "vpn":
@@ -88,28 +98,15 @@ export default class NetworkManager extends EventEmitter {
                     this.networkState.trafficLimit = NETWORK_TRAFFIC_LIMIT.LIMITED;
                     this.networkState.speed = NETWORK_SPEED.SLOW;
             }
+        } else {
+            this.networkState.speed = NETWORK_SPEED.NONE;
         }
 
         console.log(`Current network state:\n` +
-            `[has internet]:\t\t${this.networkState.isOnline}\n` +
             `[network speed]:\t${this.networkState.speed}\n` +
             `[traffic limit]:\t${this.networkState.trafficLimit}\n`
         );
         this.emit("networkStateChanged", this.networkState);
-
-    }
-
-    /**
-     * Asynchronously prepares everything that is needed to use this singleton
-     * class.
-     */
-    async initialize() {
-
-        // set the initial network state
-        this.handleNetworkStateChange( await NetInfo.fetch() );
-
-        // handle network state changes
-        NetInfo.addEventListener( this.handleNetworkStateChange.bind(this) );
 
     }
 
