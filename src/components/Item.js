@@ -11,8 +11,7 @@ export default class Item extends React.Component {
                 <Switch  
                     value={this.state.toggleValue}  
                     onValueChange={(switchValue) => {
-                        this.setState({toggleValue: switchValue});
-                        alert(switchValue + " " + this.props.title);
+                        this.setState({toggleValue: switchValue}, ()=>{alert(this.props.id + " - " + this.state.toggleValue)});
                     }}
                 />  
             </View>
