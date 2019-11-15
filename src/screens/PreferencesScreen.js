@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, StyleSheet, SectionList, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
-import ToggleItem from '../components/ToggleItem'
+import Item from "../components/Item";
 
 const DATA = [
     {
@@ -104,7 +104,7 @@ export default class PreferencesScreen extends React.Component {
               <SectionList
                 sections={DATA}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <ToggleItem title={item.id + " - " + item.name} id={item.id}/>}
+                renderItem={({ item }) => <Item title={item.id + " - " + item.name} id={item.id}/>}
                 renderSectionHeader={({ section: { title } }) => (
                   <Text style={styles.header}>{title}</Text>
                 )}

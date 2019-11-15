@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Switch } from "react-native";
 
-export default class ToggleItem extends React.Component {
+export default class Item extends React.Component {
     state = {toggleValue: false}
 
     render() {

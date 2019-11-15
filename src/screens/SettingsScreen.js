@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
-import ToggleItem from '../components/ToggleItem';
+import Item from "../components/Item";
 
 const DATA = [
   {
@@ -31,7 +31,7 @@ export default class SettingsScreen extends React.Component {
         <FlatList
           data={DATA}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ToggleItem title={item.title} id={item.id}/>}
+          renderItem={({ item }) => <Item title={item.title} id={item.id}/>}
         />
       </SafeAreaView>
     );
