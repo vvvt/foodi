@@ -11,6 +11,21 @@ export default class CanteenManager {
 
     constructor() {
         if (CanteenManager._instance) throw new Error("This is a singleton! Use CanteenManager.instance to access this class instance.");
+
+        // cache all known canteens if we are in WiFi
+        networkManager.on("networkStateChanged", async () => {
+            if (
+                networkManager.networkState.isOnline &&
+                networkManager.networkState.trafficLimit === NetworkManager.NETWORK_TRAFFIC_LIMIT.UNLIMITED &&
+                networkManager.networkState.speed === NetworkManager.NETWORK_SPEED.FAST
+            ) {
+                try {
+                    await this.saveCanteens( await this.fetchCanteens() );
+                } catch(e) {
+                    console.error("Could not prefetch canteens:", e);
+                }
+            }
+        });
     }
     
     /**
@@ -23,16 +38,16 @@ export default class CanteenManager {
 
     /**
      * Fetches canteen in a given radius around a given position
-     * @param {Coordinate} position The position to find canteens from
-     * @param distance Default: 7.5. The maximum distance in km to the given position a returned canteen can have
+     * @param {Coordinate} position Optional: The position to find canteens from. If none given, all canteens are fetched
+     * @param distance Default: 50. The maximum distance in km to the given position a returned canteen can have
      */
-    async fetchCanteens( position, distance = 7.5 ) {
-        if (!Array.isArray(position) || position.length !== 2) throw new TypeError("The position must be an array containing 2 elements!");
+    async fetchCanteens( position = null, distance = 50 ) {
+        if (position != null && !(position instanceof Coordinate)) throw new TypeError("The position be a coordinate!");
 
         /** @type {import("../classes/Canteen").CanteenObj[]} */
         const canteenObjs = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens`,
-            {
+            position == null ? {} : {
                 "near[lat]": position[0],
                 "near[lng]": position[1],
                 "near[dist]": distance
