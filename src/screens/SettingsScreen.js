@@ -2,22 +2,7 @@ import React from "react";
 import { FlatList, SafeAreaView } from "react-native";
 import Constants from 'expo-constants';
 import Item from "../components/Item";
-
-const DATA = [
-  {
-    id: "sold-out",
-    title: "Show sold out meals"
-  },
-  {
-    id: "fetch-week",
-    title: "Fetch week using cellular"
-  },
-  {
-    id: "fetch-images",
-    title: "Download images using cellular"
-  }
-
-];
+import DATA from "../classes/Settings";
 
 export default class SettingsScreen extends React.Component {
 
