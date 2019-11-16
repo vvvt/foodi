@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Switch } from "react-native";
 import styles from "./Item.css";
 
-export default class Item extends React.Component {
+export default class ToggleItem extends React.Component {
     state = { toggleValue: false }
 
     render() {
