@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, SafeAreaView } from "react-native";
 import Item from "../components/Item";
 import DATA from "../classes/Settings";
-import styles from "./SettingsScreen.css";
+import styles from "./TemplateScreen.css";
 
 export default class SettingsScreen extends React.Component {
 

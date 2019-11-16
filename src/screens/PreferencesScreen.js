@@ -2,7 +2,7 @@ import React from "react";
 import { Text, SectionList, SafeAreaView } from "react-native";
 import Item from "../components/Item";
 import DATA from "../classes/Preferences";
-import styles from "./SettingsScreen.css";
+import styles from "./TemplateScreen.css";
 
 export default class PreferencesScreen extends React.Component {
 

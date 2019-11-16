@@ -31,7 +31,11 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                labelPosition: "below-icon"
+                labelPosition: "below-icon",
+                activeTintColor: "#FFFFFF",
+                inactiveTintColor: "#CA5EFD",
+                activeBackgroundColor: "#8600FA",
+                inactiveBackgroundColor: "#8600FA"
             }
         },
         settings: {
@@ -46,7 +50,11 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                labelPosition: "below-icon"
+                labelPosition: "below-icon",
+                activeTintColor: "#FFFFFF",
+                inactiveTintColor: "#CA5EFD",
+                activeBackgroundColor: "#8600FA",
+                inactiveBackgroundColor: "#8600FA"
             }
         },
         preferences: {
@@ -61,7 +69,11 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                labelPosition: "below-icon"
+                labelPosition: "below-icon",
+                activeTintColor: "#FFFFFF",
+                inactiveTintColor: "#CA5EFD",
+                activeBackgroundColor: "#8600FA",
+                inactiveBackgroundColor: "#8600FA"
             }
         },
         map: {
@@ -76,7 +88,11 @@ const AppNavigator = createBottomTabNavigator(
                 )
             }),
             tabBarOptions: {
-                labelPosition: "below-icon"
+                labelPosition: "below-icon",
+                activeTintColor: "#FFFFFF",
+                inactiveTintColor: "#CA5EFD",
+                activeBackgroundColor: "#8600FA",
+                inactiveBackgroundColor: "#8600FA"
             }
         }
 
