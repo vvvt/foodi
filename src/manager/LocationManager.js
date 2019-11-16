@@ -1,12 +1,7 @@
 import * as Location from "expo-location";
-import EventEmitter from "EventEmitter";
+import EventEmitter from "events";
 
 import Coordinate from "../classes/Coordinate";
-import Canteen from "../classes/Canteen";
-
-import CanteenManager from "./CanteenManager";
-
-const canteenManager = CanteenManager.instance;
 
 /**
  * @type {VoidFunction} The callback to stop location tracking
@@ -20,8 +15,9 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     INSIDE: 0.2,
     VERY_CLOSE: 0.3,
     NEAR_BY: 0.6,
-    FAR: 5,
-    VERY_FAR: Number.POSITIVE_INFINITY
+    FAR: 7.5,
+    VERY_FAR: 50,
+    INFINITE: Number.POSITIVE_INFINITY
 });
 
 /**
@@ -59,20 +55,13 @@ export default class LocationManager extends EventEmitter {
             accuracy: Location.Accuracy.Balanced,
             mayShowUserSettingsDialog: true
         };
-
-        /**
-         * @type {{ canteen: Canteen, distance: number }[]} An array with canteens that are
-         * within a certain distance, ordered by the distance ascending
-         */
-        this.surroundingCanteens = [];
-        this.canteenTrackingRadius = 7.5;
     }
 
     /**
      * Executes all functions that are necessary to use this manager
      */
     async initialize() {
-        this.hasPermission = await this.requestPermission();
+        await this.requestPermissions();
     }
 
     /**
@@ -105,18 +94,10 @@ export default class LocationManager extends EventEmitter {
     async handlePositionChange( newPosition ) {
         this.lastDevicePosition.timestamp = newPosition.timestamp;
         this.lastDevicePosition.coordinate = Coordinate.fromObject( newPosition.coords );
+        console.log("New position:", this.lastDevicePosition.coordinate);
 
         // emit the "position" event
         this.emit("position", this.lastDevicePosition);
-
-        try {
-            // get the canteens that are near by
-            this.surroundingCanteens = await canteenManager.loadCanteens(this.lastDevicePosition.coordinate, this.canteenTrackingRadius);
-            this.surroundingCanteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
-            this.emit("canteensChanged", this.surroundingCanteens);
-        } catch(e) {
-            console.error("Could not load the surrounding canteens from the database:", e);
-        }
     }
 
     /**

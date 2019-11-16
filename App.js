@@ -6,6 +6,7 @@ import { AppLoading } from "expo";
 // manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
 import NetworkManager from "./src/manager/NetworkManager";
+import LocationManager from "./src/manager/LocationManager";
 
 // screen imports
 import HomeScreen from "./src/screens/HomeScreen";
@@ -13,6 +14,9 @@ import TestScreen from "./src/screens/TestScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
 import MapScreen from "./src/screens/MapScreen";
+import PermissionDeniedScreen from "./src/screens/PermissionDeniedScreen";
+
+const locationManager = LocationManager.instance;
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -63,7 +67,8 @@ const AppContainer = createAppContainer(AppNavigator);
 const LOADING_STATES = Object.freeze({
     LOADING: 0,
     LOADING_FAILED: 1,
-    LOADING_SUCCEEDED: 2
+    LOADING_SUCCEEDED: 2,
+    PERMISSIONS_DENIED: 3
 });
 
 // the root of the app that initializes it first
@@ -79,17 +84,21 @@ export default class App extends React.PureComponent {
                 return <AppContainer />;
             case LOADING_STATES.LOADING_FAILED:
                 return null;
+            case LOADING_STATES.PERMISSIONS_DENIED:
+                return <PermissionDeniedScreen />
             case LOADING_STATES.LOADING:
                 return (
                     <AppLoading
-                        startAsync={this.initialize}
+                        startAsync={this.initialize.bind(this)}
                         onError={err => {
                             console.error("Could not initialize the database manager:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
                         }}
-                        onFinish={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
+                        onFinish={() => this.setState({ loadingState: LOADING_STATES[locationManager.hasPermission ? "LOADING_SUCCEEDED" : "PERMISSIONS_DENIED"] })}
                     />
                 );
+            default:
+                return null;
         }
     }
 
@@ -99,7 +108,8 @@ export default class App extends React.PureComponent {
     async initialize() {
         await Promise.all([
             DatabaseManager.instance.initialize(),
-            NetworkManager.instance.initialize()
+            NetworkManager.instance.initialize(),
+            locationManager.initialize()
         ]);
 
         console.log("Successfully intialized the app");

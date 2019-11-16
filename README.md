@@ -63,7 +63,7 @@ This is an open source collection of data about mensa meals.
 
 ## Developing
 
-Install [NodeJS](https://nodejs.org/).
+Install [NodeJS](https://nodejs.org/) and [Expo](https://docs.expo.io/versions/latest/get-started/installation/).
 
 Run `npm install` in the project folder to install the project dependencies.
 

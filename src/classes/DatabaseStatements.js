@@ -29,9 +29,10 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEALS: `DROP TABLE IF EXISTS meals`,
-    INSERT_INTO_MEALS: `INSERT OR REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,?,?)`,
+    INSERT_INTO_MEALS: `INSERT OR REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,date(?),?)`,
     LOAD_ALL_MEALS: `SELECT * FROM meals`,
     LOAD_MEALS_OF_CANTEEN: `SELECT * FROM meals WHERE canteenId=?`,
+    DELETE_MEALS_BEFORE_TODAY: `DELETE FROM meals WHERE date(date) < date('now')`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (
