@@ -3,6 +3,7 @@ import { createAppContainer } from "react-navigation";
 import { Icon } from 'react-native-elements'
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
+import TabBarOptions from "./src/classes/TabBarOptions";
 
 // manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
@@ -10,6 +11,7 @@ import NetworkManager from "./src/manager/NetworkManager";
 
 // screen imports
 import TestScreen from "./src/screens/TestScreen";
+import FinderScreen from "./src/screens/FinderScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
 import MapScreen from "./src/screens/MapScreen";
@@ -19,7 +21,7 @@ import MapScreen from "./src/screens/MapScreen";
  * * * * * * * * * * * */
 const AppNavigator = createBottomTabNavigator(
     {
-        test: {
+        /* test: {
             screen: TestScreen,
             navigationOptions: () => ({
                 title: "Test",
@@ -37,6 +39,19 @@ const AppNavigator = createBottomTabNavigator(
                 activeBackgroundColor: "#8600FA",
                 inactiveBackgroundColor: "#8600FA"
             }
+        }, */
+        finder: {
+            screen: FinderScreen,
+            navigationOptions: () => ({
+                title: "Finder",
+                tabBarIcon: () => (
+                    <Icon
+                        name="search"
+                        type="feather"
+                    />
+                )
+            }),
+            tabBarOptions: {TabBarOptions}
         },
         settings: {
             screen: SettingsScreen,
@@ -49,13 +64,7 @@ const AppNavigator = createBottomTabNavigator(
                     />
                 )
             }),
-            tabBarOptions: {
-                labelPosition: "below-icon",
-                activeTintColor: "#FFFFFF",
-                inactiveTintColor: "#CA5EFD",
-                activeBackgroundColor: "#8600FA",
-                inactiveBackgroundColor: "#8600FA"
-            }
+            tabBarOptions: {TabBarOptions}
         },
         preferences: {
             screen: PreferencesScreen,
@@ -68,13 +77,7 @@ const AppNavigator = createBottomTabNavigator(
                     />
                 )
             }),
-            tabBarOptions: {
-                labelPosition: "below-icon",
-                activeTintColor: "#FFFFFF",
-                inactiveTintColor: "#CA5EFD",
-                activeBackgroundColor: "#8600FA",
-                inactiveBackgroundColor: "#8600FA"
-            }
+            tabBarOptions: {TabBarOptions}
         },
         map: {
             screen: MapScreen,
@@ -87,18 +90,12 @@ const AppNavigator = createBottomTabNavigator(
                     />
                 )
             }),
-            tabBarOptions: {
-                labelPosition: "below-icon",
-                activeTintColor: "#FFFFFF",
-                inactiveTintColor: "#CA5EFD",
-                activeBackgroundColor: "#8600FA",
-                inactiveBackgroundColor: "#8600FA"
-            }
+            tabBarOptions: {TabBarOptions}
         }
 
     },
     {
-        initialRouteName: "map"
+        initialRouteName: "finder"
     }
 );
 
