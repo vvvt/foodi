@@ -2,7 +2,6 @@ import * as Location from "expo-location";
 import EventEmitter from "events";
 
 import Coordinate from "../classes/Coordinate";
-import Canteen from "../classes/Canteen";
 
 /**
  * @type {VoidFunction} The callback to stop location tracking
@@ -62,7 +61,7 @@ export default class LocationManager extends EventEmitter {
      * Executes all functions that are necessary to use this manager
      */
     async initialize() {
-        this.hasPermission = await this.requestPermission();
+        await this.requestPermissions();
     }
 
     /**
@@ -95,6 +94,7 @@ export default class LocationManager extends EventEmitter {
     async handlePositionChange( newPosition ) {
         this.lastDevicePosition.timestamp = newPosition.timestamp;
         this.lastDevicePosition.coordinate = Coordinate.fromObject( newPosition.coords );
+        console.log("New position:", this.lastDevicePosition.coordinate);
 
         // emit the "position" event
         this.emit("position", this.lastDevicePosition);
