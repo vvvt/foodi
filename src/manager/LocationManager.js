@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import EventEmitter from "events";
+import * as Permissions from "expo-permissions";
 
 import Coordinate from "../classes/Coordinate";
 
@@ -61,7 +62,8 @@ export default class LocationManager extends EventEmitter {
      * Executes all functions that are necessary to use this manager
      */
     async initialize() {
-        await this.requestPermissions();
+        const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
+        this.hasPermission = permissionStatus.status === "granted";
     }
 
     /**

@@ -14,9 +14,6 @@ import TestScreen from "./src/screens/TestScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
 import MapScreen from "./src/screens/MapScreen";
-import PermissionDeniedScreen from "./src/screens/PermissionDeniedScreen";
-
-const locationManager = LocationManager.instance;
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -67,8 +64,7 @@ const AppContainer = createAppContainer(AppNavigator);
 const LOADING_STATES = Object.freeze({
     LOADING: 0,
     LOADING_FAILED: 1,
-    LOADING_SUCCEEDED: 2,
-    PERMISSIONS_DENIED: 3
+    LOADING_SUCCEEDED: 2
 });
 
 // the root of the app that initializes it first
@@ -84,17 +80,15 @@ export default class App extends React.PureComponent {
                 return <AppContainer />;
             case LOADING_STATES.LOADING_FAILED:
                 return null;
-            case LOADING_STATES.PERMISSIONS_DENIED:
-                return <PermissionDeniedScreen />
             case LOADING_STATES.LOADING:
                 return (
                     <AppLoading
                         startAsync={this.initialize.bind(this)}
                         onError={err => {
-                            console.error("Could not initialize the database manager:", err);
+                            console.error("Could not initialize the app:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
                         }}
-                        onFinish={() => this.setState({ loadingState: LOADING_STATES[locationManager.hasPermission ? "LOADING_SUCCEEDED" : "PERMISSIONS_DENIED"] })}
+                        onFinish={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
                     />
                 );
             default:
@@ -109,7 +103,7 @@ export default class App extends React.PureComponent {
         await Promise.all([
             DatabaseManager.instance.initialize(),
             NetworkManager.instance.initialize(),
-            locationManager.initialize()
+            LocationManager.instance.initialize()
         ]);
 
         console.log("Successfully intialized the app");
