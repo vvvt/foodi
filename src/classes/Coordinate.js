@@ -65,10 +65,10 @@ export default class Coordinate {
     static calcDistance( c1, c2 ) {
 
         // the vertical distance in km
-        const dy = EARTH_VERTICAL * (Math.abs(c1[0]-c2[0])/180);
+        const dy = EARTH_VERTICAL * (Math.abs(c1.latitude-c2.latitude)/180);
 
         // the horizontal distance in km
-        const dx = EARTH_HORIZONTAL * (Math.abs(c1[1]-c2[1])/360) * Math.cos((c1[0]+c2[0])/2);
+        const dx = EARTH_HORIZONTAL * (Math.abs(c1.longitude-c2.longitude)/360) * Math.cos((c1.latitude+c2.latitude)/2);
 
         // the euclidean distance
         return Math.sqrt(dx*dx + dy*dy);
