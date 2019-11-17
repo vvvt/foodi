@@ -47,16 +47,7 @@ export default class CanteenManager extends EventEmitter {
 
         // load cached canteens near by
         locationManager.on("position", async () => {
-            try {
-                // get the canteens that are near by
-                this.surroundingCanteens = await this.loadCanteens(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
-                this.surroundingCanteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
-                this.emit("canteensChanged", this.surroundingCanteens);
-            } catch(e) {
-                console.error("Could not load the surrounding canteens from the database:", e);
-            }
-
-            this.maybePrefetchCanteens();
+            if (await this.maybePrefetchCanteens()) await this.updateSurroundingCanteens();
         });
 
         networkManager.on("networkStateChanged", this.maybePrefetchCanteens.bind(this));
@@ -71,6 +62,17 @@ export default class CanteenManager extends EventEmitter {
         return CanteenManager._instance;
     }
 
+    async updateSurroundingCanteens() {
+        try {
+            // get the canteens that are near by
+            this.surroundingCanteens = await this.loadCanteens(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
+            this.surroundingCanteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
+            this.emit("canteensChanged", this.surroundingCanteens);
+        } catch(e) {
+            console.error("Could not load the surrounding canteens from the database:", e);
+        }
+    }
+
     /**
      * Tries to prefetch the canteens within a 50km radius if the following conditions apply:
      * 
@@ -80,7 +82,7 @@ export default class CanteenManager extends EventEmitter {
      * - we did not prefetch yet or the last prefetch is out of range
      */
     async maybePrefetchCanteens() {
-        if (prefetching) return;
+        if (prefetching) return false;
         prefetching = true;
 
         try {
@@ -101,8 +103,11 @@ export default class CanteenManager extends EventEmitter {
                 )
             ) {
                 try {
-                    await this.saveCanteens( await this.fetchCanteens() );
+                    console.log("Prefetching canteens...");
+                    await this.saveCanteens( await this.fetchCanteens( locationManager.lastDevicePosition.coordinate, LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR ) );
                     this.lastPrefetchedCanteensAt.timestamp = Util.currentUnixTimestamp;
+                    prefetching = false;
+                    return true;
                 } catch(e) {
                     console.log("Could not prefetch canteens:", e);
                 }
@@ -113,23 +118,24 @@ export default class CanteenManager extends EventEmitter {
         }
 
         prefetching = false;
+        return false;
         
     }
 
     /**
      * Fetches canteen in a given radius around a given position
-     * @param {Coordinate} position Optional: The position to find canteens from. If none given, all canteens are fetched
+     * @param {Coordinate} position The position to find canteens from
      * @param distance Default: 50. The maximum distance in km to the given position a returned canteen can have
      */
-    async fetchCanteens( position = null, distance = 50 ) {
-        if (position != null && !(position instanceof Coordinate)) throw new TypeError("The position be a coordinate!");
+    async fetchCanteens( position, distance = 50 ) {
+        if (!(position instanceof Coordinate)) throw new TypeError("The position be a coordinate!");
 
         /** @type {import("../classes/Canteen").CanteenObj[]} */
         const canteenObjs = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens`,
-            position == null ? {} : {
-                "near[lat]": position[0],
-                "near[lng]": position[1],
+            {
+                "near[lat]": position.latitude,
+                "near[lng]": position.longitude,
                 "near[dist]": distance
             }
         );
