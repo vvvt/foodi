@@ -27,6 +27,7 @@ var prefetching = false;
 export default class CanteenManager extends EventEmitter {
 
     constructor() {
+        super();
         if (CanteenManager._instance) throw new Error("This is a singleton! Use CanteenManager.instance to access this class instance.");
 
         /** The position at which the canteens were preloaded the last time */
