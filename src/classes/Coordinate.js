@@ -97,7 +97,7 @@ export default class Coordinate {
         const c1 = new Coordinate(0, 0);
         const c2 = new Coordinate(0, 0);
 
-        const lngDist = (d / EARTH_HORIZONTAL / Math.cos(c[0])) * 360;
+        const lngDist = (d / EARTH_HORIZONTAL / Math.cos(c.latitude)) * 360;
         const lngs = [c.longitude + lngDist, c.longitude - lngDist];
         c1.longitude = Math.min(...lngs);
         c2.longitude = Math.max(...lngs);
