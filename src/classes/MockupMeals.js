@@ -4,8 +4,12 @@ export default Object.create([
         meal: {
             name: "Wurst",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa A",
-            distance: 0.4
+            distance: 0.4,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -13,8 +17,12 @@ export default Object.create([
         meal: {
             name: "Paprika",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa B",
-            distance: 0.2
+            distance: 0.2,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -22,8 +30,12 @@ export default Object.create([
         meal: {
             name: "Gurke",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa C",
-            distance: 0.5
+            distance: 0.5,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -31,8 +43,12 @@ export default Object.create([
         meal: {
             name: "Döner",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa D",
-            distance: 0.8
+            distance: 0.8,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -40,8 +56,12 @@ export default Object.create([
         meal: {
             name: "Marmelade",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa E",
-            distance: 1.4
+            distance: 1.4,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -49,8 +69,12 @@ export default Object.create([
         meal: {
             name: "Kaviar",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa F",
-            distance: 22.3
+            distance: 22.3,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     },
     {
@@ -58,8 +82,12 @@ export default Object.create([
         meal: {
             name: "Sushi",
             price: "3.00",
+            counter: "Fit & Vital",
             canteen: "Mensa G",
-            distance: 0.2
+            distance: 0.2,
+            allergies: [
+                "A", "B", "C"
+            ]
         }
     }
 ]);
