@@ -52,19 +52,6 @@ const AppNavigator = createBottomTabNavigator(
                 )
             })
         },
-        settings: {
-            screen: SettingsScreen,
-            navigationOptions: () => ({
-                title: "Settings",
-                tabBarIcon: ({tintColor}) => (
-                    <Icon
-                        name="settings"
-                        type="feather"
-                        color={tintColor}
-                    />
-                )
-            })
-        },
         preferences: {
             screen: PreferencesScreen,
             navigationOptions: () => ({
@@ -85,6 +72,19 @@ const AppNavigator = createBottomTabNavigator(
                 tabBarIcon: ({tintColor}) => (
                     <Icon
                         name="map"
+                        type="feather"
+                        color={tintColor}
+                    />
+                )
+            })
+        },
+        settings: {
+            screen: SettingsScreen,
+            navigationOptions: () => ({
+                title: "Settings",
+                tabBarIcon: ({tintColor}) => (
+                    <Icon
+                        name="settings"
                         type="feather"
                         color={tintColor}
                     />
