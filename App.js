@@ -3,7 +3,6 @@ import { createAppContainer } from "react-navigation";
 import { Icon } from 'react-native-elements'
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
-import TabBarOptions from "./src/classes/TabBarOptions";
 
 // manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
@@ -11,7 +10,6 @@ import NetworkManager from "./src/manager/NetworkManager";
 import LocationManager from "./src/manager/LocationManager";
 
 // screen imports
-import TestScreen from "./src/screens/TestScreen";
 import FinderScreen from "./src/screens/FinderScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
@@ -45,58 +43,65 @@ const AppNavigator = createBottomTabNavigator(
             screen: FinderScreen,
             navigationOptions: () => ({
                 title: "Finder",
-                tabBarIcon: () => (
+                tabBarIcon: ({tintColor}) => (
                     <Icon
                         name="search"
                         type="feather"
+                        color={tintColor}
                     />
                 )
-            }),
-            tabBarOptions: {TabBarOptions}
+            })
         },
         settings: {
             screen: SettingsScreen,
             navigationOptions: () => ({
                 title: "Settings",
-                tabBarIcon: () => (
+                tabBarIcon: ({tintColor}) => (
                     <Icon
                         name="settings"
                         type="feather"
+                        color={tintColor}
                     />
                 )
-            }),
-            tabBarOptions: {TabBarOptions}
+            })
         },
         preferences: {
             screen: PreferencesScreen,
             navigationOptions: () => ({
                 title: "Preferences",
-                tabBarIcon: () => (
+                tabBarIcon: ({tintColor}) => (
                     <Icon
                         name="sliders"
                         type="feather"
+                        color={tintColor}
                     />
                 )
-            }),
-            tabBarOptions: {TabBarOptions}
+            })
         },
         map: {
             screen: MapScreen,
             navigationOptions: () => ({
                 title: "Navigation",
-                tabBarIcon: () => (
+                tabBarIcon: ({tintColor}) => (
                     <Icon
                         name="map"
                         type="feather"
+                        color={tintColor}
                     />
                 )
-            }),
-            tabBarOptions: {TabBarOptions}
+            })
         }
 
     },
     {
-        initialRouteName: "finder"
+        initialRouteName: "finder",
+        tabBarOptions: {
+            labelPosition: "below-icon",
+            activeTintColor: "#FFFFFF",
+            inactiveTintColor: "#CA5EFD",
+            activeBackgroundColor: "#8600FA",
+            inactiveBackgroundColor: "#8600FA"
+        }
     }
 );
 
@@ -118,7 +123,7 @@ export default class App extends React.PureComponent {
     };
 
     render() {
-        switch(this.state.loadingState) {
+        switch (this.state.loadingState) {
             case LOADING_STATES.LOADING_SUCCEEDED:
                 return <AppContainer />;
             case LOADING_STATES.LOADING_FAILED:
