@@ -16,7 +16,8 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     INSIDE: 0.2,
     VERY_CLOSE: 0.3,
     NEAR_BY: 0.6,
-    FAR: 5,
+    MODERATE: 5,
+    FAR: 20,
     VERY_FAR: 50,
     INFINITE: Number.POSITIVE_INFINITY
 });
