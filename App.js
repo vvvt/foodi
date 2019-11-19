@@ -16,6 +16,8 @@ import FinderScreen from "./src/screens/FinderScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import PreferencesScreen from "./src/screens/PreferencesScreen";
 import MapScreen from "./src/screens/MapScreen";
+import CanteenManager from "./src/manager/CanteenManager";
+import MealManager from "./src/manager/MealManager";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -144,9 +146,15 @@ export default class App extends React.PureComponent {
      */
     async initialize() {
         await Promise.all([
-            DatabaseManager.instance.initialize(),
+            async function() {
+                await DatabaseManager.instance.initialize();
+                await Promise.all([
+                    CanteenManager.instance.initialize(),
+                    MealManager.instance.initialize()
+                ]);
+            },
             NetworkManager.instance.initialize(),
-            LocationManager.instance.initialize()
+            LocationManager.instance.initialize(),
         ]);
 
         console.log("Successfully intialized the app");

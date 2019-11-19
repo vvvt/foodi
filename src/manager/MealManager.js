@@ -1,15 +1,39 @@
 import NetworkManager from "./NetworkManager";
 import DatabaseManager from "./DatabaseManager";
+import CanteenManager from "./CanteenManager";
 
 import Meal from "../classes/Meal";
+import moment from "moment";
 
 const networkManager = NetworkManager.instance;
 const databaseManager = DatabaseManager.instance;
+const canteenManager = CanteenManager.instance;
 
 export default class MealManager {
 
     constructor() {
         if (MealManager._instance) throw new Error("This is a singleton! Use MealManager.instance to access this class instance.");
+
+        /** @type {Map<string, Map<number, Meal[]>>} Map<date, Map<canteenId, meals>> */
+        this.canteenMeals = new Map();
+
+        // load cached canteens near by
+        canteenManager.on("canteensChanged", this._onPositionOrNetworkChanged.bind(this));
+        networkManager.on("networkStateChanged", this._onPositionOrNetworkChanged.bind(this));
+    }
+
+    async _onPositionOrNetworkChanged() {
+        // if in wifi => fetch next 7 days
+        const days = networkManager.networkState.trafficLimit === NetworkManager.NETWORK_TRAFFIC_LIMIT.UNLIMITED ?
+            [0,1,2,3,4,5,6].map( d => moment().add(d, "days") )
+        :
+            [moment()]
+        ;
+
+        this.prefetchMeals(
+            canteenManager.surroundingCanteens.map( c => c.canteen ),
+            days.map( m => m.format("YYYY-MM-DD") )
+        );
     }
     
     /**
@@ -18,6 +42,58 @@ export default class MealManager {
     static get instance() {
         if (!MealManager._instance) MealManager._instance = new MealManager();
         return MealManager._instance;
+    }
+
+    /**
+     * Loads all persisted meals into the cache
+     */
+    async initialize() {
+        const meals = await this.loadMeals();
+        meals.forEach( m => {
+            if (!this.canteenMeals.has(m.date)) this.canteenMeals.set(m.date, new Map());
+            const canteensOfDate = this.canteenMeals.get(m.date);
+            if (!canteensOfDate.has(m.canteenId)) canteensOfDate.set(m.canteenId, []);
+            canteensOfDate.get(m.canteenId).push(m);
+        });
+    }
+    
+    /**
+     * Gets the cached meals of a given day
+     * @param {string} day The day to get the meals of
+     * @param {number} canteenId Optional: The canteen to get the meals of
+     */
+    getMeals( day, canteenId = 0 ) {
+        if (!this.canteenMeals.has(day)) return [];
+        if (canteenId === 0) return Array.from( this.canteenMeals.get(day).values() )
+            .reduce( (prev, cur) => [...prev, ...cur], [] );
+        return this.canteenMeals.get(day).get(canteenId) || [];
+    }
+
+    /**
+     * Fetches and saves meals
+     * @param {import("../classes/Canteen").default[]} canteens The canteens to fetch the meals of
+     * @param {string[]} days The days to fetch the meals of
+     */
+    async prefetchMeals( canteens, days ) {
+        /** @type {Promise<void>[]} */
+        const promises = [];
+
+        // prefetch all meals in parallel
+        days.forEach( day => {
+            canteens.forEach( canteen => {
+                promises.push(async () => {
+                    try {
+                        // do not prefetch if it was already
+                        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteen.id))
+                            await this.saveMeals( await this.fetchMeals(canteen.id, day) );
+                    } catch(e) {
+                        console.warn(`Could not prefetch the meals of canteen "${canteen.name}" for the date ${day}:`, e);
+                    }
+                })
+            });
+        });
+
+        await Promise.all(promises);
     }
 
     /**
@@ -40,8 +116,10 @@ export default class MealManager {
      * @param {Meal[]} meals The meals to save
      */
     async saveMeals( meals ) {
-        const statements = [];
+        if (meals.length === 0) return;
+        meals.map( m => this.meals.set(m.id, m) );
 
+        const statements = [];
         meals.forEach( m =>
             statements.push(
                 [DatabaseManager.STATEMENTS.INSERT_INTO_MEALS, m.id, m.canteenId, m.name, m.date, m.category],
@@ -52,7 +130,6 @@ export default class MealManager {
 
         await databaseManager.runInTransaction( statements );
     }
-
 
     /**
      * Loads all cached (persisted) meals from the database

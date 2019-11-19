@@ -45,13 +45,17 @@ export default class CanteenManager extends EventEmitter {
         /** The distance in km in which the canteens are loaded from cache into the surroundingCateens array */
         this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.FAR;
 
+        /** @type {Map<number, Canteen>} */
+        this.canteens = new Map();
+
         // load cached canteens near by
-        locationManager.on("position", async () => {
-            if (await this.maybePrefetchCanteens()) await this.updateSurroundingCanteens();
-        });
+        locationManager.on("position", this._onPositionOrNetworkChanged.bind(this));
+        networkManager.on("networkStateChanged", this._onPositionOrNetworkChanged.bind(this));
 
-        networkManager.on("networkStateChanged", this.maybePrefetchCanteens.bind(this));
+    }
 
+    get canteensArray() {
+        return Array.from( this.canteens.values() );
     }
     
     /**
@@ -62,11 +66,19 @@ export default class CanteenManager extends EventEmitter {
         return CanteenManager._instance;
     }
 
+    async initialize() {
+        this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
+    }
+
+    async _onPositionOrNetworkChanged() {
+        if (await this.maybePrefetchCanteens()) await this.updateSurroundingCanteens();
+    }
+
     async updateSurroundingCanteens() {
         try {
             // get the canteens that are near by
-            this.surroundingCanteens = await this.loadCanteens(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
-            this.surroundingCanteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
+            const canteens = await this.getCanteensByPosition(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
+            this.surroundingCanteens = canteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
             this.emit("canteensChanged", this.surroundingCanteens);
         } catch(e) {
             console.error("Could not load the surrounding canteens from the database:", e);
@@ -144,10 +156,14 @@ export default class CanteenManager extends EventEmitter {
     }
 
     /**
-     * Saves the given array of canteens in the database
+     * Saves the given array of canteens in the database and adds the to the cache
      * @param {Canteen[]} canteens The canteens to save
      */
     async saveCanteens( canteens ) {
+        if (canteens.length === 0) return;
+
+        canteens.forEach( c => this.canteens.set(c.id, c) );
+
         await databaseManager.runInTransaction(
             canteens.map( c =>
                 [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude]
@@ -156,33 +172,22 @@ export default class CanteenManager extends EventEmitter {
     }
 
     /**
-     * Loads all cached (persisted) canteens from the database. A search region can be passed.
-     * If so, the canteens are returned with their distance to the given position
-     * @param {Coordinate} position Optional: The position to load cached canteens from.
-     * If none given, all canteens will be returned
+     * Calculates the distances to all canteens and returns them 
+     * @param {Coordinate} position The position to load cached canteens from
      * @param distance Default: 7.5. The search radius around the given position in km 
      */
-    async loadCanteens( position = null, distance = 7.5 ) {
-        /** @type {import("../classes/Canteen").CanteenDatabaseRow[]} */
-        let rows = [];
+    getCanteensByPosition( position, distance = 7.5 ) {
+        return this.canteensArray
+            .map( c => ({ canteen: c, distance: Coordinate.calcDistance( c.coordinate, position ) }) )
+            .filter( c => c.distance <= distance );
+    }
 
-        if (position == null) {
-            rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_CANTEENS);
-            return rows.map( r => Canteen.fromDatabase(r) );
-        } else {
-            const boundingBox = Coordinate.getBoundingCoordinates( position, distance );
-            rows = await databaseManager.getAll(
-                DatabaseManager.STATEMENTS.LOAD_CANTEENS_BETWEEN_COORDINATES,
-                [boundingBox[0].latitude, boundingBox[1].latitude, boundingBox[0].longitude, boundingBox[1].longitude]
-            );
-
-            // sadly SQLite does not have any SQRT() function, so we have to do further filtering here
-            return rows
-                .map( r => ({ canteen: Canteen.fromDatabase(r), distance: Coordinate.calcDistance( Coordinate.fromDatabase(r), position ) }) )
-                .filter( c => c.distance <= distance );
-
-
-        }
+    /**
+     * Loads all persisted canteens from the database
+     */
+    async loadCanteens() {
+        const rows = await databaseManager.getAll(DatabaseManager.STATEMENTS.LOAD_ALL_CANTEENS);
+        return rows.map( r => Canteen.fromDatabase(r) );
     }
 
 }
