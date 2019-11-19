@@ -42,7 +42,8 @@ export default class MapScreen extends React.Component {
 
     render() {
 
-        const currentRegion = Object.assign(locationManager.lastDevicePosition.timestamp === 0 ? position : locationManager.lastDevicePosition.coordinate, {            
+        const currentPosition = Object.assign({}, locationManager.lastDevicePosition.timestamp === 0 ? position : locationManager.lastDevicePosition.coordinate);
+        const currentRegion = Object.assign(currentPosition, {            
             latitudeDelta: 0.010,
             longitudeDelta: 0.010
         });
