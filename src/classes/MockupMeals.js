@@ -17,7 +17,7 @@ export default Object.create([
         meal: {
             name: "Paprika",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Fertig 1",
             canteen: "Mensa B",
             distance: 0.2,
             allergies: [
@@ -30,7 +30,7 @@ export default Object.create([
         meal: {
             name: "Gurke",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Fertig 2",
             canteen: "Mensa C",
             distance: 0.5,
             allergies: [
@@ -43,7 +43,7 @@ export default Object.create([
         meal: {
             name: "Döner",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Fit & Vital 2",
             canteen: "Mensa D",
             distance: 0.8,
             allergies: [
@@ -56,7 +56,7 @@ export default Object.create([
         meal: {
             name: "Marmelade",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Theke 1",
             canteen: "Mensa E",
             distance: 1.4,
             allergies: [
@@ -69,7 +69,7 @@ export default Object.create([
         meal: {
             name: "Kaviar",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Theke 2",
             canteen: "Mensa F",
             distance: 22.3,
             allergies: [
@@ -82,7 +82,7 @@ export default Object.create([
         meal: {
             name: "Sushi",
             price: "3.00",
-            counter: "Fit & Vital",
+            counter: "Theke 3",
             canteen: "Mensa G",
             distance: 0.2,
             allergies: [

@@ -18,6 +18,22 @@ export default Object.freeze(
         title: {
             fontSize: 16,
             fontWeight: "bold"
+        },
+        bigButton: {
+            backgroundColor: "#0077B3",
+            borderRadius: 30,
+            height: 60,
+            width: 60,
+            display: "flex",
+            justifyContent: "center"
+        },
+        modalFocus: {
+            fontSize: 18,
+            padding: 10
+        },
+        modalSide: {
+            fontSize: 14,
+            fontWeight: "bold"
         }
     })
 )
