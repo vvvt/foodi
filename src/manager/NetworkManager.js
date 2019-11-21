@@ -1,6 +1,18 @@
 import EventEmitter from "events";
 import NetInfo from "@react-native-community/netinfo";
 
+/**
+ * @callback ResolveFunction
+ * @param {any} value
+ * @returns {void}
+ */
+
+/**
+ * @callback RejectFunction
+ * @param {Error} [reason]
+ * @returns {void}
+ */
+
 const ENDPOINTS = Object.freeze({
     OPEN_MENSA_API: "https://openmensa.org/api/v2"
 });
@@ -15,6 +27,11 @@ const NETWORK_SPEED = Object.freeze({
     SLOW: 1,
     FAST: 2
 });
+
+const FETCH_PARALLEL_COUNTS_OF_NETWORK_SPEEDS = {};
+FETCH_PARALLEL_COUNTS_OF_NETWORK_SPEEDS[NETWORK_SPEED.NONE] = 0;
+FETCH_PARALLEL_COUNTS_OF_NETWORK_SPEEDS[NETWORK_SPEED.SLOW] = 1;
+FETCH_PARALLEL_COUNTS_OF_NETWORK_SPEEDS[NETWORK_SPEED.FAST] = 10;
 
 /**
  * This singleton class is responsible for all HTTP(S) requests
@@ -45,6 +62,57 @@ export default class NetworkManager extends EventEmitter {
             /** One of NEWORK_SPEED */
             speed: NETWORK_SPEED.SLOW
         };
+
+        this._currentFetchesCount = 0;
+
+        /** @private @type {{ [priority: string]: [ResolveFunction, RejectFunction, ...any][] }} */
+        this._requestQueue = {
+            HIGH: [],
+            MODERATE: [],
+            LOW: []
+        };
+
+    }
+
+    /**
+     * @private
+     */
+    _workOnQueue() {
+        try {
+            const parallelCount = FETCH_PARALLEL_COUNTS_OF_NETWORK_SPEEDS[this.networkState.speed];
+            if (this._currentFetchesCount >= parallelCount) return;
+
+            const priorityOrder = ["HIGH", "MODERATE", "LOW"];
+            const workToDo = this._requestQueue.HIGH.splice(0,0);
+            priorityOrder.forEach( priority => {
+                workToDo.push( ...this._requestQueue[priority].splice(0, parallelCount - this._currentFetchesCount - workToDo.length) );
+            });
+
+            // use the enqueued Promise for the fetch resolve and reject
+            this._currentFetchesCount += workToDo.length;
+            workToDo.forEach( ([resolve, reject, ...args]) => fetch(...args)
+                .then(resolve)
+                .catch(reject)
+                .finally( () => {
+                    this._currentFetchesCount--;
+                    this._workOnQueue();
+                })
+            );
+        } catch(e) {
+            console.error("Unknown error while working on the fetch queue:", e);
+        }
+    }
+    
+    /**
+     * @private
+     * @param {"HIGHT" | "MODERATE" | "LOW"} priority 
+     * @param args 
+     * @returns {Promise<Response>}
+     */
+    _queuedFetch(priority, ...args) {
+        const promise = new Promise( (resolve, reject) => this._requestQueue[priority].push([resolve, reject, ...args]) );
+        this._workOnQueue();
+        return promise;
     }
 
     /**
@@ -102,10 +170,7 @@ export default class NetworkManager extends EventEmitter {
             this.networkState.speed = NETWORK_SPEED.NONE;
         }
 
-        console.log(`Current network state:\n` +
-            `[network speed]:\t${this.networkState.speed}\n` +
-            `[traffic limit]:\t${this.networkState.trafficLimit}\n`
-        );
+        console.log(`Current network state: speed=${this.networkState.speed} limit=${this.networkState.trafficLimit}`);
         this.emit("networkStateChanged", this.networkState);
 
     }
@@ -115,8 +180,9 @@ export default class NetworkManager extends EventEmitter {
      * @param {string} url The url to fetch on
      * @param {{ [key: string]: number | string }} params The params given as key-value pairs in and object. They will be appended on the given url
      * @param {"GET"} method The HTTP method to use
+     * @param {"HIGH" | "MODERATE" | "LOW"} priority The priority of this request in comparison to other requests
      */
-    async fetchWithParams(url, params = {}, method) {
+    async fetchWithParams(url, params = {}, method = "GET", priority = "MODERATE") {
 
         // remove adherent "/" to ensure valid params url
         if (url.endsWith("/")) url = url.slice(0, -1);
@@ -126,7 +192,8 @@ export default class NetworkManager extends EventEmitter {
         const paramsString = paramsArr.length === 0 ? "" : ("?" + paramsArr.join("&"));
 
         // execute actual request
-        const res = await fetch(
+        const res = await this._queuedFetch(
+            priority,
             url + paramsString,
             {
                 method,
