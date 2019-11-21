@@ -106,7 +106,7 @@ export default class MealManager {
     async loadOrFetchMeals( canteenId, day ) {
 
         // fetch meals (with high priority) if not done already
-        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( this.fetchMeals(canteenId, day, "HIGHT") );
+        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( await this.fetchMeals(canteenId, day, "HIGH") );
         return this.canteenMeals.get(day).get(canteenId) || [];
 
     }
@@ -124,7 +124,6 @@ export default class MealManager {
         const mealsObjs = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals`,
             {},
-            "GET",
             priority
         );
         
@@ -137,8 +136,8 @@ export default class MealManager {
      * @param {Meal[]} meals The meals to save
      */
     async saveMeals( meals ) {
+        if (!Array.isArray(meals)) throw new TypeError("The given meals must be of type array!");
         if (meals.length === 0) return;
-        meals.map( m => this.meals.set(m.id, m) );
 
         const statements = [];
         meals.forEach( m => {
