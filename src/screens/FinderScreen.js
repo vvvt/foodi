@@ -20,7 +20,7 @@ export default class FinderScreen extends React.Component {
             return 0;
           })}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <MealItem id={item.id} meal={item.meal} />}
+          renderItem={({ item }) => <MealItem id={item.id} meal={item.meal} navigate={() => {this.props.navigation.navigate("map")}} />}
         />
       </SafeAreaView>
     );

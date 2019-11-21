@@ -12,23 +12,23 @@ As part of the course work [Application Development for Mobile and Ubiquitous Co
 
 ### Sections
 
-#### Meal Preferences
-
-Set your meal preferences through various toggles and checkboxes. The app aims at the most common eating habits, such as vegetarianism or veganism 
-
-#### Settings
-
-Configure general app settings, such as language or data use. 
-
-<img src="assets/mockup-preferences.png" height="400" />
-
-
-
 #### Meal Finder
 
 Scroll through the list of meals to find your favorite one. The meals are ordered from top to bottom by distance from your location to the respective canteen. Pick a meal to see a more detailed view and to start navigating there.
 
-<img src="assets/mockup-finder.png" height="400" />
+
+
+<img src="assets/screenshot-finder.jpg" height="400" />
+
+
+
+#### Meal Preferences
+
+Set your meal preferences through various toggles and checkboxes. The app aims at the most common eating habits, such as vegetarianism or veganism 
+
+
+
+<img src="assets/screenshot-preferences.jpg" height="400" />
 
 
 
@@ -36,7 +36,19 @@ Scroll through the list of meals to find your favorite one. The meals are ordere
 
 Follow the instructions based on Google Maps to find the closest canteen.
 
-<img src="assets/mockup-navigation.png" height="400" />
+
+
+<img src="assets/screenshot-navigation.jpg" height="400" />
+
+
+
+#### Settings
+
+Configure general app settings, such as language or data use. 
+
+
+
+<img src="assets/screenshot-settings.jpg" height="400" />
 
 
 
