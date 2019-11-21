@@ -2,8 +2,13 @@ import React from "react";
 import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./MealItem.css";
+import Util from "../classes/Util";
 
 export default class MealItem extends React.Component {
+
+    /** @type {{ meal: import("../classes/Meal").default, canteen: import("../classes/Canteen").default, distance: number }} */
+    props;
+
     state = {
         toggleValue: false,
         modalVisible: false
@@ -15,7 +20,7 @@ export default class MealItem extends React.Component {
 
     render() {
 
-        meal = this.props.meal;
+        const { meal, canteen, distance } = this.props;
 
         return (
             <>
@@ -40,7 +45,7 @@ export default class MealItem extends React.Component {
                         >
                             <Text
                                 style={styles.modalSide}>
-                                {meal.canteen.toUpperCase() + " - " + meal.counter.toUpperCase()}
+                                {canteen.name.toUpperCase() + " - " + meal.category.toUpperCase()}
                             </Text>
                             <Text style={styles.modalFocus}>
                                 {meal.name}
@@ -60,14 +65,14 @@ export default class MealItem extends React.Component {
                                 padding: 8
                             }}
                         >
-                            {meal.allergies.map((item, index) => <Text key={index}>{item}</Text>)}
+                            {meal.notes.map((allergy, index) => <Text key={index}>{allergy}</Text>)}
                         </View>
                         <View style={styles.row}>
                             <Text style={styles.modalFocus}>
-                                {meal.price + "€"}
+                                {meal.prices.students + "€"}
                             </Text>
                             <Text style={styles.modalFocus}>
-                                {meal.distance + " km"}
+                                {Util.distanceToString(distance)}
                             </Text>
                         </View>
                         <View style={styles.row}>
@@ -106,11 +111,11 @@ export default class MealItem extends React.Component {
                     <View style={styles.item}>
                         <View style={styles.row}>
                             <Text style={styles.title}>{meal.name}</Text>
-                            <Text style={styles.title}>{meal.price + "€"}</Text>
+                            <Text style={styles.title}>{meal.prices.students + "€"}</Text>
                         </View>
                         <View style={styles.row}>
-                            <Text>{meal.canteen}</Text>
-                            <Text>{meal.distance + " km"}</Text>
+                            <Text>{canteen.name}</Text>
+                            <Text>{Util.distanceToString(distance)}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
