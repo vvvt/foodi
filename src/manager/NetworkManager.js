@@ -13,6 +13,8 @@ import NetInfo from "@react-native-community/netinfo";
  * @returns {void}
  */
 
+/** @typedef {"HIGHT" | "MODERATE" | "LOW"} Priority */
+
 const ENDPOINTS = Object.freeze({
     OPEN_MENSA_API: "https://openmensa.org/api/v2"
 });
@@ -105,7 +107,7 @@ export default class NetworkManager extends EventEmitter {
     
     /**
      * @private
-     * @param {"HIGHT" | "MODERATE" | "LOW"} priority 
+     * @param {Priority} priority 
      * @param args 
      * @returns {Promise<Response>}
      */
