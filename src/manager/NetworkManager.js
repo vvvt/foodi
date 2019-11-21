@@ -13,7 +13,7 @@ import NetInfo from "@react-native-community/netinfo";
  * @returns {void}
  */
 
-/** @typedef {"HIGHT" | "MODERATE" | "LOW"} Priority */
+/** @typedef {"HIGH" | "MODERATE" | "LOW"} Priority */
 
 const ENDPOINTS = Object.freeze({
     OPEN_MENSA_API: "https://openmensa.org/api/v2"
@@ -92,14 +92,15 @@ export default class NetworkManager extends EventEmitter {
 
             // use the enqueued Promise for the fetch resolve and reject
             this._currentFetchesCount += workToDo.length;
-            workToDo.forEach( ([resolve, reject, ...args]) => fetch(...args)
-                .then(resolve)
-                .catch(reject)
-                .finally( () => {
-                    this._currentFetchesCount--;
-                    this._workOnQueue();
-                })
-            );
+            workToDo.forEach( ([resolve, reject, ...args]) => {
+                fetch(...args)
+                    .then(resolve)
+                    .catch(reject)
+                    .finally( () => {
+                        this._currentFetchesCount--;
+                        this._workOnQueue();
+                    });
+            });
         } catch(e) {
             console.error("Unknown error while working on the fetch queue:", e);
         }
@@ -181,10 +182,9 @@ export default class NetworkManager extends EventEmitter {
      * Executes a HTTP(S) request on a given url with params
      * @param {string} url The url to fetch on
      * @param {{ [key: string]: number | string }} params The params given as key-value pairs in and object. They will be appended on the given url
-     * @param {"GET"} method The HTTP method to use
-     * @param {"HIGH" | "MODERATE" | "LOW"} priority The priority of this request in comparison to other requests
+     * @param {Priority} priority The priority of this request in comparison to other requests
      */
-    async fetchWithParams(url, params = {}, method = "GET", priority = "MODERATE") {
+    async fetchWithParams(url, params = {}, priority = "MODERATE") {
 
         // remove adherent "/" to ensure valid params url
         if (url.endsWith("/")) url = url.slice(0, -1);
@@ -196,17 +196,11 @@ export default class NetworkManager extends EventEmitter {
         // execute actual request
         const res = await this._queuedFetch(
             priority,
-            url + paramsString,
-            {
-                method,
-                headers: {
-                    "accept": "application/json"
-                }
-            }
+            url + paramsString
         );
 
         // error checking
-        if (!res.ok) throw new Error("HTTP request failed: " + await res.text());
+        if (!res.ok) throw new Error(`HTTP request failed (${res.status}): ` + await res.text());
         return await res.json();
         
     }
