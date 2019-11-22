@@ -60,19 +60,6 @@ export default class CanteenManager extends EventEmitter {
 
         /** @type {Map<number, Canteen>} */
         this.canteens = new Map();
-
-        // load cached canteens near by
-        locationManager.on("position", this._onPositionOrNetworkChanged.bind(this));
-        networkManager.on("networkStateChanged", this._onPositionOrNetworkChanged.bind(this));
-
-        // update the surrounding canteens whenever a new position comes in
-        locationManager.on("position", this.updateSurroundingCanteens.bind(this) );
-
-        // persist when app is closed so it can be loaded when the app is initialized the next time
-        AppState.addEventListener("change", state => {
-            if (state === "inactive" && this.lastPrefetchedCanteensAt.timestamp !== 0)
-                settingsManager.storeSetting(LAST_PREFETCH_POSITION_SETTING_KEY, this.lastPrefetchedCanteensAt);
-        });
     }
 
     /** All known canteens */
@@ -93,21 +80,43 @@ export default class CanteenManager extends EventEmitter {
      * 
      * Loads all persisted canteens from the database into the cache.
      */
-    async initialize() {
+    async initialize() {        
         await Promise.all([
 
             // load all persisted canteens
-            async () => {
+            (async () => {
                 this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
-            },
+            })(),
 
             // load last prefetch position
-            async () => {
+            (async () => {
                 const lastPrefetchedCanteensAt = await settingsManager.getSetting(LAST_PREFETCH_POSITION_SETTING_KEY, "object");
-                if (lastPrefetchedCanteensAt !== null) this.lastPrefetchedCanteensAt = lastPrefetchedCanteensAt;
-            }
+                if (lastPrefetchedCanteensAt !== null) {
+                    lastPrefetchedCanteensAt.coordinate === Coordinate.fromObject(lastPrefetchedCanteensAt.coordinate);
+                    this.lastPrefetchedCanteensAt = lastPrefetchedCanteensAt;
+                    console.log("Restored last prefetch position of canteens");
+                }
+            })()
 
         ]);
+    }
+
+    /**
+     * To be called after the app was initialized
+     */
+    setEventHooks() {
+        // load cached canteens near by
+        locationManager.on("position", this._onPositionOrNetworkChanged.bind(this));
+        networkManager.on("networkStateChanged", this._onPositionOrNetworkChanged.bind(this));
+
+        // update the surrounding canteens whenever a new position comes in
+        locationManager.on("position", this.updateSurroundingCanteens.bind(this) );
+
+        // persist when app is closed so it can be loaded when the app is initialized the next time
+        AppState.addEventListener("change", state => {
+            if (state === "inactive" && this.lastPrefetchedCanteensAt.timestamp !== 0)
+                settingsManager.storeSetting(LAST_PREFETCH_POSITION_SETTING_KEY, this.lastPrefetchedCanteensAt);
+        });
     }
 
     /**

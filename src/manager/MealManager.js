@@ -18,10 +18,6 @@ export default class MealManager {
 
         /** @type {Map<string, Map<number, Meal[]>>} Map<date, Map<canteenId, meals>> */
         this.canteenMeals = new Map();
-
-        // load cached canteens near by
-        canteenManager.on("canteensChanged", this._onCanteensOrNetworkChanged.bind(this));
-        networkManager.on("networkStateChanged", this._onCanteensOrNetworkChanged.bind(this));
     }
 
     async _onCanteensOrNetworkChanged() {
@@ -59,6 +55,15 @@ export default class MealManager {
             if (!canteensOfDate.has(m.canteenId)) canteensOfDate.set(m.canteenId, []);
             canteensOfDate.get(m.canteenId).push(m);
         });
+    }
+
+    /**
+     * To be called after the app was initialized
+     */
+    setEventHooks() {
+        // load cached canteens near by
+        canteenManager.on("canteensChanged", this._onCanteensOrNetworkChanged.bind(this));
+        networkManager.on("networkStateChanged", this._onCanteensOrNetworkChanged.bind(this));
     }
 
     /**

@@ -151,17 +151,19 @@ export default class App extends React.PureComponent {
      */
     async initialize() {
         await Promise.all([
-            async function() {
+            (async function() {
                 await DatabaseManager.instance.initialize();
                 await Promise.all([
                     CanteenManager.instance.initialize(),
                     MealManager.instance.initialize()
                 ]);
-            },
+            })(),
             NetworkManager.instance.initialize(),
             LocationManager.instance.initialize(),
         ]);
 
+        MealManager.instance.setEventHooks();
+        CanteenManager.instance.setEventHooks();
         console.log("Successfully intialized the app");
     }
 
