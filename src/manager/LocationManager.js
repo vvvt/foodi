@@ -1,8 +1,11 @@
 import * as Location from "expo-location";
 import EventEmitter from "events";
 import * as Permissions from "expo-permissions";
+import { AppState } from "react-native";
 
 import Coordinate from "../classes/Coordinate";
+
+import SettingsManager from "./SettingsManager";
 
 /**
  * @type {VoidFunction} The callback to stop location tracking
@@ -22,9 +25,17 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     INFINITE: Number.POSITIVE_INFINITY
 });
 
+const LAST_DEVICE_POSITION_SETTING_KEY = "lastDevicePosition";
+
+const settingsManager = SettingsManager.instance;
+
 /**
  * This singleton class is responsible for the location tracking
  * of the device.
+ * 
+ * Emits: "position"
+ * Params: lastDevicePosition
+ * Fires when a new position of the device was received
  */
 export default class LocationManager extends EventEmitter {
 
@@ -57,15 +68,31 @@ export default class LocationManager extends EventEmitter {
             accuracy: Location.Accuracy.Balanced,
             mayShowUserSettingsDialog: true
         };
+
+        // persist when app is closed so it can be loaded when the app is initialized the next time
+        AppState.addEventListener("change", state => {
+            if (state === "inactive") settingsManager.storeSetting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition);
+        });
     }
 
     /**
      * Executes all functions that are necessary to use this manager
      */
     async initialize() {
-        const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
-        this.hasPermission = permissionStatus.status === "granted";
-        this.startLocationTracking();
+        await Promise.all([
+            // get permission for location tracking and start it
+            async () => {
+                const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
+                this.hasPermission = permissionStatus.status === "granted";
+                this.startLocationTracking();
+            },
+
+            // get last device position from the settings manager
+            async () => {
+                const lastDevicePosition = await settingsManager.getSetting(LAST_DEVICE_POSITION_SETTING_KEY, "object");
+                if (lastDevicePosition !== null) this.lastDevicePosition = lastDevicePosition;
+            }
+        ]);
     }
 
     /**
@@ -98,7 +125,7 @@ export default class LocationManager extends EventEmitter {
     async handlePositionChange( newPosition ) {
         this.lastDevicePosition.timestamp = newPosition.timestamp;
         this.lastDevicePosition.coordinate = Coordinate.fromObject( newPosition.coords );
-        console.log("New position:", this.lastDevicePosition.coordinate);
+        console.log(`New position: lat=${this.lastDevicePosition.coordinate.latitude} lng=${this.lastDevicePosition.coordinate.longitude}`);
 
         // emit the "position" event
         this.emit("position", this.lastDevicePosition);
