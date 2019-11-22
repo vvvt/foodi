@@ -16,6 +16,8 @@ const locationManager = LocationManager.instance;
 const PREFETCH_RADIUS = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR;
 var prefetching = false;
 
+/** @typedef {{ canteen: Canteen, distance: number }} CanteenWithDistance */
+
 /**
  * This singleton is responseble for tasks that are related with canteens.
  * This includes:
@@ -23,6 +25,12 @@ var prefetching = false;
  * - Tracking canteens that are nearby
  * - Prefetching canteens depending on network/ current position
  * - Loading and saving canteens with the database manager
+ * 
+ * Emits: "canteensChanged"
+ * Params: currentSurroundingCanteens, lastSurroundingCanteens
+ * Gets fired when the surrounding canteens or their distance changed. 
+ * The first parameter is an array of the current surrounding canteens,
+ * the second contains the surrounding canteens before this event was emitted.
  */
 export default class CanteenManager extends EventEmitter {
 
@@ -38,7 +46,7 @@ export default class CanteenManager extends EventEmitter {
         };
 
         /**
-         * @type {{ canteen: Canteen, distance: number }[]} An array with canteens that are
+         * @type {CanteenWithDistance[]} An array with canteens that are
          * within a certain distance, ordered by the distance ascending
          */
         this.surroundingCanteens = [];
@@ -104,7 +112,7 @@ export default class CanteenManager extends EventEmitter {
                 )
             ) {
                 console.log("Canteens or their distance changed");
-                this.emit("canteensChanged", this.surroundingCanteens);
+                this.emit("canteensChanged", this.surroundingCanteens, lastSurroundingCanteens);
             }
         } catch(e) {
             console.error("Could not load the surrounding canteens from the database:", e);
