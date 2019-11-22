@@ -9,6 +9,8 @@ const networkManager = NetworkManager.instance;
 const databaseManager = DatabaseManager.instance;
 const canteenManager = CanteenManager.instance;
 
+/** @typedef {{ meal: Meal, distance: number, canteen: import("../classes/Canteen").default }} MealWithDistance */
+
 export default class MealManager {
 
     constructor() {
@@ -57,6 +59,46 @@ export default class MealManager {
             if (!canteensOfDate.has(m.canteenId)) canteensOfDate.set(m.canteenId, []);
             canteensOfDate.get(m.canteenId).push(m);
         });
+    }
+
+    /**
+     * @callback OnMealLoaded
+     * @param {MealWithDistance[]}
+     * @returns {void}
+     */
+    /**
+     * Gets the surrounding canteens from the canteen manager and loads or
+     * fetches the meals (with high network priority).
+     * @param {string} day The day to get the surrounding meals for (in format YYYY-MM-DD)
+     * @param {OnMealLoaded} onMealsLoaded Optional: A callback to call whenever meals were loaded
+     * @returns All meals with their distances of the surrounding canteens
+     */
+    async getSurroundingMeals( day, onMealsLoaded = () => {} ) {
+
+        /** @type {MealWithDistance[]} */
+        const res = [];
+
+        // for each surrounding canteen: load or fetch meals
+        const promises = canteenManager.surroundingCanteens.map( async c => {
+            try {
+
+            // the meals of a surrounding canteen
+            const meals = await this.loadOrFetchMeals(c.canteen.id, day);
+
+            // map the meals to their distance
+            const mealsWithDistance = meals.map( m => ({ canteen: c.canteen, distance: c.distance, meal: m }) );
+            onMealsLoaded(mealsWithDistance);
+            res.push(...mealsWithDistance);
+
+            } catch(e) {
+            console.log(`Could not fetch or load meals of canteen "${c.canteen.name}" for ${day}`);
+            }
+        });
+
+        // return when all meals are fetched/ loaded
+        await promises;
+        return res;
+
     }
     
     /**
