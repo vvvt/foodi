@@ -71,7 +71,8 @@ export default class LocationManager extends EventEmitter {
 
         // persist when app is closed so it can be loaded when the app is initialized the next time
         AppState.addEventListener("change", state => {
-            if (state === "inactive") settingsManager.storeSetting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition);
+            if (state === "inactive" && this.lastDevicePosition.timestamp !== 0)
+                settingsManager.storeSetting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition);
         });
     }
 

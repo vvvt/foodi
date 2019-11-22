@@ -1,8 +1,10 @@
 import EventEmitter from "events";
+import { AppState } from "react-native";
 
 import NetworkManager from "./NetworkManager";
 import DatabaseManager from "./DatabaseManager";
 import LocationManager from "./LocationManager";
+import SettingsManager from "./SettingsManager";
 
 import Canteen from "../classes/Canteen";
 import Coordinate from "../classes/Coordinate";
@@ -12,9 +14,12 @@ import Util from "../classes/Util";
 const networkManager = NetworkManager.instance;
 const databaseManager = DatabaseManager.instance;
 const locationManager = LocationManager.instance;
+const settingsManager = SettingsManager.instance;
 
 const PREFETCH_RADIUS = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR;
 var prefetching = false;
+
+const LAST_PREFETCH_POSITION_SETTING_KEY = "lastPrefetchedCanteensAt";
 
 /** @typedef {{ canteen: Canteen, distance: number }} CanteenWithDistance */
 
@@ -62,6 +67,12 @@ export default class CanteenManager extends EventEmitter {
 
         // update the surrounding canteens whenever a new position comes in
         locationManager.on("position", this.updateSurroundingCanteens.bind(this) );
+
+        // persist when app is closed so it can be loaded when the app is initialized the next time
+        AppState.addEventListener("change", state => {
+            if (state === "inactive" && this.lastPrefetchedCanteensAt.timestamp !== 0)
+                settingsManager.storeSetting(LAST_PREFETCH_POSITION_SETTING_KEY, this.lastPrefetchedCanteensAt);
+        });
     }
 
     /** All known canteens */
@@ -83,7 +94,20 @@ export default class CanteenManager extends EventEmitter {
      * Loads all persisted canteens from the database into the cache.
      */
     async initialize() {
-        this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
+        await Promise.all([
+
+            // load all persisted canteens
+            async () => {
+                this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
+            },
+
+            // load last prefetch position
+            async () => {
+                const lastPrefetchedCanteensAt = await settingsManager.getSetting(LAST_PREFETCH_POSITION_SETTING_KEY, "object");
+                if (lastPrefetchedCanteensAt !== null) this.lastPrefetchedCanteensAt = lastPrefetchedCanteensAt;
+            }
+
+        ]);
     }
 
     /**
