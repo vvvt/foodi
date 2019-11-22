@@ -162,12 +162,17 @@ export default class MealManager {
     async fetchMeals( canteenId, day, priority = "MODERATE" ) {
         if (typeof day !== "string") day = day.toUTCString();
 
-        /** @type {import("../classes/Meal").MealObj[]} */
-        const mealsObjs = await networkManager.fetchWithParams(
+        // fetch from OpenMensa API
+        const res = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals`,
             {},
             priority
         );
+        if (res.status === 404) return [];
+        if (!res.ok) throw new Error(`Network request failed (${res.status}${res.statusText ? " " + res.statusText : ""}`);
+
+        /** @type {import("../classes/Meal").MealObj[]} */
+        const mealsObjs = await res.json();
         
         // add date property
         return mealsObjs.map( m => Meal.fromObject( m, canteenId, day ) );

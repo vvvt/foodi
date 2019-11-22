@@ -210,8 +210,8 @@ export default class CanteenManager extends EventEmitter {
     async fetchCanteens( position, distance = 50 ) {
         if (!(position instanceof Coordinate)) throw new TypeError("The position be a coordinate!");
 
-        /** @type {import("../classes/Canteen").CanteenObj[]} */
-        const canteenObjs = await networkManager.fetchWithParams(
+        // fetch from OpenMensa API
+        const res = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens`,
             {
                 "near[lat]": position.latitude,
@@ -219,6 +219,10 @@ export default class CanteenManager extends EventEmitter {
                 "near[dist]": distance
             }
         );
+        if (!res.ok) throw new Error(`Network request failed (${res.status}${res.statusText ? " " + res.statusText : ""}`);
+
+        /** @type {import("../classes/Canteen").CanteenObj[]} */
+        const canteenObjs = await res.json();
 
         console.log(`Fetched ${canteenObjs.length} canteens`);
         return canteenObjs.map( c => Canteen.fromObject( c ) );

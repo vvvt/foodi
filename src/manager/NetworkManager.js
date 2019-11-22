@@ -193,15 +193,11 @@ export default class NetworkManager extends EventEmitter {
         const paramsArr = Object.keys(params).map( key => key + "=" + params[key] );
         const paramsString = paramsArr.length === 0 ? "" : ("?" + paramsArr.join("&"));
 
-        // execute actual request
-        const res = await this._queuedFetch(
+        // execute actual request. It will be executed depending on its network priority
+        return await this._queuedFetch(
             priority,
             url + paramsString
         );
-
-        // error checking
-        if (!res.ok) throw new Error(`HTTP request failed (${res.status}): ` + await res.text());
-        return await res.json();
         
     }
 
