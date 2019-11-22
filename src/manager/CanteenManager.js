@@ -52,8 +52,11 @@ export default class CanteenManager extends EventEmitter {
         locationManager.on("position", this._onPositionOrNetworkChanged.bind(this));
         networkManager.on("networkStateChanged", this._onPositionOrNetworkChanged.bind(this));
 
+        // update the surrounding canteens whenever a new position comes in
+        locationManager.on("position", this.updateSurroundingCanteens.bind(this) );
     }
 
+    /** All known canteens */
     get canteensArray() {
         return Array.from( this.canteens.values() );
     }
@@ -66,20 +69,43 @@ export default class CanteenManager extends EventEmitter {
         return CanteenManager._instance;
     }
 
+    /**
+     * Calls all functions that are required to run before using this manager class.
+     * 
+     * Loads all persisted canteens from the database into the cache.
+     */
     async initialize() {
         this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
     }
 
+    /**
+     * Callback. Might prefetch canteens and updates the surrounding canteens then
+     */
     async _onPositionOrNetworkChanged() {
         if (await this.maybePrefetchCanteens()) await this.updateSurroundingCanteens();
     }
 
+    /**
+     * Updates the surroundingCanteens array by the current device position
+     */
     async updateSurroundingCanteens() {
         try {
+            const lastSurroundingCanteens = this.surroundingCanteens;
+
             // get the canteens that are near by
             const canteens = await this.getCanteensByPosition(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
             this.surroundingCanteens = canteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
-            this.emit("canteensChanged", this.surroundingCanteens);
+            
+            // if any canteens or their distance changed => emit event
+            if (
+                lastSurroundingCanteens.length !== this.surroundingCanteens.length ||
+                lastSurroundingCanteens.some(
+                    c1 => this.surroundingCanteens.findIndex( c2 => c1.canteen.id === c2.canteen.id && c1.distance === c2.distance ) === -1
+                )
+            ) {
+                console.log("Canteens or their distance changed");
+                this.emit("canteensChanged", this.surroundingCanteens);
+            }
         } catch(e) {
             console.error("Could not load the surrounding canteens from the database:", e);
         }
@@ -94,10 +120,13 @@ export default class CanteenManager extends EventEmitter {
      * - we did not prefetch yet or the last prefetch is out of range
      */
     async maybePrefetchCanteens() {
+
         if (prefetching) return false;
         prefetching = true;
 
         try {
+
+            const curPos = locationManager.lastDevicePosition.coordinate;
 
             if (
                 // we have the position of the device
@@ -110,14 +139,21 @@ export default class CanteenManager extends EventEmitter {
                 (
                     this.lastPrefetchedCanteensAt.timestamp === 0 ||
                     Coordinate.calcDistance(
-                        this.lastPrefetchedCanteensAt.coordinate, locationManager.lastDevicePosition.coordinate
+                        this.lastPrefetchedCanteensAt.coordinate, curPos
                     ) > (PREFETCH_RADIUS - (this.canteenTrackingRadius * 2))
                 )
             ) {
                 try {
                     console.log("Prefetching canteens...");
-                    await this.saveCanteens( await this.fetchCanteens( locationManager.lastDevicePosition.coordinate, LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR ) );
+
+                    // fetch canteens from OpenMensa and persist them
+                    await this.saveCanteens( await this.fetchCanteens( curPos, LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR ) );
+
+                    // update last prefetch position
                     this.lastPrefetchedCanteensAt.timestamp = Util.currentUnixTimestamp;
+                    this.lastPrefetchedCanteensAt.coordinate = curPos;
+
+                    // return true
                     prefetching = false;
                     return true;
                 } catch(e) {
@@ -152,6 +188,7 @@ export default class CanteenManager extends EventEmitter {
             }
         );
 
+        console.log(`Fetched ${canteenObjs.length} canteens`);
         return canteenObjs.map( c => Canteen.fromObject( c ) );
     }
 
@@ -162,8 +199,10 @@ export default class CanteenManager extends EventEmitter {
     async saveCanteens( canteens ) {
         if (canteens.length === 0) return;
 
+        // update cache
         canteens.forEach( c => this.canteens.set(c.id, c) );
 
+        // store in db
         await databaseManager.runInTransaction(
             canteens.map( c =>
                 [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude]
