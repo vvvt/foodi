@@ -4,7 +4,7 @@ import { Icon } from "react-native-elements";
 import styles from "./MealItem.css";
 import Util from "../classes/Util";
 
-export default class MealItem extends React.Component {
+export default class MealItem extends React.PureComponent {
 
     /** @type {{ meal: import("../classes/Meal").default, canteen: import("../classes/Canteen").default, distance: number }} */
     props;
@@ -69,7 +69,7 @@ export default class MealItem extends React.Component {
                         </View>
                         <View style={styles.row}>
                             <Text style={styles.modalFocus}>
-                                {meal.prices.students + "€"}
+                                {meal.prices.students.toFixed(2) + "€"}
                             </Text>
                             <Text style={styles.modalFocus}>
                                 {Util.distanceToString(distance)}
