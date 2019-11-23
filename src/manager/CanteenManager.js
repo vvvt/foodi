@@ -56,7 +56,7 @@ export default class CanteenManager extends EventEmitter {
          */
         this.surroundingCanteens = [];
         /** The distance in km in which the canteens are loaded from cache into the surroundingCateens array */
-        this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR;
+        this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.MODERATE;
 
         /** @type {Map<number, Canteen>} */
         this.canteens = new Map();
