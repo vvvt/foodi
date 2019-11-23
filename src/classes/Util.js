@@ -16,4 +16,12 @@ export default class Util {
         return distance.toFixed(2) + "km";
     }
 
+    /**
+     * Converts degrees to radians
+     * @param {number} degrees The value to convert
+     */
+    static degreesToRadians( degrees ) {
+        return degrees * Math.PI / 180;
+    }
+
 }
