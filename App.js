@@ -165,6 +165,9 @@ export default class App extends React.PureComponent {
         MealManager.instance.setEventHooks();
         CanteenManager.instance.setEventHooks();
         console.log("Successfully intialized the app");
+
+        // triggers a prefetch if needed
+        LocationManager.instance.emit("position");
     }
 
 }

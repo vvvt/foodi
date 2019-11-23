@@ -97,4 +97,12 @@ export default class SettingsManager {
         return kv;
     }
 
+    /**
+     * Removes a stored setting
+     * @param {string} key The key to access the setting with
+     */
+    deleteSetting( key ) {
+        return AsyncStorage.removeItem(key);
+    }
+
 }

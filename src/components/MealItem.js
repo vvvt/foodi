@@ -21,6 +21,7 @@ export default class MealItem extends React.PureComponent {
     render() {
 
         const { meal, canteen, distance } = this.props;
+        const mealPrice = meal.prices.students ? meal.prices.students.toFixed(2) + "€" : "n/a";
 
         return (
             <>
@@ -69,7 +70,7 @@ export default class MealItem extends React.PureComponent {
                         </View>
                         <View style={styles.row}>
                             <Text style={styles.modalFocus}>
-                                {meal.prices.students.toFixed(2) + "€"}
+                                {mealPrice}
                             </Text>
                             <Text style={styles.modalFocus}>
                                 {Util.distanceToString(distance)}
@@ -111,7 +112,7 @@ export default class MealItem extends React.PureComponent {
                     <View style={styles.item}>
                         <View style={styles.row}>
                             <Text style={styles.title}>{meal.name}</Text>
-                            <Text style={styles.title}>{meal.prices.students + "€"}</Text>
+                            <Text style={styles.title}>{mealPrice}</Text>
                         </View>
                         <View style={styles.row}>
                             <Text>{canteen.name}</Text>

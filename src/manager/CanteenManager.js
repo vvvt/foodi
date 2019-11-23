@@ -16,10 +16,14 @@ const databaseManager = DatabaseManager.instance;
 const locationManager = LocationManager.instance;
 const settingsManager = SettingsManager.instance;
 
-const PREFETCH_RADIUS = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR;
 var prefetching = false;
 
 const LAST_PREFETCH_POSITION_SETTING_KEY = "lastPrefetchedCanteensAt";
+const DEFAULT_PREFETCH_POSITION = {
+    coordinate: new Coordinate(0, 0),
+    timestamp: 0,
+    distance: 0
+};
 
 /** @typedef {{ canteen: Canteen, distance: number }} CanteenWithDistance */
 
@@ -44,11 +48,7 @@ export default class CanteenManager extends EventEmitter {
         if (CanteenManager._instance) throw new Error("This is a singleton! Use CanteenManager.instance to access this class instance.");
 
         /** The position at which the canteens were preloaded the last time */
-        this.lastPrefetchedCanteensAt = {
-            coordinate: new Coordinate(0, 0),
-            timestamp: 0,
-            distance: 0
-        };
+        this.lastPrefetchedCanteensAt = DEFAULT_PREFETCH_POSITION;
 
         /**
          * @type {CanteenWithDistance[]} An array with canteens that are
@@ -56,7 +56,7 @@ export default class CanteenManager extends EventEmitter {
          */
         this.surroundingCanteens = [];
         /** The distance in km in which the canteens are loaded from cache into the surroundingCateens array */
-        this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.MODERATE;
+        this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR;
 
         /** @type {Map<number, Canteen>} */
         this.canteens = new Map();
@@ -80,7 +80,7 @@ export default class CanteenManager extends EventEmitter {
      * 
      * Loads all persisted canteens from the database into the cache.
      */
-    async initialize() {        
+    async initialize() {
         await Promise.all([
 
             // load all persisted canteens
@@ -99,6 +99,15 @@ export default class CanteenManager extends EventEmitter {
             })()
 
         ]);
+    }
+
+    /**
+     * Clears the last prefetch position. It will be prefetched on the
+     * next possible moment after that
+     */
+    async clearLastPrefetchPosition() {
+        await settingsManager.deleteSetting(LAST_PREFETCH_POSITION_SETTING_KEY);
+        this.lastPrefetchedCanteensAt = DEFAULT_PREFETCH_POSITION;
     }
 
     /**
@@ -181,18 +190,20 @@ export default class CanteenManager extends EventEmitter {
                     this.lastPrefetchedCanteensAt.timestamp === 0 ||
                     Coordinate.calcDistance(
                         this.lastPrefetchedCanteensAt.coordinate, curPos
-                    ) > (PREFETCH_RADIUS - (this.canteenTrackingRadius * 2))
+                    ) > (this.lastPrefetchedCanteensAt.distance - this.canteenTrackingRadius)
                 )
             ) {
                 try {
                     console.log("Prefetching canteens...");
+                    const prefetchRadius = this.canteenTrackingRadius*7.5;
 
                     // fetch canteens from OpenMensa and persist them
-                    await this.saveCanteens( await this.fetchCanteens( curPos, LocationManager.CANTEEN_DISTANCE_THRESHOLDS.VERY_FAR ) );
+                    await this.saveCanteens( await this.fetchCanteens( curPos,  prefetchRadius) );
 
                     // update last prefetch position
                     this.lastPrefetchedCanteensAt.timestamp = Util.currentUnixTimestamp;
                     this.lastPrefetchedCanteensAt.coordinate = curPos;
+                    this.lastPrefetchedCanteensAt.distance = prefetchRadius;
 
                     // return true
                     prefetching = false;

@@ -149,14 +149,7 @@ export default class LocationManager extends EventEmitter {
             this.hasPermission = true;
         } catch(e) {
             this.hasPermission = false;
-            return;
         }
-
-        // prefetch an initial position if not done yet
-        if (this.lastDevicePosition.timestamp !== 0) return;
-        Location.getCurrentPositionAsync(this.locationTrackingOptions)
-            .then( this.handlePositionChange.bind(this) )
-            .catch( e => {} );
     }
 
 }
