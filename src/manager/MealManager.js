@@ -13,7 +13,7 @@ const canteenManager = CanteenManager.instance;
 
 /** @typedef {{ meal: Meal, distance: number, canteen: import("../classes/Canteen").default }} MealWithDistance */
 
-var currentMealDay = moment().add(1, "d").format("YYYY-MM-DD");
+var currentMealDay = moment().format("YYYY-MM-DD");
 
 /** @type {Map<number, MealWithDistance>} Map<mealId, MealWithDistance> A map containing the meals of surrounding canteens */
 var surroundingMeals = new Map();
