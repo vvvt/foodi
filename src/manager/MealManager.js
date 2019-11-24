@@ -1,3 +1,5 @@
+import EventEmitter from "events";
+
 import NetworkManager from "./NetworkManager";
 import DatabaseManager from "./DatabaseManager";
 import CanteenManager from "./CanteenManager";
@@ -11,13 +13,21 @@ const canteenManager = CanteenManager.instance;
 
 /** @typedef {{ meal: Meal, distance: number, canteen: import("../classes/Canteen").default }} MealWithDistance */
 
-export default class MealManager {
+var currentMealDay = moment().add(1, "d").format("YYYY-MM-DD");
+
+/** @type {Map<number, MealWithDistance>} Map<mealId, MealWithDistance> A map containing the meals of surrounding canteens */
+var surroundingMeals = new Map();
+
+export default class MealManager extends EventEmitter {
 
     constructor() {
+        super();
         if (MealManager._instance) throw new Error("This is a singleton! Use MealManager.instance to access this class instance.");
 
         /** @type {Map<string, Map<number, Meal[]>>} Map<date, Map<canteenId, meals>> */
         this.canteenMeals = new Map();
+
+        this.surroundingMeals = Array.from(surroundingMeals.values());
     }
 
     async _onCanteensOrNetworkChanged() {
@@ -64,6 +74,58 @@ export default class MealManager {
         // load cached canteens near by
         canteenManager.on("canteensChanged", this._onCanteensOrNetworkChanged.bind(this));
         networkManager.on("networkStateChanged", this._onCanteensOrNetworkChanged.bind(this));
+        canteenManager.on("canteensChanged", this.updateSurroundingMeals.bind(this));
+    }
+
+    get currentMealDay() {
+        return currentMealDay;
+    }
+
+    set currentMealDay( day ) {
+        if (day !== this.currentMealDay) surroundingMeals = new Map();
+        currentMealDay = day;
+        this.updateSurroundingMeals(canteenManager.surroundingCanteens, canteenManager.surroundingCanteens);
+    }
+
+    /**
+     * Function to get called by the CanteenManager "canteensChanged" event
+     * @param {import("./CanteenManager").CanteenWithDistance[]} currentSurroundingCanteens The currently surrounding canteens
+     * @param {import("./CanteenManager").CanteenWithDistance[]} lastSurroundingCateens The canteens that were around before this function call
+     */
+    updateSurroundingMeals(currentSurroundingCanteens = [], lastSurroundingCateens = []) {
+
+        const day = this.currentMealDay;
+
+        // if there are any meals in the surrounding meal map: delete those which are out of range
+        if (surroundingMeals.size !== 0) {
+
+            // get canteens that left the tracking range
+            const canteensOutOfRange = lastSurroundingCateens.filter(
+                c1 => currentSurroundingCanteens.findIndex( c2 => c1.canteen.id === c2.canteen.id ) === -1
+            ).map( v => v.canteen.id );
+            
+            // delete meals of those canteens
+            for (let { meal: { id: mealId, canteenId } } of surroundingMeals.values()) {
+                if (canteensOutOfRange.includes( canteenId )) surroundingMeals.delete(mealId);
+            }
+
+        }
+
+        // get surrounding meals and update distance for each meal
+        this.getSurroundingMeals(day, mealsWithDistances => {
+
+            // update meals map
+            mealsWithDistances.forEach( value => surroundingMeals.set( value.meal.id, value ) );
+
+            // update state with the new meals/ distances
+            this.surroundingMeals = Array.from(surroundingMeals.values())
+                .sort( (a, b) => a.distance > b.distance ? 1 : a.distance < b.distance ? -1 : 0 );
+            
+            // emit event
+            this.emit("mealsChanged", this.surroundingMeals);
+
+        });
+
     }
 
     /**
