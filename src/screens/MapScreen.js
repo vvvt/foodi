@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import { NavigationEvents } from "react-navigation";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
 import LocationManager from "../manager/LocationManager";
@@ -9,17 +10,13 @@ import Util from "../classes/Util";
 const locationManager = LocationManager.instance;
 const canteenManager = CanteenManager.instance;
 
-const position = {
-    latitude: 51.025629,
-    longitude: 13.723381
-}
-
-export default class MapScreen extends React.Component {
+export default class MapScreen extends React.PureComponent {
 
     constructor(props) {
         super(props);
 
         this.setSurroundingCanteensState = this.setSurroundingCanteensState.bind(this);
+        this.mapView = React.createRef();
     }
 
     state = {
@@ -42,18 +39,31 @@ export default class MapScreen extends React.Component {
 
     render() {
 
-        const currentPosition = Object.assign({}, locationManager.lastDevicePosition.timestamp === 0 ? position : locationManager.lastDevicePosition.coordinate);
-        const currentRegion = Object.assign(currentPosition, {            
-            latitudeDelta: 0.010,
-            longitudeDelta: 0.010
-        });
-
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onDidFocus={() => {
+                        // when this screen is focuse: check if there is a target coordinate given
+                        /** @type {import("../classes/Coordinate").default} */
+                        const c = this.props.navigation.getParam("targetCoordinate");
+                        if (c) {
+                            this.props.navigation.setParams({ targetCoordinate: undefined });
+                            console.log(`Navigating on MapScreen to ${c.latitude},${c.longitude}`);
+                            this.navigateToCoordinate(c);
+                        }
+                    }}
+                />
+
                 <MapView
+                    ref={this.mapView}
                     provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                     style={styles.map}
-                    region={currentRegion}
+                    initialRegion={ locationManager.lastDevicePosition.timestamp === 0 ? null : {
+                        latitude: locationManager.lastDevicePosition.coordinate.latitude,
+                        longitude: locationManager.lastDevicePosition.coordinate.longitude,
+                        latitudeDelta: 0.010,
+                        longitudeDelta: 0.010
+                    }}
                     showsUserLocation
                 >
                     { this.renderCanteens() }
@@ -80,6 +90,16 @@ export default class MapScreen extends React.Component {
     setSurroundingCanteensState( surroundingCanteens ) {
         console.log("Cannteens changed!");
         this.setState({ surroundingCanteens });
+    }
+
+    /**
+     * Sets the focus on a given coordinate with a nice animation
+     * @param {import("../classes/Coordinate").default} coordinate The coordinate to focus on
+     */
+    navigateToCoordinate( coordinate ) {
+        /** @type {import("react-native-maps").default} */
+        const mapView = this.mapView.current;
+        if (mapView) mapView.animateCamera({ center: { latitude: coordinate.latitude, longitude: coordinate.longitude } }, { duration: 1000 });
     }
 
 }

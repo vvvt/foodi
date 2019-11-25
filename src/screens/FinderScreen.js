@@ -7,7 +7,7 @@ import MealManager from "../manager/MealManager";
 
 const mealManager = MealManager.instance;
 
-export default class FinderScreen extends React.Component {
+export default class FinderScreen extends React.PureComponent {
 
   state = {
     mealsWithDistances: mealManager.surroundingMeals
@@ -25,11 +25,10 @@ export default class FinderScreen extends React.Component {
           keyExtractor={(item) => item.meal.id+""}
           renderItem={({ item }) => (
             <MealItem
-              id={item.meal.id+""}
               meal={item.meal}
               canteen={item.canteen}
               distance={item.distance}
-              navigate={() => {this.props.navigation.navigate("map")}}
+              navigate={() => this.props.navigation.navigate("map", { targetCoordinate: item.canteen.coordinate })}
             />
           )}
         />
