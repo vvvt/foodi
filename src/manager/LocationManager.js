@@ -79,7 +79,7 @@ export default class LocationManager extends EventEmitter {
             (async () => {
                 const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
                 this.hasPermission = permissionStatus.status === "granted";
-                await this.startLocationTracking();
+                if (this.hasPermission) await this.startLocationTracking();
             })(),
 
             // get last device position from the settings manager

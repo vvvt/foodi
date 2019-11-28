@@ -16,6 +16,7 @@ import PreferencesScreen from "./src/screens/PreferencesScreen";
 import MapScreen from "./src/screens/MapScreen";
 import CanteenManager from "./src/manager/CanteenManager";
 import MealManager from "./src/manager/MealManager";
+import PermissionsScreen from "./src/screens/PermissionsScreen";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -114,7 +115,8 @@ const AppContainer = createAppContainer(AppNavigator);
 const LOADING_STATES = Object.freeze({
     LOADING: 0,
     LOADING_FAILED: 1,
-    LOADING_SUCCEEDED: 2
+    LOADING_SUCCEEDED: 2,
+    ASK_FOR_PERMISSIONS: 3
 });
 
 // the root of the app that initializes it first
@@ -138,7 +140,13 @@ export default class App extends React.PureComponent {
                             console.error("Could not initialize the app:", err);
                             this.setState({ loadingState: LOADING_STATES.LOADING_FAILED });
                         }}
-                        onFinish={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
+                        onFinish={() => this.setState({ loadingState: LocationManager.instance.hasPermission ? LOADING_STATES.LOADING_SUCCEEDED : LOADING_STATES.ASK_FOR_PERMISSIONS })}
+                    />
+                );
+            case LOADING_STATES.ASK_FOR_PERMISSIONS:
+                return (
+                    <PermissionsScreen
+                        OnPermissionsGranted={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
                     />
                 );
             default:
