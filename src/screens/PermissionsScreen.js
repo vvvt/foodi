@@ -13,7 +13,10 @@ export default class PermissionsScreen extends React.PureComponent {
 
     async askForPermissions() {
         await LocationManager.instance.requestPermissions();
-        if (LocationManager.instance.hasPermission) this.props.OnPermissionsGranted();
+        if (LocationManager.instance.hasPermission) {
+            LocationManager.instance.startLocationTracking();
+            this.props.OnPermissionsGranted();
+        }
     }
 
     componentDidMount() {
