@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { Icon } from "react-native-elements";
 
-import styles from "./MealItem.css";
+import styles from "./MealDetails.css";
 import Util from "../classes/Util";
 
 /** @typedef {import("../classes/Meal").default} Meal */
@@ -14,8 +14,8 @@ export default class MealDetails extends React.PureComponent {
     props;
 
     static defaultProps = {
-        OnClosePressed: () => {},
-        OnNavigatePressed: () => {}
+        OnClosePressed: () => { },
+        OnNavigatePressed: () => { }
     };
 
     render() {
@@ -62,7 +62,15 @@ export default class MealDetails extends React.PureComponent {
                 >
                     {meal.notes.map((allergy, index) => <Text key={index}>{allergy}</Text>)}
                 </View>
-                <View style={styles.row}>
+                <View
+                    style={{
+                        flexShrink: 3,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        backgroundColor: "#f9f9f9",
+                        padding: 8
+                    }}
+                >
                     <Text style={styles.modalFocus}>
                         {mealPrice}
                     </Text>
@@ -70,7 +78,15 @@ export default class MealDetails extends React.PureComponent {
                         {Util.distanceToString(distance)}
                     </Text>
                 </View>
-                <View style={styles.row}>
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        backgroundColor: "#f9f9f9",
+                        padding: 8
+                    }}
+                >
                     <View style={styles.bigButton}>
                         <Icon
                             name="x"

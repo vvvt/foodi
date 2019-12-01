@@ -26,21 +26,6 @@ export default Object.freeze(
         },
         columnRight: {
             flexBasis: '20%'
-        },
-        bigButton: {
-            backgroundColor: "#0077B3",
-            borderRadius: 30,
-            height: 60,
-            width: 60,
-            display: "flex",
-            justifyContent: "center"
-        },
-        modalFocus: {
-            fontSize: 18
-        },
-        modalSide: {
-            fontSize: 14,
-            fontWeight: "bold"
         }
     })
 )
