@@ -7,17 +7,25 @@ export default Object.freeze(
             flexDirection: 'column',
             justifyContent: 'space-between',
             backgroundColor: '#f9f9f9',
-            padding: 16,
-            marginVertical: 2,
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+            marginVertical: 4
         },
         row: {
             flex: 1,
             flexDirection: 'row',
-            justifyContent: "space-between"
+            justifyContent: 'space-between',
+            marginBottom: 8
         },
         title: {
             fontSize: 16,
             fontWeight: "bold"
+        },
+        columnLeft: {
+            flexBasis: '90%'
+        },
+        columnRight: {
+            flexBasis: '20%'
         },
         bigButton: {
             backgroundColor: "#0077B3",
@@ -28,8 +36,7 @@ export default Object.freeze(
             justifyContent: "center"
         },
         modalFocus: {
-            fontSize: 18,
-            padding: 10
+            fontSize: 18
         },
         modalSide: {
             fontSize: 14,

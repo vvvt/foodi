@@ -24,12 +24,12 @@ export default class MealItem extends React.PureComponent {
             <TouchableOpacity onPress={this.props.OnItemPressed} >
                 <View style={styles.item}>
                     <View style={styles.row}>
-                        <Text style={styles.title}>{meal.name}</Text>
-                        <Text style={styles.title}>{mealPrice}</Text>
+                        <Text style={[styles.title, styles.columnLeft]}>{meal.name}</Text>
+                        <Text style={[styles.title, styles.columnRight]}>{mealPrice}</Text>
                     </View>
                     <View style={styles.row}>
-                        <Text>{canteen.name}</Text>
-                        <Text>{Util.distanceToString(distance)}</Text>
+                        <Text style={styles.columnLeft}>{canteen.name}</Text>
+                        <Text style={styles.columnRight}>{Util.distanceToString(distance)}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
