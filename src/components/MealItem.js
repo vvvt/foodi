@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Text, TouchableOpacity, View } from "react-native";
-import styles from "./MealItem.css";
+import styles from "./Item.css";
 import Util from "../classes/Util";
 
 /** @typedef {import("../classes/Meal").default} Meal */

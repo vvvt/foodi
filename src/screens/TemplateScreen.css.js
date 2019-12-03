@@ -9,6 +9,7 @@ export default Object.freeze(
         },
         header: {
             fontSize: 24,
+            marginHorizontal: 16,
             marginVertical: 8
         }
     })

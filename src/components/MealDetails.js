@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { Icon } from "react-native-elements";
 
-import styles from "./MealDetails.css";
+import styles from "./Item.css"
 import Util from "../classes/Util";
 
 /** @typedef {import("../classes/Meal").default} Meal */
@@ -24,25 +24,17 @@ export default class MealDetails extends React.PureComponent {
         const mealPrice = meal.prices.students ? meal.prices.students.toFixed(2) + "€" : "n/a";
 
         return (
-            <View style={{
-                padding: 8,
-                flex: 1,
-                flexDirection: "column",
-                justifyContent: "space-between",
-                backgroundColor: "white"
-            }}>
-                <View
-                    style={{
-                        flexDirection: "column",
-                        backgroundColor: "#f9f9f9",
-                        padding: 8
-                    }}
-                >
+            <View style={[styles.item, {
+                marginVertical: 16
+            }]}>
+                <View style={styles.row}>
                     <Text
-                        style={styles.modalSide}>
+                        style={styles.cardSubTitle}>
                         {canteen.name.toUpperCase() + " - " + meal.category.toUpperCase()}
                     </Text>
-                    <Text style={styles.modalFocus}>
+                </View>
+                <View style={styles.row}>
+                    <Text style={styles.cardTitle}>
                         {meal.name}
                     </Text>
                 </View>
@@ -53,41 +45,21 @@ export default class MealDetails extends React.PureComponent {
                     }}
                     source={{ uri: "https://assets3.thrillist.com/v1/image/2797371/size/tmg-article_default_mobile.jpg" }}
                 />
-                <View
-                    style={{
-                        flexDirection: "column",
-                        backgroundColor: "#f9f9f9",
-                        padding: 8
-                    }}
-                >
+                <View styles={styles.row}>
                     {meal.notes.map((allergy, index) => <Text key={index}>{allergy}</Text>)}
                 </View>
-                <View
-                    style={{
-                        flexShrink: 3,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        backgroundColor: "#f9f9f9",
-                        padding: 8
-                    }}
-                >
-                    <Text style={styles.modalFocus}>
+                <View style={styles.row}>
+                    <Text style={styles.cardTitle}>
                         {mealPrice}
                     </Text>
-                    <Text style={styles.modalFocus}>
+                    <Text style={styles.cardTitle}>
                         {Util.distanceToString(distance)}
                     </Text>
                 </View>
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        backgroundColor: "#f9f9f9",
-                        padding: 8
-                    }}
-                >
-                    <View style={styles.bigButton}>
+                <View style={[styles.row, {
+                    flex: 1.5
+                }]}>
+                    <View style={styles.button}>
                         <Icon
                             name="x"
                             type="feather"
@@ -95,7 +67,7 @@ export default class MealDetails extends React.PureComponent {
                             onPress={this.props.OnClosePressed}
                         />
                     </View>
-                    <View style={styles.bigButton}>
+                    <View style={styles.button}>
                         <Icon
                             name="map"
                             type="feather"
