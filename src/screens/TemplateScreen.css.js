@@ -5,7 +5,6 @@ export default Object.freeze(
     StyleSheet.create({
         container: {
             flex: 1,
-            paddingHorizontal: 16,
             marginTop: Constants.statusBarHeight
         },
         header: {

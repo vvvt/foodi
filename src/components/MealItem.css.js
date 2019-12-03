@@ -6,23 +6,39 @@ export default Object.freeze(
             flex: 1,
             flexDirection: 'column',
             justifyContent: 'space-between',
-            backgroundColor: '#f9f9f9',
-            paddingHorizontal: 16,
-            paddingVertical: 10,
-            marginVertical: 4
+            padding: 16,
+            marginVertical: 10,
+            marginHorizontal: 16,
+
+            borderRadius: 4,
+            backgroundColor: '#fff',
+            
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.23,
+            shadowRadius: 2.62,
+
+            elevation: 4,
         },
         row: {
             flex: 1,
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 8
+            justifyContent: 'space-between'
         },
-        title: {
+        cardTitle: {
             fontSize: 16,
-            fontWeight: "bold"
+            fontWeight: "bold",
+            lineHeight: 16
+        },
+        cardSubTitle: {
+            fontSize: 14,
+            lineHeight: 18
         },
         columnLeft: {
-            flexBasis: '90%'
+            flexBasis: '85%'
         },
         columnRight: {
             flexBasis: '20%'
