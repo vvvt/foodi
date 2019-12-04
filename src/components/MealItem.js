@@ -18,7 +18,7 @@ export default class MealItem extends React.PureComponent {
     render() {
 
         const { meal, canteen, distance } = this.props;
-        const mealPrice = meal.prices.students ? meal.prices.students.toFixed(2) + "€" : "n/a";
+        const mealPrice = meal.prices.Studierende ? meal.prices.Studierende.toFixed(2) + "€" : "n/a";
 
         return (
             <TouchableOpacity onPress={this.props.OnItemPressed} >

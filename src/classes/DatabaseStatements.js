@@ -23,6 +23,7 @@ export default Object.freeze({
             date DATE NOT NULL,
             name TEXT NOT NULL,
             category TEXT NOT NULL,
+            imageUrl TEXT,
             FOREIGN KEY (canteenId)
                 REFERENCES canteens (id)
                 ON DELETE CASCADE

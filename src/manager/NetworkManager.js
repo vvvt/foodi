@@ -16,7 +16,7 @@ import NetInfo from "@react-native-community/netinfo";
 /** @typedef {"HIGH" | "MODERATE" | "LOW"} Priority */
 
 const ENDPOINTS = Object.freeze({
-    OPEN_MENSA_API: "https://openmensa.org/api/v2"
+    OPEN_MENSA_API: "https://api.studentenwerk-dresden.de/openmensa/v2"
 });
 
 const NETWORK_TRAFFIC_LIMIT = Object.freeze({

@@ -1,5 +1,7 @@
-/** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string }} MealObj */
-/** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string }} MealDatabaseRow */
+/** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string, image: string }} MealObj */
+/** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string, imageUrl: string }} MealDatabaseRow */
+
+const DEFAULT_IMAGE_URL = "https://static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg";
 
 export default class Meal {
 
@@ -12,8 +14,9 @@ export default class Meal {
      * @param {string} category Eg. "fertig 1", "Wok", "Grill", ...
      * @param {{ [priceGroup: string]: number }} prices Different prices of the meal
      * @param {string[]} notes The notes eg. "vegetarian"
+     * @param imageUrl The URL to an image showing the meal
      */
-    constructor( id, canteenId, name, date, category, prices = {}, notes = [] ) {
+    constructor( id, canteenId, name, date, category, prices = {}, notes = [], imageUrl = DEFAULT_IMAGE_URL ) {
         if (!Meal.isValidMealDate(date)) throw new Error(`Invalid date format! Must be of format "YYYY-MM-DD" but was "${date}"`);
         Object.keys( prices ).forEach( priceGroup => prices[priceGroup] == null ? delete prices[priceGroup] : null );
 
@@ -24,6 +27,7 @@ export default class Meal {
         this.category = category;
         this.prices = prices;
         this.notes = notes;
+        this.imageUrl = imageUrl;
     }
 
     /**
@@ -33,7 +37,7 @@ export default class Meal {
      * @param {string} date The date this meals is in the canteen
      */
     static fromObject( obj, canteenId, date ) {
-        return new Meal(obj.id, canteenId, obj.name, date, obj.category, obj.prices, obj.notes);
+        return new Meal(obj.id, canteenId, obj.name, date, obj.category, obj.prices, obj.notes, obj.image);
     }
 
     /**
@@ -48,7 +52,8 @@ export default class Meal {
 
         return new Meal( row.id, row.canteenId, row.name, row.date, row.category,
             pricesObj,
-            notes.map( n => n.note )
+            notes.map( n => n.note ),
+            row.imageUrl
         );
     }
 

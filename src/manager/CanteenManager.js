@@ -81,6 +81,7 @@ export default class CanteenManager extends EventEmitter {
      * Loads all persisted canteens from the database into the cache.
      */
     async initialize() {
+        await this.clearLastPrefetchPosition();
         await Promise.all([
 
             // load all persisted canteens
