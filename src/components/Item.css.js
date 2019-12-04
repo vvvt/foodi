@@ -5,15 +5,17 @@ export default Object.freeze(
         item: {
             flex: 1,
             flexDirection: 'column',
-            justifyContent: 'space-between',
             marginTop: 16,
             marginHorizontal: 16,
             paddingVertical: 16,
 
             borderRadius: 4,
+            borderWidth: 2,
+            borderColor: '#f1f3f6',
             backgroundColor: '#fff',
+            color: '#151522'
             
-            shadowColor: "#000",
+            /* shadowColor: "#000",
             shadowOffset: {
                 width: 0,
                 height: 2,
@@ -21,17 +23,12 @@ export default Object.freeze(
             shadowOpacity: 0.23,
             shadowRadius: 2.62,
 
-            elevation: 4,
+            elevation: 4, */
         },
         row: {
             flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingHorizontal: 16
-        },
-        column: {
-            flex: 1,
-            flexDirection: 'column',
             paddingHorizontal: 16
         },
         cardTitle: {
@@ -45,14 +42,6 @@ export default Object.freeze(
         },
         columnRight: {
             flexBasis: '20%'
-        },
-        button: {
-            backgroundColor: "#0077B3",
-            borderRadius: 30,
-            height: 60,
-            width: 60,
-            display: "flex",
-            justifyContent: "center"
         }
     })
 )

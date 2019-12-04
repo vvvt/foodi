@@ -2,7 +2,8 @@ import React from "react";
 import { View, Text, Image } from "react-native";
 import { Icon } from "react-native-elements";
 
-import styles from "./Item.css"
+import styles from "./Item.css";
+import modal from "./MealDetails.css";
 import Util from "../classes/Util";
 
 /** @typedef {import("../classes/Meal").default} Meal */
@@ -24,9 +25,64 @@ export default class MealDetails extends React.PureComponent {
         const mealPrice = meal.prices.students ? meal.prices.students.toFixed(2) + "€" : "n/a";
 
         return (
-            <View style={[styles.item, {
-                marginVertical: 16
-            }]}>
+            <View style={modal.item}>
+                <View style={modal.column}>
+                    <View style={modal.row}>
+                        <Text
+                            style={styles.cardSubTitle}>
+                            {canteen.name.toUpperCase() + " - " + meal.category.toUpperCase()}
+                        </Text>
+                    </View>
+                    <View style={modal.row}>
+                        <Text style={styles.cardTitle}>
+                            {meal.name}
+                        </Text>
+                    </View>
+                </View>
+                <Image
+                    style={{
+                        flex: 3
+                    }}
+                    source={{ uri: "https://assets3.thrillist.com/v1/image/2797371/size/tmg-article_default_mobile.jpg" }}
+                />
+                <View style={modal.column}>
+                    <View style={modal.row}>
+                        <Text style={styles.cardSubTitle}>Allergies</Text>
+                    </View>
+                    <View style={modal.row}>
+                        <Text style={styles.cardTitle}>
+                            {mealPrice}
+                        </Text>
+                        <Text style={styles.cardTitle}>
+                            {Util.distanceToString(distance)}
+                        </Text>
+                    </View>
+                    <View style={modal.row}>
+                        <View style={modal.button}>
+                            <Icon
+                                name="x"
+                                type="feather"
+                                color="#151522"
+                                onPress={this.props.OnClosePressed}
+                            />
+                        </View>
+                        <View style={modal.button}>
+                            <Icon
+                                name="map"
+                                type="feather"
+                                color="#151522"
+                                onPress={this.props.OnNavigatePressed}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+}
+
+{/* <View style={styles.item}>
                 <View style={styles.row}>
                     <Text
                         style={styles.cardSubTitle}>
@@ -77,8 +133,4 @@ export default class MealDetails extends React.PureComponent {
                         />
                     </View>
                 </View>
-            </View>
-        );
-    }
-
-}
+            </View> */}
