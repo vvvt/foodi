@@ -3,17 +3,22 @@ import { View, Text, Switch } from "react-native";
 import styles from "./Item.css";
 
 export default class ToggleItem extends React.Component {
-    state = { toggleValue: false }
+    
+    /** @type {{ onValueChange?: (value: boolean) => void, toggleValue?: boolean, title: string }} */
+    props;
+
+    static defaultProps = {
+        onValueChange: () => {},
+        toggleValue: false
+    };
 
     render() {
         return (
             <View style={styles.item}>
                 <Text style={styles.title}>{this.props.title}</Text>
                 <Switch
-                    value={this.state.toggleValue}
-                    onValueChange={(switchValue) => {
-                        this.setState({ toggleValue: switchValue }, () => { alert(this.props.id + " - " + this.state.toggleValue) });
-                    }}
+                    value={this.props.toggleValue}
+                    onValueChange={this.props.onValueChange}
                 />
             </View>
         );

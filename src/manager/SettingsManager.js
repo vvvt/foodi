@@ -8,6 +8,7 @@ import { AsyncStorage } from "react-native";
  * @param {SettingType} type The target data type
  */
 function convertValue( value, type ) {
+    if (value == null) return null;
     switch (type) {
         case "string":
             return value;
@@ -50,8 +51,6 @@ export default class SettingsManager {
      */
     async getSetting( key, returnType = "string" ) {
         const rawValue = await AsyncStorage.getItem(key);
-        if (rawValue === null) return null;
-
         return convertValue(rawValue, returnType);
     }
 
@@ -60,7 +59,7 @@ export default class SettingsManager {
      * @param {string} key The key to access the value with
      * @param {any} value The value to store
      */
-    async storeSetting( key, value ) {
+    storeSetting( key, value ) {
         let rawValue = "";
 
         switch(typeof value) {
@@ -78,16 +77,17 @@ export default class SettingsManager {
                 throw new TypeError("The type of the given value is not supported!");
         }
 
-        await AsyncStorage.setItem(key, rawValue);
+        return AsyncStorage.setItem(key, rawValue);
     }
 
     /**
      * Loads multiple settings simoultaniously
      * @param {string[]} keys The keys to load the stored values of
-     * @param {SettingType[]} returnTypes The return types to convert the values to
+     * @param {SettingType[] | SettingType} returnTypes The return types to convert the values to
      * @returns An array of [key, value] pairs
      */
     async getMultipleSettings( keys, returnTypes = null ) {
+        if (typeof returnTypes === "string") returnTypes = keys.map( () => returnTypes );
         if (returnTypes == null) returnTypes = keys.map( () => "string" );
         if (keys.length !== returnTypes.length) throw new Error("The array length of the return types must match the length of the keys");
 
@@ -103,6 +103,14 @@ export default class SettingsManager {
      */
     deleteSetting( key ) {
         return AsyncStorage.removeItem(key);
+    }
+
+    /**
+     * Removes multiple settings simultaniously
+     * @param {string[]} keys The keys of the settings to delete
+     */
+    deleteMultipleSettings( keys ) {
+        return AsyncStorage.multiRemove( keys );
     }
 
 }
