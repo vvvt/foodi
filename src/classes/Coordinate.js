@@ -1,7 +1,3 @@
-import Util from "./Util";
-
-const EARTH_RADIUS = 6371;
-
 /** @typedef {[number, number]} CoordinateArray An array containing latitude and longitude in this order */
 /** @typedef {{ lat: number, lng: number }} CoordinateDatabaseRow */
 /** @typedef {{ latitude: number, longitude: number }} CoordinateObj */
@@ -65,13 +61,9 @@ export default class Coordinate {
      */
     static calcDistance( c1, c2 ) {
 
-        const dLat = Util.degreesToRadians(c2.latitude-c1.latitude);
-        const dLon = Util.degreesToRadians(c2.longitude-c1.longitude);
-
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(Util.degreesToRadians(c1.latitude)) * Math.cos(Util.degreesToRadians(c2.latitude)); 
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        return EARTH_RADIUS * c;
+        const x = c2.latitude - c1.latitude;
+        const y = (c2.longitude - c1.longitude) * Math.cos((c1.latitude + c2.latitude) / 2);
+        return 110.25 * Math.sqrt(x*x + y*y);
 
     }
 
