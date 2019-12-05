@@ -1,9 +1,68 @@
+import Allergene from "./Allergene";
+import Additive from "./Additive";
+
 /** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string, image: string }} MealObj */
 /** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string, imageUrl: string }} MealDatabaseRow */
 
 const DEFAULT_IMAGE_URL = "https://static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg";
 
 export default class Meal {
+
+    /**
+     * Parses notes into allergenes and more meal information
+     * @param {string[]} notes The notes to extract the informations of
+     */
+    static parseNotes( notes ) {
+
+        const res = {
+            /** @type {Allergene[]} */
+            allergenes: [],
+            /** @type {Additive[]} */
+            additives: [],
+            /** @type {string[]} */
+            notes: [],
+            isVegetarian: false,
+            isVegan: false,
+            containsPork: false,
+            containsBeef: false,
+            containsAlcohol: false,
+            containsGarlic: false
+        }
+
+        notes.forEach( note => {
+            var parsed = Allergene.fromNote(note);
+            if (parsed) return res.allergenes.push(parsed);
+            parsed = Additive.fromNote(note);
+            if (parsed) return res.additives.push(parsed);
+            if (note.startsWith("Menü ist ")) {
+                switch (note.substr(9)) {
+                    case "vegetarisch":
+                        return res.isVegetarian = true;
+                    case "vegan":
+                        return res.isVegan = true;
+                    default:
+                        return console.warn(`Unknown meal property: "${note}"`);
+                }
+            }
+            if (note.startsWith("enthält ")) {
+                switch (note.substr(8)) {
+                    case "Schweinefleisch":
+                        return res.containsPork = true;
+                    case "Rindfleisch":
+                        return res.containsBeef = true;
+                    case "Alkohol":
+                        return res.containsAlcohol = true;
+                    case "Knoblauch":
+                        return res.containsGarlic = true;
+                    default:
+                        return console.warn(`Unknown meal property: "${note}"`);
+                }
+            }
+            res.notes.push(note);
+        });
+
+        return res;
+    }
 
     /**
      * Represents a meal in a canteen on a specific date
@@ -26,8 +85,23 @@ export default class Meal {
         this.date = date;
         this.category = category;
         this.prices = prices;
-        this.notes = notes;
         this.imageUrl = imageUrl;
+
+        // extract allergenes and stuff from notes
+        try {
+            const mealProperties = Meal.parseNotes(notes);
+            this.isVegan = mealProperties.isVegan;
+            this.isVegetarian = mealProperties.isVegetarian | mealProperties.isVegan;
+            this.containsBeef = mealProperties.containsBeef;
+            this.containsPork = mealProperties.containsPork;
+            this.containsAlcohol = mealProperties.containsAlcohol;
+            this.containsGarlic = mealProperties.containsGarlic;
+            this.allergenes = mealProperties.allergenes;
+            this.additives = mealProperties.additives;
+            this.notes = mealProperties.notes;
+        } catch(e) {
+            console.error("Error parsing the meal notes:", e);
+        }
     }
 
     /**
