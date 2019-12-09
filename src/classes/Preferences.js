@@ -114,52 +114,52 @@ export default Object.freeze([
         data: [
             {
                 id: "1",
-                name: "food dye",
+                name: "1 - food dye",
                 default: true
             },
             {
                 id: "2",
-                name: "preservative",
+                name: "2 - preservative",
                 default: true
             },
             {
                 id: "3",
-                name: "antioxidants",
+                name: "3 - antioxidants",
                 default: true
             },
             {
                 id: "4",
-                name: "flavor enhancer",
+                name: "4 - flavor enhancer",
                 default: true
             },
             {
                 id: "5",
-                name: "sulfurated",
+                name: "5 - sulfurated",
                 default: true
             },
             {
                 id: "6",
-                name: "blackened",
+                name: "6 - blackened",
                 default: true
             },
             {
                 id: "7",
-                name: "waxed",
+                name: "7 - waxed",
                 default: true
             },
             {
                 id: "8",
-                name: "contains phosphate",
+                name: "8 - contains phosphate",
                 default: true
             },
             {
                 id: "9",
-                name: "containes sweeteners",
+                name: "9 - containes sweeteners",
                 default: true
             },
             {
                 id: "10",
-                name: "contains a phenylalanine source (amino acids)",
+                name: "10 - contains a phenylalanine source",
                 default: true
             },
         ]
