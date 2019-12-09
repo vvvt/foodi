@@ -23,25 +23,6 @@ import PermissionsScreen from "./src/screens/PermissionsScreen";
  * * * * * * * * * * * */
 const AppNavigator = createBottomTabNavigator(
     {
-        /* test: {
-            screen: TestScreen,
-            navigationOptions: () => ({
-                title: "Test",
-                tabBarIcon: () => (
-                    <Icon
-                        name="search"
-                        type="feather"
-                    />
-                )
-            }),
-            tabBarOptions: {
-                labelPosition: "below-icon",
-                activeTintColor: "#FFFFFF",
-                inactiveTintColor: "#CA5EFD",
-                activeBackgroundColor: "#8600FA",
-                inactiveBackgroundColor: "#8600FA"
-            }
-        }, */
         finder: {
             screen: FinderScreen,
             navigationOptions: () => ({
@@ -103,7 +84,13 @@ const AppNavigator = createBottomTabNavigator(
             activeTintColor: "#FFFFFF",
             inactiveTintColor: "#77D0FF",
             activeBackgroundColor: "#0077B3",
-            inactiveBackgroundColor: "#0077B3"
+            inactiveBackgroundColor: "#0077B3",
+            style: {
+                height: 60,
+                paddingVertical: 8,
+                paddingHorizontal: 8,
+                backgroundColor: "#0077B3"
+            }
         }
     }
 );
