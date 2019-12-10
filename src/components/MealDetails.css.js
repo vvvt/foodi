@@ -15,12 +15,10 @@ export default Object.freeze(
             color: '#151522'
         },
         row: {
-            flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
         },
         column: {
-            flex: 1,
             flexDirection: 'column',
             justifyContent: 'center',
             padding: 16

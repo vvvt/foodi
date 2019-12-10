@@ -58,22 +58,21 @@ export default class MealDetails extends React.PureComponent {
                         </Text>
                     </View>
                     <View style={modal.row}>
-                        <View style={modal.button}>
-                            <Icon
-                                name="x"
-                                type="feather"
-                                color="#151522"
-                                onPress={this.props.OnClosePressed}
-                            />
-                        </View>
-                        <View style={modal.button}>
-                            <Icon
-                                name="map"
-                                type="feather"
-                                color="#151522"
-                                onPress={this.props.OnNavigatePressed}
-                            />
-                        </View>
+                        <Icon
+                            name="x"
+                            type="feather"
+                            color="#151522"
+                            raised
+                            onPress={this.props.OnClosePressed}
+                        />
+                        <Icon
+                            name="map"
+                            type="feather"
+                            color="#0077B3"
+                            reverse
+                            raised
+                            onPress={this.props.OnNavigatePressed}
+                        />
                     </View>
                 </View>
             </View>
