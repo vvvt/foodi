@@ -14,16 +14,6 @@ export default Object.freeze(
             borderColor: '#f1f3f6',
             backgroundColor: '#fff',
             color: '#151522'
-            
-            /* shadowColor: "#000",
-            shadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            shadowOpacity: 0.23,
-            shadowRadius: 2.62,
-
-            elevation: 4, */
         },
         row: {
             flex: 1,
