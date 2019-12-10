@@ -36,7 +36,6 @@ export default class DatabaseManager {
      * Creates all database tables if they don't exist
      */
     async initialize() {
-        await this.dropAllTables();
         await this.exec([STATEMENTS.ENABLE_FOREIGN_KEYS]);
         await this.run(STATEMENTS.CREATE_TABLE_CANTEENS);
         await this.run(STATEMENTS.CREATE_TABLE_MEALS);
