@@ -4,27 +4,33 @@ export default Object.freeze([
         data: [
             {
                 id: "beef",
-                name: "Beef"
+                name: "Beef",
+                default: true
             },
             {
                 id: "pork",
-                name: "Pork"
+                name: "Pork",
+                default: true
             },
             {
                 id: "poultry",
-                name: "Poultry"
+                name: "Poultry",
+                default: true
             },
             {
                 id: "fish",
-                name: "Fish"
+                name: "Fish",
+                default: true
             },
             {
                 id: "alcohol",
-                name: "Alcohol"
+                name: "Alcohol",
+                default: true
             },
             {
                 id: "garlic",
-                name: "Garlic"
+                name: "Garlic",
+                default: true
             }
         ]
     },
@@ -33,60 +39,129 @@ export default Object.freeze([
         data: [
             {
                 id: "A",
-                name: "A - Gluten-containing cereals"
+                name: "A - Gluten-containing cereals",
+                default: true
             },
             {
                 id: "B",
-                name: "B - Cretaceous"
+                name: "B - Cretaceous",
+                default: true
             },
             {
                 id: "C",
-                name: "C - Eggs"
+                name: "C - Eggs",
+                default: true
             },
             {
                 id: "D",
-                name: "D - Fish"
+                name: "D - Fish",
+                default: true
             },
             {
                 id: "E",
-                name: "E - Peanuts"
+                name: "E - Peanuts",
+                default: true
             },
             {
                 id: "F",
-                name: "F - Soy"
+                name: "F - Soy",
+                default: true
             },
             {
                 id: "G",
-                name: "G - Milk / Milk Sugar (Lactose)"
+                name: "G - Milk / Milk Sugar (Lactose)",
+                default: true
             },
             {
                 id: "H",
-                name: "H - Shell fruits (nuts)"
+                name: "H - Shell fruits (nuts)",
+                default: true
             },
             {
                 id: "I",
-                name: "I - Celery"
+                name: "I - Celery",
+                default: true
             },
             {
                 id: "J",
-                name: "J - Mustard"
+                name: "J - Mustard",
+                default: true
             },
             {
                 id: "K",
-                name: "K - Sesame"
+                name: "K - Sesame",
+                default: true
             },
             {
                 id: "L",
-                name: "L - Sulfite / sulfur dioxide"
+                name: "L - Sulfite / sulfur dioxide",
+                default: true
             },
             {
                 id: "M",
-                name: "M - Lupins"
+                name: "M - Lupins",
+                default: true
             },
             {
                 id: "N",
-                name: "N - Molluscs"
+                name: "N - Molluscs",
+                default: true
             }
+        ]
+    }, 
+    {
+        title: "Additives",
+        data: [
+            {
+                id: "1",
+                name: "1 - food dye",
+                default: true
+            },
+            {
+                id: "2",
+                name: "2 - preservative",
+                default: true
+            },
+            {
+                id: "3",
+                name: "3 - antioxidants",
+                default: true
+            },
+            {
+                id: "4",
+                name: "4 - flavor enhancer",
+                default: true
+            },
+            {
+                id: "5",
+                name: "5 - sulfurated",
+                default: true
+            },
+            {
+                id: "6",
+                name: "6 - blackened",
+                default: true
+            },
+            {
+                id: "7",
+                name: "7 - waxed",
+                default: true
+            },
+            {
+                id: "8",
+                name: "8 - contains phosphate",
+                default: true
+            },
+            {
+                id: "9",
+                name: "9 - containes sweeteners",
+                default: true
+            },
+            {
+                id: "10",
+                name: "10 - contains a phenylalanine source",
+                default: true
+            },
         ]
     }
 ]);
