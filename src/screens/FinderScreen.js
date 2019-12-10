@@ -16,8 +16,22 @@ export default class FinderScreen extends React.PureComponent {
     currentItemDetails: null
   };
 
+  constructor(props) {
+    super(props);
+    
+    this.onMealsChanged = this.onMealsChanged.bind(this);
+  }
+
   componentDidMount() {
-    mealManager.on("mealsChanged", mealsWithDistances => this.setState({ mealsWithDistances }));
+    mealManager.on("mealsChanged", this.onMealsChanged);
+  }
+
+  componentWillUnmount() {
+    mealManager.off("mealsChanged", this.onMealsChanged);
+  }
+
+  onMealsChanged( mealsWithDistances ) {
+    this.setState({ mealsWithDistances });
   }
 
   render() {
