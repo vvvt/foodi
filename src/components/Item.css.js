@@ -4,14 +4,34 @@ export default Object.freeze(
     StyleSheet.create({
         item: {
             flex: 1,
+            flexDirection: 'column',
+            marginTop: 16,
+            marginHorizontal: 16,
+            paddingVertical: 16,
+
+            borderRadius: 4,
+            borderWidth: 2,
+            borderColor: '#f1f3f6',
+            backgroundColor: '#fff',
+            color: '#151522'
+        },
+        row: {
+            flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
-            backgroundColor: '#f9f9f9',
-            padding: 16,
-            marginVertical: 2,
+            paddingHorizontal: 16
         },
-        title: {
-            fontSize: 16,
+        cardTitle: {
+            fontSize: 16
+        },
+        cardSubTitle: {
+            fontSize: 14
+        },
+        columnLeft: {
+            flexBasis: '85%'
+        },
+        columnRight: {
+            flexBasis: '20%'
         }
     })
 )

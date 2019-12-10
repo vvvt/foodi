@@ -14,8 +14,8 @@ export default class ToggleItem extends React.Component {
 
     render() {
         return (
-            <View style={styles.item}>
-                <Text style={styles.title}>{this.props.title}</Text>
+            <View style={styles.row}>
+                <Text style={styles.cardTitle}>{this.props.title}</Text>
                 <Switch
                     value={this.props.toggleValue}
                     onValueChange={this.props.onValueChange}

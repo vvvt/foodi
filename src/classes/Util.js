@@ -12,8 +12,8 @@ export default class Util {
      * @param {number} distance The distance in km
      */
     static distanceToString( distance ) {
-        if (distance < 1) return Math.round(distance*1000) + "m";
-        return distance.toFixed(2) + "km";
+        if (distance < 1) return Math.round(distance*1000) + "\xa0m";
+        return distance.toFixed(2) + "\xa0km";
     }
 
     /**

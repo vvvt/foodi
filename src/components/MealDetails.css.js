@@ -2,26 +2,37 @@ import { StyleSheet } from 'react-native';
 
 export default Object.freeze(
     StyleSheet.create({
-        row: {
+        item: {
             flex: 1,
+            flexDirection: 'column',
+            marginVertical: 16,
+            marginHorizontal: 16,
+
+            borderRadius: 4,
+            borderWidth: 2,
+            borderColor: '#f1f3f6',
+            backgroundColor: '#fff',
+            color: '#151522'
+        },
+        row: {
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 8
         },
-        bigButton: {
-            backgroundColor: "#0077B3",
+        column: {
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: 16
+        },
+        button: {
+            backgroundColor: "#fff",
             borderRadius: 30,
+            borderWidth: 3,
+            borderColor: '#151522',
+            color: '#151522',
             height: 60,
             width: 60,
             display: "flex",
             justifyContent: "center"
-        },
-        modalFocus: {
-            fontSize: 18
-        },
-        modalSide: {
-            fontSize: 14,
-            fontWeight: "bold"
         }
     })
 )
