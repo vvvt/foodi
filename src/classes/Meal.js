@@ -1,10 +1,10 @@
 import Allergene from "./Allergene";
 import Additive from "./Additive";
 
+import DEFAULT_IMAGE from "../assets/default-meal-image.jpg";
+
 /** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string, image: string }} MealObj */
 /** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string, imageUrl: string }} MealDatabaseRow */
-
-const DEFAULT_IMAGE_URL = "https://static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg";
 
 export default class Meal {
 
@@ -73,10 +73,11 @@ export default class Meal {
      * @param {string} category Eg. "fertig 1", "Wok", "Grill", ...
      * @param {{ [priceGroup: string]: number }} prices Different prices of the meal
      * @param {string[]} notes The notes eg. "vegetarian"
-     * @param imageUrl The URL to an image showing the meal
+     * @param {import("react-native").ImageRequireSource | string} image The URL to an image showing the meal or the integer returned after importing a static (local) image
      */
-    constructor( id, canteenId, name, date, category, prices = {}, notes = [], imageUrl = DEFAULT_IMAGE_URL ) {
+    constructor( id, canteenId, name, date, category, prices = {}, notes = [], image = DEFAULT_IMAGE ) {
         if (!Meal.isValidMealDate(date)) throw new Error(`Invalid date format! Must be of format "YYYY-MM-DD" but was "${date}"`);
+        if (image == null || image === "https://static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg") image = DEFAULT_IMAGE;
         Object.keys( prices ).forEach( priceGroup => prices[priceGroup] == null ? delete prices[priceGroup] : null );
 
         this.id = id;
@@ -85,7 +86,9 @@ export default class Meal {
         this.date = date;
         this.category = category;
         this.prices = prices;
-        this.imageUrl = imageUrl;
+
+        /** @type {import("react-native").ImageSourcePropType} */
+        this.image = typeof image === "string" ? { uri: image } : image;
 
         // extract allergenes and stuff from notes
         try {

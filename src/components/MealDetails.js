@@ -23,7 +23,7 @@ export default class MealDetails extends React.PureComponent {
 
         const { meal, canteen, distance } = this.props;
         const mealPrice = meal.prices.Studierende ? meal.prices.Studierende.toFixed(2) + "€" : "n/a";
-
+        
         return (
             <View style={modal.item}>
                 <View style={modal.column}>
@@ -40,10 +40,9 @@ export default class MealDetails extends React.PureComponent {
                     </View>
                 </View>
                 <Image
-                    style={{
-                        flex: 3
-                    }}
-                    source={{ uri: meal.imageUrl }}
+                    style={styles.image}
+                    source={meal.image}
+                    resizeMode="contain"
                 />
                 <View style={modal.column}>
                     <View style={modal.row}>

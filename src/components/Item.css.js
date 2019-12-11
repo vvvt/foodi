@@ -32,6 +32,11 @@ export default Object.freeze(
         },
         columnRight: {
             flexBasis: '20%'
+        },
+        image: {
+            flex: 3,
+            width: undefined,
+            height: undefined
         }
     })
 )
