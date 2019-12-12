@@ -58,8 +58,10 @@ export default class PreferencesScreen extends React.Component {
             />
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.header}>{title}</Text>
+            <Text style={styles.header} >{title}</Text>
           )}
+          initialNumToRender={30}
+          stickySectionHeadersEnabled={false}
         />
       </SafeAreaView>
     );
