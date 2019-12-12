@@ -62,6 +62,8 @@ export default class PreferencesScreen extends React.Component {
           )}
           initialNumToRender={30}
           stickySectionHeadersEnabled={false}
+          ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+          ListFooterComponent={() => <View style={styles.footerContainer} />}
         />
       </SafeAreaView>
     );

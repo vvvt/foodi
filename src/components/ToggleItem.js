@@ -13,14 +13,19 @@ export default class ToggleItem extends React.Component {
     };
 
     render() {
+
+        const style = {};
+        if (this.props.title.length > 30) style.fontSize = 12;
+
         return (
             <View style={styles.row}>
-                <Text style={styles.cardTitle}>{this.props.title}</Text>
+                <Text style={[styles.cardTitle, style]}>{this.props.title}</Text>
                 <Switch
                     value={this.props.toggleValue}
                     onValueChange={this.props.onValueChange}
                 />
             </View>
         );
+
     }
 }

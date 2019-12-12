@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, SafeAreaView, View, ActivityIndicator } from "react-native";
+import { FlatList, SafeAreaView, View, ActivityIndicator, Text } from "react-native";
 import ToggleItem from "../components/ToggleItem";
 import SETTINGS from "../classes/Settings";
 import styles from "./TemplateScreen.css";
@@ -56,6 +56,8 @@ export default class SettingsScreen extends React.PureComponent {
               toggleValue={this.state[item.id]}
             />
           }
+          ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
+          ListHeaderComponent={() => <Text style={styles.header} >Settings</Text>}
         />
       </SafeAreaView>
     );

@@ -9,8 +9,16 @@ export default Object.freeze(
         },
         header: {
             fontSize: 24,
+            fontWeight: "bold",
             marginHorizontal: 16,
-            marginVertical: 8
+            marginBottom: 8,
+            marginTop: 24,
+        },
+        itemSeperator: {
+            height: 5
+        },
+        footerContainer: {
+            height: 24
         }
     })
 )
