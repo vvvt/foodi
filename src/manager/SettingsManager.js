@@ -1,26 +1,79 @@
 import { AsyncStorage } from "react-native";
 
 /** @typedef {"string" | "object" | "number" | "boolean"} SettingType */
+/** @typedef {[string, string]} SavableStringObject Contains [value, typeof value]. So the saved setting can be reconstructed by only the saved string */
 
 /**
  * Converts a string value into the given data type
  * @param {string} value The value to convert
  * @param {SettingType} type The target data type
  */
-function convertValue( value, type ) {
-    if (value == null) return null;
+function stringToValue( value, type ) {
     switch (type) {
         case "string":
             return value;
         case "number":
             return Number.parseFloat(value);
         case "boolean":
+            console.log("bool:", value);
             return value === "true";
         case "object":
             return JSON.parse(value);
         default:
             throw new Error("The given return type is invalid!");
     }
+}
+
+/**
+ * Converts a given value into its string representation
+ * @param {any} value The value to convert
+ */
+function valueToString( value ) {
+    switch(typeof value) {
+        case "string":
+            return value;
+        case "number":
+            return value.toString();
+        case "boolean":
+            return value ? "true" : "false";
+        case "object":
+            return JSON.stringify(value);
+        default:
+            throw new TypeError("The type of the given value is not supported!");
+    }
+}
+
+export class Setting {
+
+    /**
+     * Creates a new instance of a setting
+     * @param {string} key The unique key of the setting
+     * @param {any} value The value to safe. Can be of any data type
+     */
+    constructor( key, value ) {
+        if (typeof key !== "string") throw new TypeError("The key must be of type string!");
+        this.key = key;
+        this.value = value;
+    }
+
+    /**
+     * @returns A string that can be passed to Setting.fromPersistableString
+     */
+    toPersistableString() {
+        return JSON.stringify( [valueToString(this.value), typeof this.value] );
+    }
+
+    /**
+     * Creates an instance of a setting by the loaded string from AsyncStorage and the key
+     * @param {string} key The key of the setting
+     * @param {string} s The string as retrieved from the AsyncStorage
+     */
+    static fromPersistableString( key, s ) {
+        /** @type {SavableStringObject} */
+        const settingStringObject = JSON.parse(s);
+        return new Setting( key, stringToValue(settingStringObject[0], settingStringObject[1]) );
+    }
+
 }
 
 /**
@@ -31,6 +84,8 @@ export default class SettingsManager {
 
     constructor() {
         if (SettingsManager._instance) throw new Error("This is a singleton! Use SettingsManager.instance to access this class instance.");
+        /** @type {Map<string, Setting>} A map containing all settings */
+        this.settings = new Map();
     }
     
     /**
@@ -41,60 +96,44 @@ export default class SettingsManager {
         return SettingsManager._instance;
     }
 
-    /**
-     * Loads a stored value by a given key.
-     * @param {string} key The identifier to get the setting with
-     * @param {SettingType} returnType Default: "string". Since every value is stored
-     * as string in the backend it has to be converted of a string value to the desired type accordingly.
-     * 
-     * If there is no data stored with the given key null is returned in any case.
-     */
-    async getSetting( key, returnType = "string" ) {
-        const rawValue = await AsyncStorage.getItem(key);
-        return convertValue(rawValue, returnType);
+    async initialize() {
+        const allRawValues = await AsyncStorage.multiGet( await AsyncStorage.getAllKeys() );
+        allRawValues.forEach( ([key, persistableString]) => {
+            try {
+                this.settings.set(key, Setting.fromPersistableString(key, persistableString));
+            } catch(e) {}
+        });
     }
 
     /**
-     * Stores a given key-value pair
-     * @param {string} key The key to access the value with
-     * @param {any} value The value to store
+     * Checks if a setting is stored
+     * @param {string} key The key of the setting
      */
-    storeSetting( key, value ) {
-        let rawValue = "";
+    hasSetting( key ) {
+        return this.settings.has(key);
+    }
 
-        switch(typeof value) {
-            case "string":
-                rawValue = value;
-                break;
-            case "number":
-            case "boolean":
-                rawValue = value + "";
-                break;
-            case "object":
-                rawValue = JSON.stringify(value);
-                break;
-            default:
-                throw new TypeError("The type of the given value is not supported!");
+    /**
+     * Gets a setting by its key
+     * @param {string} key The key of the setting
+     * @returns The setting
+     */
+    getSetting( key ) {
+        return this.settings.has(key) ? this.settings.get(key) : new Setting(key, null);
+    }
+
+    /**
+     * Stores a given Setting. If null or undefined is given this results in a delete of the setting
+     * @param {Setting} setting The setting to save
+     */
+    storeSetting( setting ) {
+        if (!setting instanceof Setting) throw new TypeError("The setting must be of type Setting!");
+        if (setting.value == null) {
+            this.deleteSetting(setting.key);
+        } else {
+            this.settings.set(setting.key, setting);
+            AsyncStorage.setItem(setting.key, setting.toPersistableString());
         }
-
-        return AsyncStorage.setItem(key, rawValue);
-    }
-
-    /**
-     * Loads multiple settings simoultaniously
-     * @param {string[]} keys The keys to load the stored values of
-     * @param {SettingType[] | SettingType} returnTypes The return types to convert the values to
-     * @returns An array of [key, value] pairs
-     */
-    async getMultipleSettings( keys, returnTypes = null ) {
-        if (typeof returnTypes === "string") returnTypes = keys.map( () => returnTypes );
-        if (returnTypes == null) returnTypes = keys.map( () => "string" );
-        if (keys.length !== returnTypes.length) throw new Error("The array length of the return types must match the length of the keys");
-
-        const rawValues = await AsyncStorage.multiGet(keys);
-        /** @type {[string, any][]} */
-        const kv = rawValues.map( ([key, value], index) => [key, convertValue(value, returnTypes[index])] );
-        return kv;
     }
 
     /**
@@ -102,15 +141,14 @@ export default class SettingsManager {
      * @param {string} key The key to access the setting with
      */
     deleteSetting( key ) {
-        return AsyncStorage.removeItem(key);
+        AsyncStorage.removeItem(key);
+        return this.settings.delete(key);
     }
 
-    /**
-     * Removes multiple settings simultaniously
-     * @param {string[]} keys The keys of the settings to delete
-     */
-    deleteMultipleSettings( keys ) {
-        return AsyncStorage.multiRemove( keys );
+    deleteAllSettings() {
+        console.warn("Deleting all settings!");
+        this.settings = new Map();
+        AsyncStorage.clear();
     }
 
 }

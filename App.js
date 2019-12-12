@@ -17,6 +17,7 @@ import MapScreen from "./src/screens/MapScreen";
 import CanteenManager from "./src/manager/CanteenManager";
 import MealManager from "./src/manager/MealManager";
 import PermissionsScreen from "./src/screens/PermissionsScreen";
+import SettingsManager from "./src/manager/SettingsManager";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -147,7 +148,10 @@ export default class App extends React.PureComponent {
     async initialize() {
         await Promise.all([
             (async function() {
-                await DatabaseManager.instance.initialize();
+                await Promise.all([
+                    DatabaseManager.instance.initialize(),
+                    SettingsManager.instance.initialize()
+                ]);
                 await Promise.all([
                     CanteenManager.instance.initialize(),
                     MealManager.instance.initialize()

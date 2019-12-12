@@ -5,7 +5,7 @@ import { AppState } from "react-native";
 
 import Coordinate from "../classes/Coordinate";
 
-import SettingsManager from "./SettingsManager";
+import SettingsManager, { Setting } from "./SettingsManager";
 
 /**
  * @type {VoidFunction} The callback to stop location tracking
@@ -74,30 +74,26 @@ export default class LocationManager extends EventEmitter {
      * Executes all functions that are necessary to use this manager
      */
     async initialize() {
-        await Promise.all([
-            // get permission for location tracking and start it
-            (async () => {
-                const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
-                this.hasPermission = permissionStatus.status === "granted";
-                if (this.hasPermission) await this.startLocationTracking();
-            })(),
 
-            // get last device position from the settings manager
-            (async () => {
-                const lastDevicePosition = await settingsManager.getSetting(LAST_DEVICE_POSITION_SETTING_KEY, "object");
-                if (lastDevicePosition !== null && this.lastDevicePosition.timestamp === 0) {
-                    lastDevicePosition.coordinate = Coordinate.fromObject(lastDevicePosition.coordinate);
-                    this.lastDevicePosition = lastDevicePosition;
-                    console.log("Restored last device position");
-                }
-            })()
-        ]);
+        // get permission for location tracking and start it
+        const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
+        this.hasPermission = permissionStatus.status === "granted";
+        if (this.hasPermission) await this.startLocationTracking();
+
+        // get last device position from the settings manager
+        const lastDevicePosition = settingsManager.getSetting(LAST_DEVICE_POSITION_SETTING_KEY).value;
+        if (lastDevicePosition !== null && this.lastDevicePosition.timestamp === 0) {
+            lastDevicePosition.coordinate = Coordinate.fromObject(lastDevicePosition.coordinate);
+            this.lastDevicePosition = lastDevicePosition;
+            console.log("Restored last device position");
+        }
 
         // persist when app is closed so it can be loaded when the app is initialized the next time
         AppState.addEventListener("change", state => {
             if (state === "inactive" && this.lastDevicePosition.timestamp !== 0)
-                settingsManager.storeSetting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition);
+                settingsManager.storeSetting( new Setting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition) );
         });
+
     }
 
     /**

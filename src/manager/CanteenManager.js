@@ -4,7 +4,7 @@ import { AppState } from "react-native";
 import NetworkManager from "./NetworkManager";
 import DatabaseManager from "./DatabaseManager";
 import LocationManager from "./LocationManager";
-import SettingsManager from "./SettingsManager";
+import SettingsManager, { Setting } from "./SettingsManager";
 
 import Canteen from "../classes/Canteen";
 import Coordinate from "../classes/Coordinate";
@@ -81,33 +81,29 @@ export default class CanteenManager extends EventEmitter {
      * Loads all persisted canteens from the database into the cache.
      */
     async initialize() {
-        await this.clearLastPrefetchPosition();
-        await Promise.all([
+        this.clearLastPrefetchPosition();
 
-            // load all persisted canteens
-            (async () => {
-                this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
-            })(),
+        // load all persisted canteens
+        this.canteens = new Map( (await this.loadCanteens()).map( c => [c.id, c] ) );
 
-            // load last prefetch position
-            (async () => {
-                const lastPrefetchedCanteensAt = await settingsManager.getSetting(LAST_PREFETCH_POSITION_SETTING_KEY, "object");
-                if (lastPrefetchedCanteensAt !== null) {
-                    lastPrefetchedCanteensAt.coordinate === Coordinate.fromObject(lastPrefetchedCanteensAt.coordinate);
-                    this.lastPrefetchedCanteensAt = lastPrefetchedCanteensAt;
-                    console.log("Restored last prefetch position of canteens");
-                }
-            })()
+        // restore last prefetch position
+        const lastPrefetchedCanteensAt = settingsManager.getSetting(LAST_PREFETCH_POSITION_SETTING_KEY).value;
+        if (lastPrefetchedCanteensAt != null) {
 
-        ]);
+            // convert coordinate object to Coordinate Class instance
+            lastPrefetchedCanteensAt.coordinate = Coordinate.fromObject(lastPrefetchedCanteensAt.coordinate);
+            this.lastPrefetchedCanteensAt = lastPrefetchedCanteensAt;
+            console.log("Restored last prefetch position of canteens");
+
+        }
     }
 
     /**
      * Clears the last prefetch position. It will be prefetched on the
      * next possible moment after that
      */
-    async clearLastPrefetchPosition() {
-        await settingsManager.deleteSetting(LAST_PREFETCH_POSITION_SETTING_KEY);
+    clearLastPrefetchPosition() {
+        settingsManager.deleteSetting(LAST_PREFETCH_POSITION_SETTING_KEY);
         this.lastPrefetchedCanteensAt = DEFAULT_PREFETCH_POSITION;
     }
 
@@ -125,7 +121,7 @@ export default class CanteenManager extends EventEmitter {
         // persist when app is closed so it can be loaded when the app is initialized the next time
         AppState.addEventListener("change", state => {
             if (state === "inactive" && this.lastPrefetchedCanteensAt.timestamp !== 0)
-                settingsManager.storeSetting(LAST_PREFETCH_POSITION_SETTING_KEY, this.lastPrefetchedCanteensAt);
+                settingsManager.storeSetting(new Setting(LAST_PREFETCH_POSITION_SETTING_KEY, this.lastPrefetchedCanteensAt));
         });
     }
 
