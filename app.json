@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "splash": {
@@ -24,6 +24,10 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "de.tu-dresden.app-dev.group-10.foodi",
+      "versionCode": 1
     }
   }
 }
