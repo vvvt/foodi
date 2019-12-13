@@ -26,7 +26,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "de.tu-dresden.app-dev.group-10.foodi",
+      "package": "de.tu_dresden.app_dev.group_10.foodi",
       "versionCode": 1
     }
   }
