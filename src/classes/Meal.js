@@ -94,7 +94,7 @@ export default class Meal {
         try {
             const mealProperties = Meal.parseNotes(notes);
             this.isVegan = mealProperties.isVegan;
-            this.isVegetarian = mealProperties.isVegetarian | mealProperties.isVegan;
+            this.isVegetarian = mealProperties.isVegetarian || mealProperties.isVegan;
             this.containsBeef = mealProperties.containsBeef;
             this.containsPork = mealProperties.containsPork;
             this.containsAlcohol = mealProperties.containsAlcohol;

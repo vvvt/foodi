@@ -3,6 +3,7 @@ import EventEmitter from "events";
 import NetworkManager from "./NetworkManager";
 import DatabaseManager from "./DatabaseManager";
 import CanteenManager from "./CanteenManager";
+import SettingsManager from "./SettingsManager";
 
 import Meal from "../classes/Meal";
 import moment from "moment";
@@ -10,6 +11,7 @@ import moment from "moment";
 const networkManager = NetworkManager.instance;
 const databaseManager = DatabaseManager.instance;
 const canteenManager = CanteenManager.instance;
+const settingsManager = SettingsManager.instance;
 
 /** @typedef {{ meal: Meal, distance: number, canteen: import("../classes/Canteen").default }} MealWithDistance */
 
@@ -65,6 +67,46 @@ export default class MealManager extends EventEmitter {
             if (!canteensOfDate.has(m.canteenId)) canteensOfDate.set(m.canteenId, []);
             canteensOfDate.get(m.canteenId).push(m);
         });
+    }
+
+    /**
+     * All meals after filtering with the users meal preferences
+     */
+    get surroundingMealFiltered() {
+
+        /**
+         * Checks if an allergene in the meal is ok for the user
+         * @param {string} settingId The id of the allergene or additive to check (as stored in settingsManager)
+         * @returns True if the allergene or additive is no problem (is true in the preferences)
+         */
+        function checkAllergene( settingId ) {
+            return (
+                !settingsManager.hasSetting(settingId) ||
+                settingsManager.getSetting(settingId).value === true
+            );
+        }
+
+        return this.surroundingMeals.filter( ({ meal: m }) => {
+
+                if (settingsManager.hasSetting("vegetarian") && settingsManager.getSetting("vegetarian").value === true && !(m.isVegetarian || m.isVegan)) return false;
+                if (settingsManager.hasSetting("vegan") && settingsManager.getSetting("vegan").value === true && !m.isVegan) return false;
+
+                /** @type {string[]} An array with allergenes (their code) */
+                const allergenes = [
+                    ["pork", m.containsPork],
+                    ["beef", m.containsBeef],
+                    ["alcohol", m.containsAlcohol],
+                    ["garlic", m.containsGarlic]
+                ]
+                    .filter( v => v[1] )
+                    .map( v => v[0] )
+                    .concat(m.additives.map( a => a.code ))
+                    .concat(m.allergenes.map( a => a.code ));
+
+                return !allergenes.some( settingId => !checkAllergene(settingId) );
+
+            }
+        );
     }
 
     /**

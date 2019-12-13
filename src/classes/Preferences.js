@@ -3,6 +3,16 @@ export default Object.freeze([
         title: "Preferences",
         data: [
             {
+                id: "vegetarian",
+                name: "Vegetarian only",
+                default: false
+            },
+            {
+                id: "vegan",
+                name: "Vegan only",
+                default: false
+            },
+            {
                 id: "beef",
                 name: "Beef",
                 default: true
@@ -10,16 +20,6 @@ export default Object.freeze([
             {
                 id: "pork",
                 name: "Pork",
-                default: true
-            },
-            {
-                id: "poultry",
-                name: "Poultry",
-                default: true
-            },
-            {
-                id: "fish",
-                name: "Fish",
                 default: true
             },
             {
@@ -35,7 +35,7 @@ export default Object.freeze([
         ]
     },
     {
-        title: "Allergies",
+        title: "Allergenes",
         data: [
             {
                 id: "A",
