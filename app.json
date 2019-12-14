@@ -30,7 +30,7 @@
       "versionCode": 1,
       "config": {
       	"googleMaps": {
-      		"apiKey": "AIzaSyBsR772Ib2oe075TawJ0vCxh3Db3VoYFOc"	
+      		"apiKey": "api-key"	
       	}
   	  }
     }
