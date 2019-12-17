@@ -1,6 +1,6 @@
 import React from "react";
 import { createAppContainer } from "react-navigation";
-import { Icon } from 'react-native-elements'
+import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
 
@@ -29,9 +29,9 @@ const AppNavigator = createBottomTabNavigator(
             navigationOptions: () => ({
                 title: "Finder",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon
+                    <Feather
                         name="search"
-                        type="feather"
+                        size={19}
                         color={tintColor}
                     />
                 )
@@ -42,9 +42,9 @@ const AppNavigator = createBottomTabNavigator(
             navigationOptions: () => ({
                 title: "Preferences",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon
+                    <Feather
                         name="sliders"
-                        type="feather"
+                        size={19}
                         color={tintColor}
                     />
                 )
@@ -55,9 +55,9 @@ const AppNavigator = createBottomTabNavigator(
             navigationOptions: () => ({
                 title: "Navigation",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon
+                    <Feather
                         name="map"
-                        type="feather"
+                        size={19}
                         color={tintColor}
                     />
                 )
@@ -68,9 +68,9 @@ const AppNavigator = createBottomTabNavigator(
             navigationOptions: () => ({
                 title: "Settings",
                 tabBarIcon: ({tintColor}) => (
-                    <Icon
+                    <Feather
                         name="settings"
-                        type="feather"
+                        size={19}
                         color={tintColor}
                     />
                 )
@@ -87,7 +87,7 @@ const AppNavigator = createBottomTabNavigator(
             activeBackgroundColor: "#0077B3",
             inactiveBackgroundColor: "#0077B3",
             style: {
-                height: 60,
+                height: 55,
                 paddingVertical: 8,
                 paddingHorizontal: 8,
                 backgroundColor: "#0077B3"
