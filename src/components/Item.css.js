@@ -27,6 +27,16 @@ export default Object.freeze(
             textAlignVertical: "center"
         },
         cardSubTitle: {
+            fontSize: 14,
+            fontWeight: "bold",
+            marginBottom: 5
+        },
+        cardAllergeneTitle: {
+            fontSize: 14,
+            fontWeight: "bold",
+            marginBottom: 3
+        },
+        cardAllergene: {
             fontSize: 14
         },
         columnLeft: {

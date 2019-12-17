@@ -45,8 +45,13 @@ export default class MealDetails extends React.PureComponent {
                     resizeMode="contain"
                 />
                 <View style={modal.column}>
-                    <View style={modal.row}>
-                        <Text style={styles.cardSubTitle}>Allergies</Text>
+                    <View style={modal.column}>
+                        <Text style={styles.cardAllergeneTitle}>Allergenes</Text>
+                        <Text style={styles.cardAllergene}>{meal.allergenes.map( a => a.name ).join(", ")}</Text>
+                    </View>
+                    <View style={modal.column}>
+                        <Text style={styles.cardAllergeneTitle}>Additives</Text>
+                        <Text style={styles.cardAllergene}>{meal.additives.map( a => a.name ).join(", ")}</Text>
                     </View>
                     <View style={modal.row}>
                         <Text style={styles.cardTitle}>

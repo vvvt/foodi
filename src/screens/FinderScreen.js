@@ -11,7 +11,7 @@ const mealManager = MealManager.instance;
 export default class FinderScreen extends React.PureComponent {
 
   state = {
-    mealsWithDistances: mealManager.surroundingMeals,
+    mealsWithDistances: mealManager.surroundingMealFiltered,
     /** @type {import("../manager/MealManager").MealWithDistance} */
     currentItemDetails: null
   };
@@ -20,6 +20,7 @@ export default class FinderScreen extends React.PureComponent {
     super(props);
     
     this.onMealsChanged = this.onMealsChanged.bind(this);
+    this.props.navigation.addListener( "willFocus", this.onMealsChanged );
   }
 
   componentDidMount() {
@@ -30,8 +31,8 @@ export default class FinderScreen extends React.PureComponent {
     mealManager.off("mealsChanged", this.onMealsChanged);
   }
 
-  onMealsChanged( mealsWithDistances ) {
-    this.setState({ mealsWithDistances });
+  onMealsChanged() {
+    this.setState({ mealsWithDistances: mealManager.surroundingMealFiltered });
   }
 
   render() {
