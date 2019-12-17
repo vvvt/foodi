@@ -191,16 +191,16 @@ export default class MealManager extends EventEmitter {
         const promises = canteenManager.surroundingCanteens.map( async c => {
             try {
 
-            // the meals of a surrounding canteen
-            const meals = await this.loadOrFetchMeals(c.canteen.id, day);
+                // the meals of a surrounding canteen
+                const meals = await this.loadOrFetchMeals(c.canteen.id, day);
 
-            // map the meals to their distance
-            const mealsWithDistance = meals.map( m => ({ canteen: c.canteen, distance: c.distance, meal: m }) );
-            onMealsLoaded(mealsWithDistance);
-            res.push(...mealsWithDistance);
+                // map the meals to their distance
+                const mealsWithDistance = meals.map( m => ({ canteen: c.canteen, distance: c.distance, meal: m }) );
+                onMealsLoaded(mealsWithDistance);
+                res.push(...mealsWithDistance);
 
             } catch(e) {
-            console.log(`Could not fetch or load meals of canteen "${c.canteen.name}" for ${day}`);
+                console.log(`Could not fetch or load meals of canteen "${c.canteen.name}" for ${day}`, e);
             }
         });
 
@@ -258,7 +258,7 @@ export default class MealManager extends EventEmitter {
 
         // fetch meals (with high priority) if not done already
         if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( await this.fetchMeals(canteenId, day, "HIGH") );
-        return this.canteenMeals.get(day).get(canteenId) || [];
+        return this.canteenMeals.get(day)?.get(canteenId) || [];
 
     }
 
@@ -282,6 +282,7 @@ export default class MealManager extends EventEmitter {
 
         /** @type {import("../classes/Meal").MealObj[]} */
         const mealsObjs = await res.json();
+        if (!Array.isArray(mealsObjs)) return [];
         
         // add date property
         return mealsObjs.map( m => Meal.fromObject( m, canteenId, day ) );
