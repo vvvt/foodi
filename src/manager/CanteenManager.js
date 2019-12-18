@@ -137,6 +137,7 @@ export default class CanteenManager extends EventEmitter {
      */
     async updateSurroundingCanteens() {
         try {
+            if (locationManager.lastDevicePosition.timestamp === 0) return;
             const lastSurroundingCanteens = this.surroundingCanteens;
 
             // get the canteens that are near by
@@ -195,7 +196,7 @@ export default class CanteenManager extends EventEmitter {
                     const prefetchRadius = this.canteenTrackingRadius*7.5;
 
                     // fetch canteens from OpenMensa and persist them
-                    await this.saveCanteens( await this.fetchCanteens( curPos,  prefetchRadius) );
+                    await this.saveCanteens( await this.fetchCanteens() );
 
                     // update last prefetch position
                     this.lastPrefetchedCanteensAt.timestamp = Util.currentUnixTimestamp;
@@ -220,22 +221,12 @@ export default class CanteenManager extends EventEmitter {
     }
 
     /**
-     * Fetches canteen in a given radius around a given position
-     * @param {Coordinate} position The position to find canteens from
-     * @param distance Default: 50. The maximum distance in km to the given position a returned canteen can have
+     * Fetches canteens
      */
-    async fetchCanteens( position, distance = 50 ) {
-        if (!(position instanceof Coordinate)) throw new TypeError("The position be a coordinate!");
+    async fetchCanteens() {
 
         // fetch from OpenMensa API
-        const res = await networkManager.fetchWithParams(
-            NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens`,
-            {
-                "near[lat]": position.latitude,
-                "near[lng]": position.longitude,
-                "near[dist]": distance
-            }
-        );
+        const res = await networkManager.fetchWithParams( NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens` );
         if (!res.ok) throw new Error(`Network request failed (${res.status}${res.statusText ? " " + res.statusText : ""}`);
 
         /** @type {import("../classes/Canteen").CanteenObj[]} */
@@ -243,6 +234,7 @@ export default class CanteenManager extends EventEmitter {
 
         console.log(`Fetched ${canteenObjs.length} canteens`);
         return canteenObjs.map( c => Canteen.fromObject( c ) );
+
     }
 
     /**

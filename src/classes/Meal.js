@@ -107,6 +107,10 @@ export default class Meal {
         }
     }
 
+    get isEveningMeal() {
+        return this.category.startsWith("Abendangebot");
+    }
+
     /**
      * Creates a meal instance from a given object and date
      * @param {MealObj} obj The object containing all meal properties as returned from the OpenMensa API
