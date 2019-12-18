@@ -49,6 +49,14 @@ export default Object.freeze(
             flex: 3,
             width: undefined,
             height: undefined
+        },
+        smallSpacerVertical: {
+            height: 10
+        },
+        moonIcon: {
+            position: "absolute",
+            right: 10,
+            top: 10
         }
     })
 )

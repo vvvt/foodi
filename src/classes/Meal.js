@@ -82,7 +82,7 @@ export default class Meal {
 
         this.id = id;
         this.canteenId = canteenId;
-        this.name = name;
+        this.name = name.replace(/\,([^\s])/g, ", $1"); // add spaces to the meal after "," if the Studentenwerk forgot them so the layout can have line breakes on them
         this.date = date;
         this.category = category;
         this.prices = prices;
