@@ -26,7 +26,7 @@ export default class MealDetails extends React.PureComponent {
         
         return (
             <View style={modal.item}>
-                <View style={modal.column}>
+                <View style={[modal.column, modal.paddingHorizontal]}>
                     <View style={modal.row}>
                         <Text
                             style={styles.cardSubTitle}>
@@ -44,14 +44,14 @@ export default class MealDetails extends React.PureComponent {
                     source={meal.image}
                     resizeMode="contain"
                 />
-                <View style={modal.column}>
+                <View style={[modal.column, modal.paddingHorizontal]}>
                     <View style={modal.column}>
                         <Text style={styles.cardAllergeneTitle}>Allergenes</Text>
-                        <Text style={styles.cardAllergene}>{meal.allergenes.map( a => a.name ).join(", ")}</Text>
+                        <Text style={styles.cardAllergene}>{meal.allergenes.map( a => a.name ).join(",\r\n")}</Text>
                     </View>
                     <View style={modal.column}>
                         <Text style={styles.cardAllergeneTitle}>Additives</Text>
-                        <Text style={styles.cardAllergene}>{meal.additives.map( a => a.name ).join(", ")}</Text>
+                        <Text style={styles.cardAllergene}>{meal.additives.map( a => a.name ).join(",\r\n")}</Text>
                     </View>
                     <View style={modal.row}>
                         <Text style={styles.cardTitle}>
@@ -61,7 +61,8 @@ export default class MealDetails extends React.PureComponent {
                             {Util.distanceToString(distance)}
                         </Text>
                     </View>
-                    <View style={modal.row}>
+                </View>
+                <View style={modal.row}>
                         <Icon
                             name="x"
                             type="feather"
@@ -78,7 +79,6 @@ export default class MealDetails extends React.PureComponent {
                             onPress={this.props.OnNavigatePressed}
                         />
                     </View>
-                </View>
             </View>
         );
     }

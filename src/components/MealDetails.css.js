@@ -21,6 +21,9 @@ export default Object.freeze(
         column: {
             flexDirection: 'column',
             justifyContent: 'center',
+            paddingVertical: 16
+        },
+        paddingHorizontal: {
             padding: 16
         },
         button: {
