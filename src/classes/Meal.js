@@ -111,6 +111,10 @@ export default class Meal {
         return this.category.startsWith("Abendangebot");
     }
 
+    get hasDefaultImage() {
+        return this.image === DEFAULT_IMAGE;
+    }
+
     /**
      * Creates a meal instance from a given object and date
      * @param {MealObj} obj The object containing all meal properties as returned from the OpenMensa API

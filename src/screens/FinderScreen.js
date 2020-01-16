@@ -65,13 +65,31 @@ export default class FinderScreen extends React.PureComponent {
                 meal={item.meal}
                 canteen={item.canteen}
                 distance={item.distance}
-                OnItemPressed={() => this.setState({ currentItemDetails: item })}
+                OnItemPressed={() => this.onMealPressed( item )}
               />
             )}
           />
         </SafeAreaView>
       </>
     );
+  }
+
+  /**
+   * Callback that gets called when a meal item was pressed
+   * @param {import("../manager/MealManager").MealWithDistance} mealItem The pressed item
+   */
+  async onMealPressed( mealItem ) {
+    // show modal
+    this.setState({ currentItemDetails: mealItem });
+
+    // if there is no image yet => try to load it (if even exists)
+    if (mealItem.meal.hasDefaultImage) {
+      const newMeal = await mealManager.refetchMeal( mealItem.meal );
+      if (newMeal != null) {
+        mealItem.meal = newMeal;
+        this.setState({ currentItemDetails: Object.assign({}, mealItem) });
+      }
+    }
   }
 
 };

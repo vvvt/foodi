@@ -238,7 +238,7 @@ export default class MealManager extends EventEmitter {
                     try {
                         // do not prefetch if it was already
                         if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteen.id))
-                            await this.saveMeals( await this.fetchMeals(canteen.id, day, "LOW") );
+                            await this.saveMeals( await this.fetchMeals(canteen.id, day, NaN, "LOW") );
                     } catch(e) {
                         console.warn(`Could not prefetch the meals of canteen "${canteen.name}" for the date ${day}:`, e);
                     }
@@ -257,23 +257,39 @@ export default class MealManager extends EventEmitter {
     async loadOrFetchMeals( canteenId, day ) {
 
         // fetch meals (with high priority) if not done already
-        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( await this.fetchMeals(canteenId, day, "HIGH") );
+        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( await this.fetchMeals(canteenId, day, NaN, "HIGH") );
         return this.canteenMeals.get(day)?.get(canteenId) || [];
 
     }
 
     /**
+     * Refetches a meal and saves it
+     * @param {Meal} meal The meal to refetch
+     * @returns The updated meal or null
+     */
+    async refetchMeal( meal ) {
+        try {
+            const meals = await this.fetchMeals( meal.canteenId, meal.date, meal.id, "HIGH" );
+            this.saveMeals( meals ).catch();
+            return meals[0] || null;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    /**
      * Fetches all meals of a given canteen for a day
      * @param {number} canteenId The canteen id to fetch the meals of
-     * @param {string} day The day to fetch the meals in format "YYYY-MM-DD". Default is today
-     * @param {import("./NetworkManager").Priority} priority The network priority to fetch with
+     * @param day The day to fetch the meals in format "YYYY-MM-DD". Default is today
+     * @param mealId The id of the meal to fetch. If provided, only this meal is fetched. Default is NaN
+     * @param {import("./NetworkManager").Priority} priority The network priority to fetch with. Default is "MODERATE"
+     * @returns An array of meals or an empty array
      */
-    async fetchMeals( canteenId, day, priority = "MODERATE" ) {
-        if (typeof day !== "string") day = day.toUTCString();
-
+    async fetchMeals( canteenId, day = moment().format("YYYY-MM-DD"), mealId = NaN, priority = "MODERATE" ) {
+        
         // fetch from OpenMensa API
         const res = await networkManager.fetchWithParams(
-            NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals`,
+            NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals${isNaN(mealId) ? "" : "/"+mealId}`,
             {},
             priority
         );
@@ -281,11 +297,20 @@ export default class MealManager extends EventEmitter {
         if (!res.ok) throw new Error(`Network request failed (${res.status}${res.statusText ? " " + res.statusText : ""}`);
 
         /** @type {import("../classes/Meal").MealObj[]} */
-        const mealsObjs = await res.json();
-        if (!Array.isArray(mealsObjs)) return [];
+        let mealsObjs = await res.json();
+
+        if (isNaN(mealId)) {
+            // if is an array of meals
+            if (!Array.isArray(mealsObjs)) return [];
+        } else {
+            // if is a single, specific meal => wrap in array
+            if (typeof mealsObjs !== "object" || mealsObjs.id !== mealId) return [];
+            mealsObjs = [mealsObjs];
+        }
         
         // add date property
         return mealsObjs.map( m => Meal.fromObject( m, canteenId, day ) );
+
     }
 
     /**
