@@ -79,6 +79,7 @@ export default class SettingsScreen extends React.PureComponent {
   async clearCache() {
     try {
       await databaseManager.dropAllTables();
+      await databaseManager.initialize();
       canteenManager.clearLastPrefetchPosition();
     } catch(e) {
       console.error("Could not clear the cache:", e);
