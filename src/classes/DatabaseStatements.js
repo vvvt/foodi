@@ -12,7 +12,7 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_CANTEENS: `DROP TABLE IF EXISTS canteens`,
-    INSERT_INTO_CANTEENS: `INSERT OR REPLACE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
+    INSERT_INTO_CANTEENS: `REPLACE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
     LOAD_ALL_CANTEENS: `SELECT * FROM canteens`,
     LOAD_CANTEENS_BETWEEN_COORDINATES: `SELECT * FROM canteens WHERE lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?`,
 
@@ -30,7 +30,7 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEALS: `DROP TABLE IF EXISTS meals`,
-    INSERT_INTO_MEALS: `INSERT OR REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,date(?),?)`,
+    INSERT_INTO_MEALS: `REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,date(?),?)`,
     LOAD_ALL_MEALS: `SELECT * FROM meals`,
     LOAD_MEALS_OF_CANTEEN: `SELECT * FROM meals WHERE canteenId=?`,
     DELETE_MEALS_BEFORE_TODAY: `DELETE FROM meals WHERE date(date) < date('now')`,
@@ -42,11 +42,12 @@ export default Object.freeze({
             note TEXT NOT NULL,
             FOREIGN KEY (mealId)
                 REFERENCES meals (id)
-                ON DELETE CASCADE
+                ON DELETE CASCADE,
+            UNIQUE (mealId, note)
         )
     `,
     DROP_TABLE_MEAL_NOTES: `DROP TABLE IF EXISTS mealNotes`,
-    INSERT_INTO_MEAL_NOTES: `INSERT OR REPLACE INTO mealNotes (mealId, note) VALUES (?,?)`,
+    INSERT_INTO_MEAL_NOTES: `REPLACE INTO mealNotes (mealId, note) VALUES (?,?)`,
     LOAD_MEAL_NOTES_OF_MEAL: `SELECT note FROM mealNotes WHERE mealId=?`,
 
     CREATE_TABLE_MEAL_PRICES: `
@@ -61,6 +62,6 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_MEAL_PRICES: `DROP TABLE IF EXISTS mealPrices`,
-    INSERT_INTO_MEAL_PRICES: `INSERT OR REPLACE INTO mealPrices (mealId, priceGroup, price) VALUES (?,?,?)`,
+    INSERT_INTO_MEAL_PRICES: `REPLACE INTO mealPrices (mealId, priceGroup, price) VALUES (?,?,?)`,
     LOAD_MEAL_PRICES_OF_MEAL: `SELECT priceGroup, price FROM mealPrices WHERE mealId=?`
 });

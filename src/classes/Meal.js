@@ -86,6 +86,8 @@ export default class Meal {
         this.date = date;
         this.category = category;
         this.prices = prices;
+        /** @private For persitance purposes only */
+        this._originalNotes = notes;
 
         /** @type {import("react-native").ImageSourcePropType} */
         this.image = typeof image === "string" ? { uri: image } : image;
@@ -135,11 +137,7 @@ export default class Meal {
         const pricesObj = {};
         prices.forEach( p => pricesObj[p.priceGroup] = p.price );
 
-        return new Meal( row.id, row.canteenId, row.name, row.date, row.category,
-            pricesObj,
-            notes.map( n => n.note ),
-            row.imageUrl
-        );
+        return new Meal( row.id, row.canteenId, row.name, row.date, row.category, pricesObj, notes.map( n => n.note ), row.imageUrl );
     }
 
     /**
