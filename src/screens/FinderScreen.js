@@ -72,12 +72,18 @@ export default class FinderScreen extends React.PureComponent {
           />
         </Modal>
         <SafeAreaView style={styles.container}>
-          <View>
+          <View style={styles.locationRow}>
+            <Text style={styles.canteenTitle}>
+              {this.state.view == "inside"
+                ? canteenManager.surroundingCanteens[
+                    canteenManager.surroundingCanteens.length - 1
+                  ].canteen.name
+                : "Dresden"}
+            </Text>
             <Icon
-              name="shuffle"
+              name={this.state.view == "inside" ? "log-out" : "log-in"}
               type="feather"
               color="#151522"
-              raised
               onPress={() => this.toggleView()}
             />
           </View>
@@ -86,10 +92,11 @@ export default class FinderScreen extends React.PureComponent {
               this.state.view == "outside"
                 ? this.state.mealsWithDistances
                 : this.state.mealsWithDistances.filter(
-                    m => m.canteen.name == "Mensa Siedepunkt"
-                    /* canteenManager.surroundingCanteens[
+                    m =>
+                      m.canteen.name ==
+                      canteenManager.surroundingCanteens[
                         canteenManager.surroundingCanteens.length - 1
-                      ] */
+                      ].canteen.name
                   )
             }
             keyExtractor={item => item.meal.id + ""}
