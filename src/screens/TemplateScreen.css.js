@@ -30,6 +30,16 @@ export default Object.freeze(
     canteenTitle: {
       fontSize: 22,
       fontWeight: "bold"
+    },
+    emptyListMessageContainer: {
+      width: "100%",
+      height: 400,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    },
+    emptyListMessage: {
+      color: "#aaa"
     }
   })
 );

@@ -72,21 +72,6 @@ export default class FinderScreen extends React.PureComponent {
           />
         </Modal>
         <SafeAreaView style={styles.container}>
-          <View style={styles.locationRow}>
-            <Text style={styles.canteenTitle}>
-              {this.state.view == "inside"
-                ? canteenManager.surroundingCanteens[
-                    canteenManager.surroundingCanteens.length - 1
-                  ].canteen.name
-                : "Dresden"}
-            </Text>
-            <Icon
-              name={this.state.view == "inside" ? "log-out" : "log-in"}
-              type="feather"
-              color="#151522"
-              onPress={() => this.toggleView()}
-            />
-          </View>
           <FlatList
             data={
               this.state.view == "outside"
@@ -108,6 +93,28 @@ export default class FinderScreen extends React.PureComponent {
                 view={this.state.view}
                 OnItemPressed={() => this.onMealPressed(item)}
               />
+            )}
+            ListHeaderComponent={() => (
+              <View style={styles.locationRow}>
+                <Text style={styles.canteenTitle}>
+                  {this.state.view == "inside"
+                    ? canteenManager.surroundingCanteens[
+                        canteenManager.surroundingCanteens.length - 1
+                      ].canteen.name
+                    : "Dresden"}
+                </Text>
+                <Icon
+                  name={this.state.view == "inside" ? "log-out" : "log-in"}
+                  type="feather"
+                  color="#151522"
+                  onPress={() => this.toggleView()}
+                />
+              </View>
+            )}
+            ListEmptyComponent={() => (
+              <View style={styles.emptyListMessageContainer}>
+                <Text style={styles.emptyListMessage}>No meals found :(</Text>
+              </View>
             )}
           />
         </SafeAreaView>
