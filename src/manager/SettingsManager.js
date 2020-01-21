@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native";
 import SETTINGS from "../classes/Settings";
-import PREFERENCES from "../classes/Preferences";
+import FILTERS from "../classes/Filters";
 
 /** @typedef {"string" | "object" | "number" | "boolean"} SettingType */
 /** @typedef {[string, string]} SavableStringObject Contains [value, typeof value]. So the saved setting can be reconstructed by only the saved string */
@@ -110,7 +110,7 @@ export default class SettingsManager {
         SETTINGS.forEach( s => {
             if (!this.hasSetting(s.id)) this.storeSetting(new Setting(s.id, s.default));
         });
-        PREFERENCES.forEach( p => p.data.forEach( s => {
+        FILTERS.forEach( p => p.data.forEach( s => {
             if (!this.hasSetting(s.id)) this.storeSetting(new Setting(s.id, s.default));
         }));
     }
