@@ -144,7 +144,9 @@ export default class CanteenManager extends EventEmitter {
 
         // update the surrounding canteens whenever a new position comes in
         locationManager.on("position", this._updateSurroundingCanteens.bind(this));
-        locationManager.on("position", this._updateCanteenDistanceState.bind(this));
+
+        // update location state when the canteens or their distance changed
+        this.on("canteensChanged", this._updateCanteenDistanceState.bind(this));
 
         // persist when app is closed so it can be loaded when the app is initialized the next time
         AppState.addEventListener("change", state => {
