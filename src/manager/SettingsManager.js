@@ -17,7 +17,6 @@ function stringToValue( value, type ) {
         case "number":
             return Number.parseFloat(value);
         case "boolean":
-            console.log("bool:", value);
             return value === "true";
         case "object":
             return JSON.parse(value);
