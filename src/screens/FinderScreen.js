@@ -21,26 +21,41 @@ export default class FinderScreen extends React.PureComponent {
     mealsWithDistances: mealManager.surroundingMealFiltered,
     /** @type {import("../manager/MealManager").MealWithDistance} */
     currentItemDetails: null,
-    view: "outside"
+    view: canteenManager.currentLocationContext === "INSIDE" ? "inside" : "outside"
   };
 
   constructor(props) {
     super(props);
 
     this.onMealsChanged = this.onMealsChanged.bind(this);
+    this.onLocationContextChanged = this.onLocationContextChanged.bind(this);
     this.props.navigation.addListener("willFocus", this.onMealsChanged);
+    this.props.navigation.addListener("willFocus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
   }
 
   componentDidMount() {
     mealManager.on("mealsChanged", this.onMealsChanged);
+    canteenManager.on("locationContextChanged", this.onLocationContextChanged);
   }
 
   componentWillUnmount() {
     mealManager.off("mealsChanged", this.onMealsChanged);
+    canteenManager.off("locationContextChanged", this.onLocationContextChanged);
   }
 
   onMealsChanged() {
     this.setState({ mealsWithDistances: mealManager.surroundingMealFiltered });
+  }
+
+  /**
+   * Updates the view if the user went from outside a canteen in a canteen or the other way around
+   * @param {import("../manager/CanteenManager").LocationContext} currentContext The current user location context
+   * @param {import("../manager/CanteenManager").LocationContext} previousContext The previous user location context
+   */
+  onLocationContextChanged(currentContext, previousContext) {
+    const currentlyInside = currentContext === "INSIDE";
+    const previouslyInside = previousContext === "INSIDE";
+    if (currentlyInside !== previouslyInside) this.setState({ view: currentlyInside ? "inside" : "outside" });
   }
 
   toggleView() {
