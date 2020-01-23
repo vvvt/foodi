@@ -40,8 +40,7 @@ export default class DatabaseManager {
         await this.exec([STATEMENTS.ENABLE_FOREIGN_KEYS]);
         await this.run(STATEMENTS.CREATE_TABLE_CANTEENS);
         await this.run(STATEMENTS.CREATE_TABLE_MEALS);
-        await this.run(STATEMENTS.CREATE_TABLE_MEAL_NOTES);
-        await this.run(STATEMENTS.CREATE_TABLE_MEAL_PRICES);
+        await Promise.all([ STATEMENTS.CREATE_TABLE_MEAL_NOTES, STATEMENTS.CREATE_TABLE_MEAL_PRICES ].map( s => this.run(s) ));
         await this.run(STATEMENTS.DELETE_MEALS_BEFORE_TODAY);
     }
 
@@ -50,10 +49,9 @@ export default class DatabaseManager {
      */
     async dropAllTables() {
         console.warn("Dropping all database tables!");
+        await Promise.all([ STATEMENTS.DROP_TABLE_MEAL_NOTES, STATEMENTS.DROP_TABLE_MEAL_PRICES ].map( s => this.run(s) ));
         await this.run(STATEMENTS.DROP_TABLE_CANTEENS);
         await this.run(STATEMENTS.DROP_TABLE_MEALS);
-        await this.run(STATEMENTS.DROP_TABLE_MEAL_NOTES);
-        await this.run(STATEMENTS.DROP_TABLE_MEAL_PRICES);
     }
 
     /**

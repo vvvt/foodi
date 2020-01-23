@@ -21,8 +21,7 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     NEAR_BY: 0.6,
     MODERATE: 5,
     FAR: 20,
-    VERY_FAR: 50,
-    INFINITE: Number.POSITIVE_INFINITY
+    VERY_FAR: 50
 });
 
 const LAST_DEVICE_POSITION_SETTING_KEY = "lastDevicePosition";
