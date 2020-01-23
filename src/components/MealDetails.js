@@ -9,33 +9,48 @@ import Util from "../classes/Util";
 /** @typedef {import("../classes/Meal").default} Meal */
 /** @typedef {import("../classes/Canteen").default} Canteen */
 
+/**
+ * @param {string} body 
+ * @param hasChildren 
+ * @param isOpen 
+ */
+function createAllergeneOrAdditiveString( body, hasChildren = true, isOpen = false ) {
+  if (!hasChildren) return "No " + body;
+  return body + (isOpen ? " ▼" : " ▶");
+}
+
 export default class MealDetails extends React.PureComponent {
   /** @type {{ meal: Meal, canteen: Canteen, distance: number, OnClosePressed?: VoidFunction, OnNavigatePressed?: VoidFunction }} */
   props;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.hasAllergenes = this.props.meal.allergenes.length !== 0;
+    this.hasAdditives = this.props.meal.additives.length !== 0;
+
     this.state = {
-      textAllergenes: "Allergenes ▶",
-      textAdditives: "Additives ▶",
+      textAllergenes: createAllergeneOrAdditiveString("Allergenes", this.hasAllergenes),
+      textAdditives: createAllergeneOrAdditiveString("Additives", this.hasAdditives),
       showAllergenes: false,
       showAdditives: false
     };
   }
+
   toggleAllergenes = () => {
-    if(this.state.showAllergenes) {
-      this.setState({ showAllergenes: false, textAllergenes: "Allergenes ▶" });
-    } else {
-      this.setState({ showAllergenes: true, textAllergenes: "Allergenes ▼" })
-    }
+    if (!this.hasAllergenes) return;
+    this.setState({
+      showAllergenes: !this.state.showAllergenes,
+      textAllergenes: createAllergeneOrAdditiveString("Allergenes", true, !this.state.showAllergenes)
+    });
   };
 
   toggleAdditives = () => {
-    if(this.state.showAdditives) {
-      this.setState({ showAdditives: false, textAdditives: "Additives ▶" });
-    } else {
-      this.setState({ showAdditives: true, textAdditives: "Additives ▼" })
-    }
+    if (!this.hasAdditives) return;
+    this.setState({
+      showAdditives: !this.state.showAdditives,
+      textAdditives: createAllergeneOrAdditiveString("Additives", true, !this.state.showAdditives)
+    });
   };
 
   static defaultProps = {
