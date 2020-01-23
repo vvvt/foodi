@@ -121,7 +121,7 @@ export default class LocationManager extends EventEmitter {
         const lastAccuracy = this.locationTrackingOptions.accuracy;
 
         // adjust location tracking accuracy depending on user location context
-        this.locationTrackingOptions.accuracy = LOCATION_CONTEXT_TO_TRACKING_ACCURACY_MAPPING.find( ([context]) => context === currentLocationContext )[1] || Location.Accuracy.Balanced;
+        this.locationTrackingOptions.accuracy = LOCATION_CONTEXT_TO_TRACKING_ACCURACY_MAPPING.find( ([context]) => context === currentLocationContext )?.[1] || Location.Accuracy.Balanced;
 
         // restart location tracking if the accuracy changed
         if (this.locationTrackingOptions.accuracy !== lastAccuracy) {
@@ -139,7 +139,7 @@ export default class LocationManager extends EventEmitter {
 
         this.stopLocationTracking();
         const { remove: stopFunction } = await Location.watchPositionAsync(
-            this.locationTrackingOptions,
+            { ...this.locationTrackingOptions },
             this.handlePositionChange.bind(this)
         );
 

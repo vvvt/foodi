@@ -12,7 +12,7 @@ import LocationManager from "./src/manager/LocationManager";
 // screen imports
 import FinderScreen from "./src/screens/FinderScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
-import PreferencesScreen from "./src/screens/PreferencesScreen";
+import FilterScreen from "./src/screens/FilterScreen";
 import MapScreen from "./src/screens/MapScreen";
 import CanteenManager from "./src/manager/CanteenManager";
 import MealManager from "./src/manager/MealManager";
@@ -37,13 +37,13 @@ const AppNavigator = createBottomTabNavigator(
                 )
             })
         },
-        preferences: {
-            screen: PreferencesScreen,
+        filter: {
+            screen: FilterScreen,
             navigationOptions: () => ({
-                title: "Preferences",
+                title: "Filter",
                 tabBarIcon: ({tintColor}) => (
                     <Feather
-                        name="sliders"
+                        name="filter"
                         size={19}
                         color={tintColor}
                     />

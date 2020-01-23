@@ -1,13 +1,13 @@
 import React from "react";
 import { Text, SectionList, SafeAreaView, View, ActivityIndicator } from "react-native";
 import ToggleItem from "../components/ToggleItem";
-import PREFERENCES from "../classes/Preferences";
+import FILTERS from "../classes/Filters";
 import styles from "./TemplateScreen.css";
 import SettingsManager, { Setting } from "../manager/SettingsManager"
 
 const settingsManager = SettingsManager.instance;
 
-export default class PreferencesScreen extends React.Component {
+export default class FilterScreen extends React.Component {
 
   state = {
     loading: true
@@ -20,7 +20,7 @@ export default class PreferencesScreen extends React.Component {
 
       // load settings from settingsmanager into state
       const state = { loading: false };
-      PREFERENCES.forEach( preference =>
+      FILTERS.forEach( preference =>
         preference.data.forEach( data => {
           state[data.id] = settingsManager.hasSetting(data.id) ? settingsManager.getSetting(data.id).value : data.default;
         })
@@ -45,7 +45,7 @@ export default class PreferencesScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <SectionList
-          sections={PREFERENCES}
+          sections={FILTERS}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
             <ToggleItem

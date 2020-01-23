@@ -19,16 +19,17 @@ Scroll through the list of meals to find your favorite one. The meals are ordere
 
 
 <img src="assets/screenshot-finder.jpg" height="400" />
+<img src="assets/screenshot-in-canteen.jpg" height="400" />
 
 
 
-#### Meal Preferences
+#### Meal Filters
 
-Set your meal preferences through various toggles and checkboxes. The app aims at the most common eating habits, such as vegetarianism or veganism 
+Set your meal preferences through various toggles and checkboxes. The app supports the most common eating habits, such as vegetarianism or veganism 
 
 
 
-<img src="assets/screenshot-preferences.jpg" height="400" />
+<img src="assets/screenshot-filter.jpg" height="400" />
 
 
 
@@ -38,19 +39,17 @@ Follow the instructions based on Google Maps to find the closest canteen.
 
 
 
-<img src="assets/screenshot-navigation.jpg" height="400" />
+<img src="assets/screenshot-map.jpg" height="400" />
 
 
 
 #### Settings
 
-Configure general app settings, such as language or data use. 
+Configure general app settings, e. g. data use. 
 
 
 
 <img src="assets/screenshot-settings.jpg" height="400" />
-
-
 
 ## Built with
 
@@ -83,5 +82,5 @@ Run `expo start` in the project folder and scan the QR-Code with your smartphone
 
 ## Authors
 
-* **Louis Wilke** - *Prototype Development* - [SoulKa](https://github.com/SoulKa)
-* **Vincent Thiele** - *Prototype Development* - [vvvt](https://github.com/vvvt)
+* **Louis Wilke** - *Backend Development* - [SoulKa](https://github.com/SoulKa)
+* **Vincent Thiele** - *Frontend Development* - [vvvt](https://github.com/vvvt)
