@@ -24,9 +24,19 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     VERY_FAR: 50
 });
 
+// all unmentioned location contexts will have the accuracy "Balanced"
+/** @type {[import("./CanteenManager").LocationContext, Location.Accuracy][]} */
+const LOCATION_CONTEXT_TO_TRACKING_ACCURACY_MAPPING = [
+    ["VERY_FAR", Location.Accuracy.Lowest],
+    ["INSIDE", Location.Accuracy.High],
+    ["FAR", Location.Accuracy.Low]
+];
+
 const LAST_DEVICE_POSITION_SETTING_KEY = "lastDevicePosition";
 
 const settingsManager = SettingsManager.instance;
+/** @type {import("./CanteenManager").default} */
+var canteenManager = null;
 
 /**
  * This singleton class is responsible for the location tracking
@@ -71,8 +81,11 @@ export default class LocationManager extends EventEmitter {
 
     /**
      * Executes all functions that are necessary to use this manager
+     * @param {import("./CanteenManager").default} cManager The canteenManager instance
      */
-    async initialize() {
+    async initialize( cManager ) {
+
+        canteenManager = cManager;
 
         // get permission for location tracking and start it
         const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
@@ -92,6 +105,29 @@ export default class LocationManager extends EventEmitter {
             if (state === "inactive" && this.lastDevicePosition.timestamp !== 0)
                 settingsManager.storeSetting( new Setting(LAST_DEVICE_POSITION_SETTING_KEY, this.lastDevicePosition) );
         });
+
+        // reduce tracking quality if far away
+        canteenManager.on("locationContextChanged", this._onLocationContextStateChanged.bind(this));
+
+    }
+
+    /**
+     * Gets called when the location context of the user changes
+     * @param {import("./CanteenManager").LocationContext} currentLocationContext The current location context
+     * @param {import("./CanteenManager").LocationContext} lastLocationContext The last location context
+     */
+    _onLocationContextStateChanged(currentLocationContext, lastLocationContext) {
+
+        const lastAccuracy = this.locationTrackingOptions.accuracy;
+
+        // adjust location tracking accuracy depending on user location context
+        this.locationTrackingOptions.accuracy = LOCATION_CONTEXT_TO_TRACKING_ACCURACY_MAPPING.find( ([context]) => context === currentLocationContext )[1] || Location.Accuracy.Balanced;
+
+        // restart location tracking if the accuracy changed
+        if (this.locationTrackingOptions.accuracy !== lastAccuracy) {
+            console.log("Adjusting location tracking accuracy...");
+            this.startLocationTracking();
+        }
 
     }
 

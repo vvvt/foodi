@@ -34,7 +34,7 @@ const SORTED_DISTANCE_STATES = Object.keys(LocationManager.CANTEEN_DISTANCE_THRE
     .sort( ([d1], [d2]) => d2 - d1 );
 
 /** @typedef {{ canteen: Canteen, distance: number }} CanteenWithDistance */
-/** @typedef {"INSIDE" | "VERY_CLOSE" | "NEAR_BY" | "MODERATE" | "FAR" | "VERY_FAR"} DistanceState */
+/** @typedef {"INSIDE" | "VERY_CLOSE" | "NEAR_BY" | "MODERATE" | "FAR" | "VERY_FAR"} LocationContext */
 
 /**
  * This singleton is responseble for tasks that are related with canteens.
@@ -50,10 +50,10 @@ const SORTED_DISTANCE_STATES = Object.keys(LocationManager.CANTEEN_DISTANCE_THRE
  * The first parameter is an array of the current surrounding canteens,
  * the second contains the surrounding canteens before this event was emitted.
  * 
- * Emits: "distanceStateChanged"
- * Params: currentCanteenDistanceState, lastState
- * The parameters are of type DistanceState (string enum).
- * Gets fired when distance to the closest canteen reaches a new "distance category".
+ * Emits: "locationContextChanged"
+ * Params: currentLocationContext, lastLocationContext
+ * The parameters are of type LocationContext (string enum).
+ * Gets fired when distance to the closest canteen reaches a new contextual location.
  * See LocationManager.CANTEEN_DISTANCE_THRESHOLDS for the distances.
  */
 export default class CanteenManager extends EventEmitter {
@@ -72,8 +72,8 @@ export default class CanteenManager extends EventEmitter {
         this.surroundingCanteens = [];
         /** The distance in km in which the canteens are loaded from cache into the surroundingCateens array */
         this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.MODERATE;
-        /** @type {DistanceState} */
-        this.currentCanteenDistanceState = "VERY_FAR";
+        /** @type {LocationContext} */
+        this.currentLocationContext = "VERY_FAR";
 
         /** @type {Map<number, Canteen>} */
         this.canteens = new Map();
@@ -144,7 +144,7 @@ export default class CanteenManager extends EventEmitter {
 
         // update the surrounding canteens whenever a new position comes in
         locationManager.on("position", this._updateSurroundingCanteens.bind(this));
-        locationManager.on("position", this._updateCanteenDistanceState.bind(this));
+        locationManager.on("position", this._updateLocationContext.bind(this));
 
         // persist when app is closed so it can be loaded when the app is initialized the next time
         AppState.addEventListener("change", state => {
@@ -155,14 +155,14 @@ export default class CanteenManager extends EventEmitter {
 
     /**
      * Checks the distance to the closest canteen and "categorizes" it after the distances in
-     * LocationManager.CANTEEN_DISTANCE_THRESHOLDS. Fires "distanceStateChanged" event if it changed.
+     * LocationManager.CANTEEN_DISTANCE_THRESHOLDS. Fires "locationContextChanged" event if it changed.
      */
-    _updateCanteenDistanceState() {
-        const lastState = this.currentCanteenDistanceState;
-        this.currentCanteenDistanceState = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance >= d )[1];
-        if (lastState !== this.currentCanteenDistanceState) {
-            console.log(`Distance state changed from "${lastState}" to "${this.currentCanteenDistanceState}"`);
-            this.emit("distanceStateChanged", this.currentCanteenDistanceState, lastState);
+    _updateLocationContext() {
+        const lastState = this.currentLocationContext;
+        this.currentLocationContext = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance >= d )[1];
+        if (lastState !== this.currentLocationContext) {
+            console.log(`Distance state changed from "${lastState}" to "${this.currentLocationContext}"`);
+            this.emit("locationContextChanged", this.currentLocationContext, lastState);
         }
     }
 

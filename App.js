@@ -158,7 +158,7 @@ export default class App extends React.PureComponent {
                 ]);
             })(),
             NetworkManager.instance.initialize(),
-            LocationManager.instance.initialize(),
+            LocationManager.instance.initialize( CanteenManager.instance ),
         ]);
 
         MealManager.instance.setEventHooks();
