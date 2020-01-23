@@ -76,4 +76,21 @@ export default class Coordinate {
         return Coordinate.calcDistance( this, c );
     }
 
+    /**
+     * Compares two coordinates on equality
+     * @param {Coordinate} c1 First coordinate
+     * @param {Coordinate} c2 Second coordinate
+     */
+    static equal(c1, c2) {
+        return c1.latitude === c2.latitude && c1.longitude === c2.longitude;
+    }
+
+    /**
+     * Checks if this coordinate is equal to anther on
+     * @param {Coordinate} c The coordinate to compare
+     */
+    equalTo( c ) {
+        return Coordinate.equal(this, c);
+    }
+
 }

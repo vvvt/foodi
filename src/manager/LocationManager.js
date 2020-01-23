@@ -161,12 +161,18 @@ export default class LocationManager extends EventEmitter {
      * @param {Location.LocationData} newPosition The new tracked location
      */
     async handlePositionChange( newPosition ) {
+
+        const lastCoordinate = this.lastDevicePosition.coordinate;
         this.lastDevicePosition.timestamp = newPosition.timestamp;
         this.lastDevicePosition.coordinate = Coordinate.fromObject( newPosition.coords );
-        console.log(`New position: lat=${this.lastDevicePosition.coordinate.latitude} lng=${this.lastDevicePosition.coordinate.longitude}`);
 
-        // emit the "position" event
-        this.emit("position", this.lastDevicePosition);
+        // check if position actually changed
+        if (!lastCoordinate.equalTo(this.lastDevicePosition.coordinate)) {
+            console.log(`New position: lat=${this.lastDevicePosition.coordinate.latitude.toFixed(3)} lng=${this.lastDevicePosition.coordinate.longitude.toFixed(3)}`);
+
+            // emit the "position" event
+            this.emit("position", this.lastDevicePosition);
+        }
     }
 
     /**
