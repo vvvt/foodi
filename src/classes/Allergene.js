@@ -26,7 +26,7 @@ export default class Allergene {
      * @param {string} note The note
      */
     static fromNote( note ) {
-        const code = /\(([A-N])\d*\)$/.exec(note);
+        const code = /\(([A-N])\)$/.exec(note);
         if (code == null) return undefined;
         return Allergene.fromCode(code[1]);
     }

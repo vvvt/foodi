@@ -101,7 +101,7 @@ export default class Meal {
             this.containsPork = mealProperties.containsPork;
             this.containsAlcohol = mealProperties.containsAlcohol;
             this.containsGarlic = mealProperties.containsGarlic;
-            this.allergenes = mealProperties.allergenes;
+            this.allergenes = mealProperties.allergenes/*.filter( (a, i, arr) => arr.indexOf(a) === i )*/;
             this.additives = mealProperties.additives;
             this.notes = mealProperties.notes;
         } catch(e) {
