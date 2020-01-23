@@ -71,7 +71,7 @@ export default class MealDetails extends React.PureComponent {
               {this.state.textAllergenes}
             </Text>
             {this.state.showAllergenes ? <Text style={styles.cardAllergene}>
-              {meal.allergenes.map(a => a.name).join(",\r\n")}
+              {meal.allergenes.map(a => a.name).join("\n")}
             </Text> : null}
           </View>
           <View style={modal.column}>
@@ -82,7 +82,7 @@ export default class MealDetails extends React.PureComponent {
               {this.state.textAdditives}
             </Text>
             {this.state.showAdditives ? <Text style={styles.cardAllergene}>
-              {meal.additives.map(a => a.name).join(",\r\n")}
+              {meal.additives.map(a => a.name).join("\n")}
             </Text> : null}
           </View>
           <View style={modal.row}>
