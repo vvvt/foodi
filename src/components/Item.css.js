@@ -11,9 +11,7 @@ export default Object.freeze(
 
             borderRadius: 4,
             borderWidth: 2,
-            borderColor: '#f1f3f6',
             backgroundColor: '#fff',
-            color: '#151522'
         },
         row: {
             flex: 1,

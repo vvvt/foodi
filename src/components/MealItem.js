@@ -26,16 +26,22 @@ export default class MealItem extends React.PureComponent {
         <View
           style={[
             styles.item,
-            { backgroundColor: meal.isEveningMeal ? "lightblue" : undefined },
-            { borderColor: meal.isEveningMeal ? "lightblue" : "#ddd" }
+            {
+              borderBottomColor: meal.isVeggieMeal
+                ? "#38b200"
+                : meal.isEveningMeal
+                ? "#0077B3"
+                : "#b2b2b2",
+              borderColor: "#EFEFEF",
+            }
           ]}
         >
           {meal.isEveningMeal ? (
             <Icon
-              color="yellow"
+              color="#0077B3"
               name="md-moon"
               style={styles.moonIcon}
-              size={25}
+              size={20}
             />
           ) : null}
           <View style={styles.row}>
