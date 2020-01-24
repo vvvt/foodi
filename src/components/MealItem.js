@@ -44,6 +44,8 @@ export default class MealItem extends React.PureComponent {
               size={20}
             />
           ) : null}
+
+          {/* The name and price of a meal */}
           <View style={styles.row}>
             <Text style={[styles.cardTitle, styles.columnLeft]}>
               {meal.name}
@@ -52,7 +54,10 @@ export default class MealItem extends React.PureComponent {
               {mealPrice}
             </Text>
           </View>
+
           <View style={styles.smallSpacerVertical} />
+          
+          {/* The canteen and distance */}
           <View style={styles.row}>
             <Text style={[styles.cardSubTitle, styles.columnLeft]}>
               {view == "outside" ? canteen.name : meal.category}

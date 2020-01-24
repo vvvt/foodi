@@ -69,6 +69,7 @@ export default class FinderScreen extends React.PureComponent {
 
     return (
       <>
+        {/* The modal containing the meal details, including additives and an image */}
         <Modal
           animationType="slide"
           presentationStyle="pageSheet"
@@ -110,6 +111,7 @@ export default class FinderScreen extends React.PureComponent {
               />
             )}
             ListHeaderComponent={() => (
+              /* Switch between inside and outside mode */
               <View style={styles.locationRow}>
                 <Text style={styles.canteenTitle}>
                   {this.state.view == "inside"
@@ -127,6 +129,7 @@ export default class FinderScreen extends React.PureComponent {
               </View>
             )}
             ListEmptyComponent={() => (
+              /* Is displayed if no meals could be loaded or the canteen is closed */
               <View style={styles.emptyListMessageContainer}>
                 <Text style={styles.emptyListMessage}>No meals found :(</Text>
               </View>

@@ -65,6 +65,7 @@ export default class SettingsScreen extends React.PureComponent {
           ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
           ListHeaderComponent={() => <Text style={styles.header} >Settings</Text>}
         />
+
         <View style={settingsStyles.clearCacheContainer} >
           <Button
             title="Clear cache"
@@ -76,6 +77,9 @@ export default class SettingsScreen extends React.PureComponent {
     
   }
 
+  /**
+   * Clears the cache in case of filter problems
+   */
   async clearCache() {
     try {
       await databaseManager.dropAllTables();

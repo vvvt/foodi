@@ -37,6 +37,9 @@ export default class MealDetails extends React.PureComponent {
     };
   }
 
+  /**
+   * Expand or collapse the "Allergenes" section 
+   */
   toggleAllergenes = () => {
     if (!this.hasAllergenes) return;
     this.setState({
@@ -45,6 +48,9 @@ export default class MealDetails extends React.PureComponent {
     });
   };
 
+  /**
+   * Expand or collapse the "Additives" section 
+   */
   toggleAdditives = () => {
     if (!this.hasAdditives) return;
     this.setState({
@@ -67,17 +73,24 @@ export default class MealDetails extends React.PureComponent {
     return (
       <View style={modal.item}>
         <View style={[modal.column, modal.paddingHorizontal]}>
+
+          {/* The canteen and counter name */}
           <View style={modal.row}>
             <Text style={styles.cardSubTitle}>
               {canteen.name.toUpperCase() + " - " + meal.category.toUpperCase()}
             </Text>
           </View>
+
+          {/* The meal name */}
           <View style={modal.row}>
             <Text style={styles.cardTitle}>{meal.name}</Text>
           </View>
+
         </View>
         <Image style={styles.image} source={meal.image} resizeMode="contain" />
         <View style={[modal.column, modal.paddingHorizontal]}>
+
+          {/* The allergene display */}
           <View style={modal.column}>
             <Text
               style={styles.cardAllergeneTitle}
@@ -89,6 +102,8 @@ export default class MealDetails extends React.PureComponent {
               {meal.allergenes.map(a => a.name).join("\n")}
             </Text> : null}
           </View>
+
+          {/* The additives display */}
           <View style={modal.column}>
             <Text
               style={styles.cardAllergeneTitle}
@@ -100,6 +115,8 @@ export default class MealDetails extends React.PureComponent {
               {meal.additives.map(a => a.name).join("\n")}
             </Text> : null}
           </View>
+
+          {/* The price and distance */}
           <View style={modal.row}>
             <Text style={styles.cardTitle}>{mealPrice}</Text>
             <Text style={styles.cardTitle}>
@@ -107,6 +124,8 @@ export default class MealDetails extends React.PureComponent {
             </Text>
           </View>
         </View>
+
+        {/* The navigation buttons */}
         <View style={modal.row}>
           <Icon
             name="x"
