@@ -25,6 +25,8 @@ export default class FinderScreen extends React.PureComponent {
 
     this.onMealsChanged = this.onMealsChanged.bind(this);
     this.onLocationContextChanged = this.onLocationContextChanged.bind(this);
+    this.close = this.close.bind(this);
+
     this.props.navigation.addListener("willFocus", this.onMealsChanged);
     this.props.navigation.addListener("willFocus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
   }
@@ -71,10 +73,11 @@ export default class FinderScreen extends React.PureComponent {
           presentationStyle="pageSheet"
           transparent={false}
           visible={currentItemDetails !== null}
+          onRequestClose={this.close}
         >
           <MealDetails
             {...currentItemDetails}
-            OnClosePressed={() => this.setState({ currentItemDetails: null })}
+            OnClosePressed={this.close}
             OnNavigatePressed={() => {
               this.setState({ currentItemDetails: null });
               this.props.navigation.navigate("map", {
@@ -125,6 +128,13 @@ export default class FinderScreen extends React.PureComponent {
         </SafeAreaView>
       </>
     );
+  }
+
+  /**
+   * Closes the modal
+   */
+  close() {
+    this.setState({ currentItemDetails: null });
   }
 
   /**
