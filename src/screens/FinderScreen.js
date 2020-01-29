@@ -12,25 +12,8 @@ import Spacer from "../components/Spacer";
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
 
-const OUTSIDE_ICON = (
-  <Icon
-    name="walking"
-    color="#151522"
-    onPress={() => this.toggleView()}
-    size={22}
-  />
-);
-
-const INSIDE_ICON = (
-  <Icon
-    name="home"
-    color="#151522"
-    onPress={() => this.toggleView()}
-    size={22}
-  />
-);
-
 export default class FinderScreen extends React.PureComponent {
+
   state = {
     mealsWithDistances: mealManager.surroundingMealFiltered,
     /** @type {import("../manager/MealManager").MealWithDistance} */
@@ -48,6 +31,24 @@ export default class FinderScreen extends React.PureComponent {
     this.props.navigation.addListener("willFocus", this.onMealsChanged);
     this.props.navigation.addListener("willFocus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
   }
+
+  OUTSIDE_ICON = (
+    <Icon
+      name="walking"
+      color="#151522"
+      onPress={() => this.toggleView()}
+      size={22}
+    />
+  );
+  
+  INSIDE_ICON = (
+    <Icon
+      name="home"
+      color="#151522"
+      onPress={() => this.toggleView()}
+      size={22}
+    />
+  );
 
   componentDidMount() {
     mealManager.on("mealsChanged", this.onMealsChanged);
@@ -110,7 +111,7 @@ export default class FinderScreen extends React.PureComponent {
           <Text style={styles.canteenTitle}>
             {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
           </Text>
-          {this.state.view === "inside" ? INSIDE_ICON : OUTSIDE_ICON}
+          {this.state.view === "inside" ? this.INSIDE_ICON : this.OUTSIDE_ICON}
         </View>
 
         {/* MEAL LIST */}
