@@ -92,18 +92,19 @@ export default class MealManager extends EventEmitter {
                 if (settingsManager.hasSetting("vegan") && settingsManager.getSetting("vegan").value === true && !m.isVegan) return false;
 
                 /** @type {string[]} An array with allergenes (their code) */
-                const allergenes = [
+                const filters = [
                     ["pork", m.containsPork],
                     ["beef", m.containsBeef],
                     ["alcohol", m.containsAlcohol],
-                    ["garlic", m.containsGarlic]
+                    ["garlic", m.containsGarlic],
+                    ["evening-meal", m.isEveningMeal]
                 ]
                     .filter( v => v[1] )
                     .map( v => v[0] )
                     .concat(m.additives.map( a => a.code ))
                     .concat(m.allergenes.map( a => a.code ));
 
-                return !allergenes.some( settingId => !checkAllergene(settingId) );
+                return !filters.some( settingId => !checkAllergene(settingId) );
 
             }
         );

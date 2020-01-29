@@ -31,6 +31,11 @@ export default Object.freeze([
                 id: "garlic",
                 name: "Garlic",
                 default: true
+            },
+            {
+                id: "evening-meal",
+                name: "Evening meals",
+                default: true
             }
         ]
     },
