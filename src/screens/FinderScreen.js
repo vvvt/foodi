@@ -6,7 +6,7 @@ import styles from "./TemplateScreen.css";
 import CanteenManager from "../manager/CanteenManager";
 import MealManager from "../manager/MealManager";
 import MealDetails from "../components/MealDetails";
-import { Icon } from "react-native-elements";
+import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Spacer from "../components/Spacer";
 
 const canteenManager = CanteenManager.instance;
@@ -86,18 +86,21 @@ export default class FinderScreen extends React.PureComponent {
             }}
           />
         </Modal>
-        {/* Switch between inside and outside mode */}
+
+        {/* HEADER: Switch between inside and outside mode */}
         <View style={styles.finderScreenHeaderContainer}>
           <Text style={styles.canteenTitle}>
             {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
           </Text>
           <Icon
-            name={this.state.view == "inside" ? "log-out" : "log-in"}
-            type="feather"
+            name={this.state.view == "inside" ? "home" : "walking"}
             color="#151522"
             onPress={() => this.toggleView()}
+            size={22}
           />
         </View>
+
+        {/* MEAL LIST */}
         <SafeAreaView style={styles.container}>
           <FlatList
             data={
