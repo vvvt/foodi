@@ -15,6 +15,19 @@ export default class MealItem extends React.PureComponent {
     OnItemPressed: () => {}
   };
 
+  /**
+   * Returns the corresponding stylesheet for the meal
+   * @param {Meal} meal The meal
+   */
+  getBorderStyleOfMeal( meal ) {
+    return (
+      meal.isVegan ? styles.itemBorderVeganMeal :
+      meal.isVegetarian ? styles.itemBorderVegetarianMeal :
+      /*meal.isEveningMeal ? styles.itemBorderEveningMeal :*/
+      null
+    );
+  }
+
   render() {
     const { meal, canteen, distance, view } = this.props;
     const mealPrice = meal.prices.Studierende
@@ -35,7 +48,7 @@ export default class MealItem extends React.PureComponent {
         <View
           style={[
             styles.item,
-            meal.isVegetarian ? styles.itemBorderVegetarianMeal : meal.isEveningMeal ? styles.itemBorderEveningMeal : null
+            this.getBorderStyleOfMeal(meal)
           ]}
         >
           

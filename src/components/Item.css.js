@@ -18,6 +18,9 @@ export default Object.freeze(
             borderBottomColor: "#0077b3"
         },
         itemBorderVegetarianMeal: {
+            borderBottomColor: "orange"
+        },
+        itemBorderVeganMeal: {
             borderBottomColor: "#38b200"
         },
         row: {

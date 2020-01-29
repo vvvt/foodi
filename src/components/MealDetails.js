@@ -69,7 +69,8 @@ export default class MealDetails extends React.PureComponent {
     const { meal, canteen, distance } = this.props;
     const mealPrice = meal.prices.Studierende
       ? meal.prices.Studierende.toFixed(2) + "€"
-      : "n/a";
+      : "n/a"
+    ;
 
     return (
       <View style={modal.item}>
