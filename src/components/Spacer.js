@@ -9,14 +9,16 @@ export default class Spacer extends React.PureComponent {
     constructor(props) {
       super(props);
       this.style = StyleSheet.create({
-        height: this.props.vertical ? 0 : this.props.size,
-        width: !this.props.vertical ? 0 : this.props.size
+        container: {
+          height: this.props.vertical ? 0 : this.props.size,
+          width: !this.props.vertical ? 0 : this.props.size
+        }
       });
     }
   
     render() {
       return (
-        <View style={this.style} />
+        <View style={this.style.container} />
       );
     }
   }
