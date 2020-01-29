@@ -84,7 +84,7 @@ export default class FinderScreen extends React.PureComponent {
           />
         </Modal>
         {/* Switch between inside and outside mode */}
-        <View style={styles.locationRow}>
+        <View style={styles.finderScreenHeaderContainer}>
           <Text style={styles.canteenTitle}>
             {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
           </Text>
@@ -97,7 +97,6 @@ export default class FinderScreen extends React.PureComponent {
         </View>
         <SafeAreaView style={styles.container}>
           <FlatList
-            ListFooterComponent={() => <Spacer size={15} />}
             data={
               this.state.view == "outside"
                 ? this.state.mealsWithDistances
@@ -120,6 +119,8 @@ export default class FinderScreen extends React.PureComponent {
               </View>
             )}
             ItemSeparatorComponent={() => <Spacer size={16} />}
+            ListHeaderComponent={() => <Spacer size={15} />}
+            ListFooterComponent={() => <Spacer size={15} />}
           />
         </SafeAreaView>
       </>

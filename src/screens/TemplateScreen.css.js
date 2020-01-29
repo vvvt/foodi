@@ -18,12 +18,23 @@ export default Object.freeze(
     footerContainer: {
       height: 24
     },
-    locationRow: {
+    finderScreenHeaderContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       paddingVertical: 8,
-      paddingHorizontal: 22
+      paddingHorizontal: 22,
+      borderColor: "darkgrey",
+      borderBottomWidth: 1,
+
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 5,
+      elevation: 5
     },
     canteenTitle: {
       fontSize: 22,
