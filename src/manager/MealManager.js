@@ -29,7 +29,7 @@ export default class MealManager extends EventEmitter {
         /** @type {Map<string, Map<number, Meal[]>>} Map<date, Map<canteenId, meals>> */
         this.canteenMeals = new Map();
 
-        this.surroundingMeals = Array.from(surroundingMeals.values());
+        this.surroundingMeals = Array.from(surroundingMeals.values()).sort( ({ distance: a }, { distance: b }) => a-b );;
     }
 
     async _onCanteensOrNetworkChanged() {
@@ -108,6 +108,7 @@ export default class MealManager extends EventEmitter {
 
             }
         );
+
     }
 
     /**
@@ -161,7 +162,7 @@ export default class MealManager extends EventEmitter {
             mealsWithDistances.forEach( value => surroundingMeals.set( value.meal.id, value ) );
 
             // update state with the new meals/ distances
-            this.surroundingMeals = Array.from(surroundingMeals.values());
+            this.surroundingMeals = Array.from(surroundingMeals.values()).sort( ({ distance: a }, { distance: b }) => a-b );
             
             // emit event
             this.emit("mealsChanged", this.surroundingMeals);
