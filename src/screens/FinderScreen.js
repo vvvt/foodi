@@ -12,6 +12,24 @@ import Spacer from "../components/Spacer";
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
 
+const OUTSIDE_ICON = (
+  <Icon
+    name="walking"
+    color="#151522"
+    onPress={() => this.toggleView()}
+    size={22}
+  />
+);
+
+const INSIDE_ICON = (
+  <Icon
+    name="home"
+    color="#151522"
+    onPress={() => this.toggleView()}
+    size={22}
+  />
+);
+
 export default class FinderScreen extends React.PureComponent {
   state = {
     mealsWithDistances: mealManager.surroundingMealFiltered,
@@ -92,12 +110,7 @@ export default class FinderScreen extends React.PureComponent {
           <Text style={styles.canteenTitle}>
             {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
           </Text>
-          <Icon
-            name={this.state.view == "inside" ? "home" : "walking"}
-            color="#151522"
-            onPress={() => this.toggleView()}
-            size={22}
-          />
+          {this.state.view === "inside" ? INSIDE_ICON : OUTSIDE_ICON}
         </View>
 
         {/* MEAL LIST */}

@@ -96,7 +96,7 @@ export default class MealItem extends React.PureComponent {
           {/* The price and optionally the distance and/or moon icon */}
           <View style={styles.columnRight} >
             <View style={styles.row} >
-              {mealIcons.reduce( (prev, cur, i) => [prev, <Spacer key={"spacer-"+i} size={5} vertical />, cur], [] )}
+              {mealIcons.reduce( (prev, cur, i) => [...prev, <Spacer key={"spacer-"+i} size={5} vertical />, cur], [] )}
             </View>
             <Text style={[styles.cardTitle]}>
               {mealPrice}
