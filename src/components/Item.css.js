@@ -4,7 +4,7 @@ export default Object.freeze(
     StyleSheet.create({
         item: {
             flex: 1,
-            flexDirection: 'column',
+            flexDirection: "row",
             marginHorizontal: 16,
             padding: 16,
 
@@ -35,8 +35,7 @@ export default Object.freeze(
         },
         cardSubTitle: {
             fontSize: 14,
-            fontWeight: "bold",
-            marginBottom: 5
+            fontWeight: "bold"
         },
         cardAllergeneTitle: {
             fontSize: 14,
@@ -47,10 +46,13 @@ export default Object.freeze(
             fontSize: 14
         },
         columnLeft: {
-            flexBasis: '85%'
+            flexBasis: '80%',
+            justifyContent: "space-between"
         },
         columnRight: {
-            flexBasis: '20%'
+            flexBasis: '20%',
+            alignItems: "flex-end",
+            justifyContent: "space-between"
         },
         textRight: {
             textAlign: "right"
@@ -64,9 +66,10 @@ export default Object.freeze(
             height: 10
         },
         moonIcon: {
-            position: "absolute",
-            right: 10,
-            top: 10
+            marginBottom: 5
+        },
+        marginTop: {
+            marginTop: 5
         },
         paddingHorizontal: {
             paddingHorizontal: 16
