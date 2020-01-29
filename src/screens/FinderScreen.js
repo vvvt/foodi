@@ -11,11 +11,6 @@ import { Icon } from "react-native-elements";
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
 
-function MealList(mode, meals) {
-  //let inMeals = meals.filter(meal => meal.canteen == canteenManager.surroundingCanteens[0]);
-  console.log(canteenManager.surroundingCanteens);
-}
-
 export default class FinderScreen extends React.PureComponent {
   state = {
     mealsWithDistances: mealManager.surroundingMealFiltered,
