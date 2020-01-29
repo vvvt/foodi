@@ -185,7 +185,7 @@ export default class CanteenManager extends EventEmitter {
 
             // get the canteens that are near by
             const canteens = await this.getCanteensByPosition(locationManager.lastDevicePosition.coordinate, this.canteenTrackingRadius);
-            this.surroundingCanteens = canteens.sort( (a, b) => a.distance < b.distance ? 1 : a.distance > b.distance ? -1 : 0 );
+            this.surroundingCanteens = canteens.sort( (a, b) => a.distance < b.distance ? -1 : a.distance > b.distance ? 1 : 0 );
             
             // if any canteens or their distance changed => emit event
             if (

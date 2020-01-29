@@ -1,11 +1,9 @@
 import { StyleSheet } from "react-native";
-import Constants from "expo-constants";
 
 export default Object.freeze(
   StyleSheet.create({
     container: {
-      flex: 1,
-      marginTop: Constants.statusBarHeight
+      flex: 1
     },
     header: {
       fontSize: 24,
@@ -24,8 +22,8 @@ export default Object.freeze(
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingTop: 16,
-      marginHorizontal: 22
+      paddingVertical: 8,
+      paddingHorizontal: 22
     },
     canteenTitle: {
       fontSize: 22,

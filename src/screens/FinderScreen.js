@@ -7,6 +7,7 @@ import CanteenManager from "../manager/CanteenManager";
 import MealManager from "../manager/MealManager";
 import MealDetails from "../components/MealDetails";
 import { Icon } from "react-native-elements";
+import Spacer from "../components/Spacer";
 
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
@@ -82,18 +83,25 @@ export default class FinderScreen extends React.PureComponent {
             }}
           />
         </Modal>
+        {/* Switch between inside and outside mode */}
+        <View style={styles.locationRow}>
+          <Text style={styles.canteenTitle}>
+            {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
+          </Text>
+          <Icon
+            name={this.state.view == "inside" ? "log-out" : "log-in"}
+            type="feather"
+            color="#151522"
+            onPress={() => this.toggleView()}
+          />
+        </View>
         <SafeAreaView style={styles.container}>
           <FlatList
+            ListFooterComponent={() => <Spacer size={15} />}
             data={
               this.state.view == "outside"
                 ? this.state.mealsWithDistances
-                : this.state.mealsWithDistances.filter(
-                    m =>
-                      m.canteen.name ==
-                      canteenManager.surroundingCanteens[
-                        canteenManager.surroundingCanteens.length - 1
-                      ].canteen.name
-                  )
+                : this.state.mealsWithDistances.filter( m => m.canteen.id === canteenManager.nearestCanteen?.canteen.id )
             }
             keyExtractor={item => item.meal.id + ""}
             renderItem={({ item }) => (
@@ -105,30 +113,13 @@ export default class FinderScreen extends React.PureComponent {
                 OnItemPressed={() => this.onMealPressed(item)}
               />
             )}
-            ListHeaderComponent={() => (
-              /* Switch between inside and outside mode */
-              <View style={styles.locationRow}>
-                <Text style={styles.canteenTitle}>
-                  {this.state.view == "inside"
-                    ? canteenManager.surroundingCanteens[
-                        canteenManager.surroundingCanteens.length - 1
-                      ].canteen.name
-                    : "Dresden"}
-                </Text>
-                <Icon
-                  name={this.state.view == "inside" ? "log-out" : "log-in"}
-                  type="feather"
-                  color="#151522"
-                  onPress={() => this.toggleView()}
-                />
-              </View>
-            )}
             ListEmptyComponent={() => (
               /* Is displayed if no meals could be loaded or the canteen is closed */
               <View style={styles.emptyListMessageContainer}>
                 <Text style={styles.emptyListMessage}>No meals found :(</Text>
               </View>
             )}
+            ItemSeparatorComponent={() => <Spacer size={16} />}
           />
         </SafeAreaView>
       </>

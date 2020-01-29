@@ -3,6 +3,7 @@ import { createAppContainer } from "react-navigation";
 import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
+import Constants from "expo-constants";
 
 // manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
@@ -18,6 +19,7 @@ import CanteenManager from "./src/manager/CanteenManager";
 import MealManager from "./src/manager/MealManager";
 import PermissionsScreen from "./src/screens/PermissionsScreen";
 import SettingsManager from "./src/manager/SettingsManager";
+import Spacer from "./src/components/Spacer";
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -107,6 +109,21 @@ const LOADING_STATES = Object.freeze({
     ASK_FOR_PERMISSIONS: 3
 });
 
+class AppMainContainer extends React.PureComponent {
+
+    render() {
+
+        return (
+            <>
+                <Spacer size={Constants.statusBarHeight} />
+                {this.props.children}
+            </>
+        );
+
+    }
+
+}
+
 // the root of the app that initializes it first
 export default class App extends React.PureComponent {
 
@@ -117,7 +134,7 @@ export default class App extends React.PureComponent {
     render() {
         switch (this.state.loadingState) {
             case LOADING_STATES.LOADING_SUCCEEDED:
-                return <AppContainer />;
+                return <AppMainContainer><AppContainer/></AppMainContainer>;
             case LOADING_STATES.LOADING_FAILED:
                 return null;
             case LOADING_STATES.LOADING:
@@ -133,9 +150,11 @@ export default class App extends React.PureComponent {
                 );
             case LOADING_STATES.ASK_FOR_PERMISSIONS:
                 return (
-                    <PermissionsScreen
-                        OnPermissionsGranted={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
-                    />
+                    <AppMainContainer>
+                        <PermissionsScreen
+                            OnPermissionsGranted={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
+                        />
+                    </AppMainContainer>
                 );
             default:
                 return null;

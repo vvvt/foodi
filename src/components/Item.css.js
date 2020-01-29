@@ -5,9 +5,8 @@ export default Object.freeze(
         item: {
             flex: 1,
             flexDirection: 'column',
-            marginTop: 16,
             marginHorizontal: 16,
-            paddingVertical: 16,
+            padding: 16,
 
             borderRadius: 4,
             borderWidth: 2,
@@ -17,8 +16,10 @@ export default Object.freeze(
             flex: 1,
             flexDirection: 'row',
             justifyContent: 'space-between',
-            alignItems: "center",
-            paddingHorizontal: 16
+            alignItems: "center"
+        },
+        col: {
+            flex: 1
         },
         cardTitle: {
             fontSize: 16,
@@ -42,6 +43,9 @@ export default Object.freeze(
         },
         columnRight: {
             flexBasis: '20%'
+        },
+        textRight: {
+            textAlign: "right"
         },
         image: {
             flex: 3,
