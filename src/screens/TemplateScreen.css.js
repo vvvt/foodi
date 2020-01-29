@@ -25,16 +25,7 @@ export default Object.freeze(
       paddingVertical: 8,
       paddingHorizontal: 22,
       borderColor: "darkgrey",
-      borderBottomWidth: 1,
-
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 5,
-      elevation: 5
+      borderBottomWidth: 1
     },
     canteenTitle: {
       fontSize: 22,
