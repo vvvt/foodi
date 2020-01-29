@@ -59,6 +59,14 @@ export default Object.freeze(
             position: "absolute",
             right: 10,
             top: 10
+        },
+        paddingHorizontal: {
+            paddingHorizontal: 16
+        },
+        toggleItemTitleContainer: {
+            flexGrow: 1,
+            flex: 1,
+            marginRight: 8
         }
     })
 )

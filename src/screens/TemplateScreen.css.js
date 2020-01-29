@@ -38,6 +38,9 @@ export default Object.freeze(
     },
     emptyListMessage: {
       color: "#aaa"
+    },
+    paddingHorizontal: {
+      paddingHorizontal: 16
     }
   })
 );
