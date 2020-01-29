@@ -26,14 +26,7 @@ export default class MealItem extends React.PureComponent {
         <View
           style={[
             styles.item,
-            {
-              borderBottomColor: meal.isVegetarian
-                ? "#38b200"
-                : meal.isEveningMeal
-                ? "#0077B3"
-                : "#b2b2b2",
-              borderColor: "#EFEFEF",
-            }
+            meal.isVegetarian ? styles.itemBorderVegetarianMeal : meal.isEveningMeal ? styles.itemBorderEveningMeal : null
           ]}
         >
           {meal.isEveningMeal ? (

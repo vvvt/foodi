@@ -11,6 +11,14 @@ export default Object.freeze(
             borderRadius: 4,
             borderWidth: 2,
             backgroundColor: '#fff',
+            borderBottomColor: "#b2b2b2",
+            borderColor: "#efefef"
+        },
+        itemBorderEveningMeal: {
+            borderBottomColor: "#0077b3"
+        },
+        itemBorderVegetarianMeal: {
+            borderBottomColor: "#38b200"
         },
         row: {
             flex: 1,
