@@ -161,7 +161,7 @@ export default class CanteenManager extends EventEmitter {
      */
     _updateLocationContext() {
         const lastState = this.currentLocationContext;
-        this.currentLocationContext = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance >= d )[1];
+        this.currentLocationContext = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance >= d )?.[1] || "INSIDE";
         if (lastState !== this.currentLocationContext) {
             console.log(`Distance state changed from "${lastState}" to "${this.currentLocationContext}"`);
             this.emit("locationContextChanged", this.currentLocationContext, lastState);
@@ -195,7 +195,11 @@ export default class CanteenManager extends EventEmitter {
                 )
             ) {
                 console.log("Canteens or their distance changed");
-                this.emit("canteensChanged", this.surroundingCanteens, lastSurroundingCanteens);
+                try {
+                    this.emit("canteensChanged", this.surroundingCanteens, lastSurroundingCanteens);
+                } catch(e) {
+                    console.log("Error on event callback:", e);
+                }
             }
         } catch(e) {
             console.error("Could not load the surrounding canteens from the database:", e);

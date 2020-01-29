@@ -113,10 +113,6 @@ export default class Meal {
         return this.category.startsWith("Abendangebot");
     }
 
-    get isVeggieMeal() {
-        return this.isVegetarian;
-    }
-
     get hasDefaultImage() {
         return this.image === DEFAULT_IMAGE;
     }

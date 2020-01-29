@@ -27,7 +27,7 @@ export default class MealItem extends React.PureComponent {
           style={[
             styles.item,
             {
-              borderBottomColor: meal.isVeggieMeal
+              borderBottomColor: meal.isVegetarian
                 ? "#38b200"
                 : meal.isEveningMeal
                 ? "#0077B3"
