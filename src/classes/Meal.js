@@ -9,6 +9,11 @@ import DEFAULT_IMAGE from "../assets/default-meal-image.jpg";
 export default class Meal {
 
     /**
+     * @returns {import("react-native").ImageRequireSource} The imported local image to show if no meal image is present
+     */
+    static get DEFAUL_MEAL_IMAGE() { return DEFAULT_IMAGE; }
+
+    /**
      * Parses notes into allergenes and more meal information
      * @param {string[]} notes The notes to extract the informations of
      */

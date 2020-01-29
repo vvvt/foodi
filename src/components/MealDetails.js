@@ -5,6 +5,7 @@ import { Icon } from "react-native-elements";
 import styles from "./Item.css";
 import modal from "./MealDetails.css";
 import Util from "../classes/Util";
+import Meal from "../classes/Meal";
 
 /** @typedef {import("../classes/Meal").default} Meal */
 /** @typedef {import("../classes/Canteen").default} Canteen */
@@ -87,7 +88,7 @@ export default class MealDetails extends React.PureComponent {
           </View>
 
         </View>
-        <Image style={styles.image} source={meal.image} resizeMode="contain" />
+        <Image style={styles.image} source={meal.image} defaultSource={Meal.DEFAUL_MEAL_IMAGE} resizeMode="contain" />
         <View style={[modal.column, modal.paddingHorizontal]}>
 
           {/* The allergene display */}
