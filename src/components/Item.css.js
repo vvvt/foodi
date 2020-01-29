@@ -26,8 +26,7 @@ export default Object.freeze(
         row: {
             flex: 1,
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: "center"
+            justifyContent: 'space-between'
         },
         col: {
             flex: 1
@@ -68,7 +67,7 @@ export default Object.freeze(
         smallSpacerVertical: {
             height: 10
         },
-        moonIcon: {
+        mealIcon: {
             marginBottom: 5
         },
         marginTop: {

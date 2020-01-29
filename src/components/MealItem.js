@@ -1,11 +1,42 @@
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Ionicons as Icon } from "@expo/vector-icons";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import styles from "./Item.css";
 import Util from "../classes/Util";
+import Spacer from "./Spacer";
 
 /** @typedef {import("../classes/Meal").default} Meal */
 /** @typedef {import("../classes/Canteen").default} Canteen */
+
+const EVENING_MEAL_ICON = (
+  <Ionicons
+    color="#0077B3"
+    name="md-moon"
+    size={20}
+    style={styles.mealIcon}
+    key="moon"
+  />
+);
+
+const VEGAN_MEAL_ICON = (
+  <FontAwesome5
+    color="#38b200"
+    name="leaf"
+    size={20}
+    style={styles.mealIcon}
+    key="leaf"
+  />
+);
+
+const VEGETARIAN_MEAL_ICON = (
+  <FontAwesome5
+    color="orange"
+    name="carrot"
+    size={20}
+    style={styles.mealIcon}
+    key="carrot"
+  />
+);
 
 export default class MealItem extends React.PureComponent {
   /** @type {{ meal: Meal, canteen: Canteen, distance: number, view: string, OnItemPressed?: VoidFunction }} */
@@ -34,14 +65,14 @@ export default class MealItem extends React.PureComponent {
       ? meal.prices.Studierende.toFixed(2) + "€"
       : "n/a"
     ;
-    const eveningMealIcon = meal.isEveningMeal ? (
-      <Icon
-        color="#0077B3"
-        name="md-moon"
-        size={20}
-        style={styles.moonIcon}
-      />
-    ) : null;
+    /** @type {JSX.Element[]} */
+    const mealIcons = [];
+    if (meal.isVegan) {
+      mealIcons.push(VEGAN_MEAL_ICON);
+    } else if (meal.isVegetarian) {
+      mealIcons.push(VEGETARIAN_MEAL_ICON);
+    }
+    if (meal.isEveningMeal) mealIcons.push(EVENING_MEAL_ICON);
 
     return (
       <TouchableOpacity onPress={this.props.OnItemPressed}>
@@ -64,7 +95,9 @@ export default class MealItem extends React.PureComponent {
 
           {/* The price and optionally the distance and/or moon icon */}
           <View style={styles.columnRight} >
-            {eveningMealIcon}
+            <View style={styles.row} >
+              {mealIcons.reduce( (prev, cur, i) => [prev, <Spacer key={"spacer-"+i} size={5} vertical />, cur], [] )}
+            </View>
             <Text style={[styles.cardTitle]}>
               {mealPrice}
             </Text>
