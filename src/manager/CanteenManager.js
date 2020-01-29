@@ -26,12 +26,12 @@ const DEFAULT_PREFETCH_POSITION = {
 };
 
 /**
- * @type {[number, string][]} An array containing [distance, state] pairs in descending order.
+ * @type {[number, string][]} An array containing [distance, state] pairs in ascending order.
  * The state is a string as in LocationManager.CANTEEN_DISTANCE_THRESHOLDS
  */
 const SORTED_DISTANCE_STATES = Object.keys(LocationManager.CANTEEN_DISTANCE_THRESHOLDS)
     .map( k => [LocationManager.CANTEEN_DISTANCE_THRESHOLDS[k], k] )
-    .sort( ([d1], [d2]) => d2 - d1 );
+    .sort( ([d1], [d2]) => d1 - d2 );
 
 /** @typedef {{ canteen: Canteen, distance: number }} CanteenWithDistance */
 /** @typedef {"INSIDE" | "VERY_CLOSE" | "NEAR_BY" | "MODERATE" | "FAR" | "VERY_FAR"} LocationContext */
@@ -73,7 +73,7 @@ export default class CanteenManager extends EventEmitter {
         /** The distance in km in which the canteens are loaded from cache into the surroundingCateens array */
         this.canteenTrackingRadius = LocationManager.CANTEEN_DISTANCE_THRESHOLDS.MODERATE;
         /** @type {LocationContext} */
-        this.currentLocationContext = "VERY_FAR";
+        this.currentLocationContext = "MODERATE";
 
         /** @type {Map<number, Canteen>} */
         this.canteens = new Map();
@@ -161,7 +161,8 @@ export default class CanteenManager extends EventEmitter {
      */
     _updateLocationContext() {
         const lastState = this.currentLocationContext;
-        this.currentLocationContext = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance >= d )?.[1] || "INSIDE";
+        this.currentLocationContext = SORTED_DISTANCE_STATES.find( ([d]) => this.nearestCanteenDistance <= d )[1];
+
         if (lastState !== this.currentLocationContext) {
             console.log(`Distance state changed from "${lastState}" to "${this.currentLocationContext}"`);
             this.emit("locationContextChanged", this.currentLocationContext, lastState);

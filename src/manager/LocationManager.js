@@ -21,7 +21,7 @@ const CANTEEN_DISTANCE_THRESHOLDS = Object.freeze({
     NEAR_BY: 0.6,
     MODERATE: 5,
     FAR: 20,
-    VERY_FAR: 50
+    VERY_FAR: Number.POSITIVE_INFINITY
 });
 
 // all unmentioned location contexts will have the accuracy "Balanced"

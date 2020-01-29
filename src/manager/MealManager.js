@@ -160,8 +160,7 @@ export default class MealManager extends EventEmitter {
             mealsWithDistances.forEach( value => surroundingMeals.set( value.meal.id, value ) );
 
             // update state with the new meals/ distances
-            this.surroundingMeals = Array.from(surroundingMeals.values())
-                .sort( (a, b) => a.distance > b.distance ? 1 : a.distance < b.distance ? -1 : 0 );
+            this.surroundingMeals = Array.from(surroundingMeals.values());
             
             // emit event
             this.emit("mealsChanged", this.surroundingMeals);
