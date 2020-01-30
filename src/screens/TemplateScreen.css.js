@@ -12,12 +12,6 @@ export default Object.freeze(
       marginBottom: 8,
       marginTop: 24
     },
-    itemSeperator: {
-      height: 5
-    },
-    footerContainer: {
-      height: 24
-    },
     finderScreenHeaderContainer: {
       flexDirection: "row",
       justifyContent: "space-between",

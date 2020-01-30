@@ -73,13 +73,17 @@ export default Object.freeze(
         marginTop: {
             marginTop: 5
         },
-        paddingHorizontal: {
-            paddingHorizontal: 16
-        },
         toggleItemTitleContainer: {
             flexGrow: 1,
             flex: 1,
             marginRight: 8
+        },
+        toggleItemContainer: {
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 16
         }
     })
 )
