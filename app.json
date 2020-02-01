@@ -33,6 +33,7 @@
       		"apiKey": "api-key"	
       	}
   	  }
-    }
+    },
+    "description": "A simple app to show all the meals of canteens around you in Dresden. A complete list of allergenes in your preferences that can be turned off and on however you want. A nice design, network traffic and battery friendly behaviour."
   }
 }
