@@ -5,6 +5,7 @@ import FILTERS from "../classes/Filters";
 import styles from "./TemplateScreen.css";
 import SettingsManager, { Setting } from "../manager/SettingsManager"
 import Spacer from "../components/Spacer";
+import Locale from "../classes/Locale";
 
 const settingsManager = SettingsManager.instance;
 
@@ -59,11 +60,11 @@ export default class FilterScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <SectionList
-          sections={FILTERS}
+          sections={FILTERS.map( f => ({ data: f.data, title: Locale.LOCALE.FILTERS[f.topic] }))}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
             <ToggleItem
-              title={item.name}
+              title={Locale.LOCALE.FILTERS[item.id]}
               onValueChange={value => this.storeSetting( new Setting(item.id, value) )}
               toggleValue={this.state[item.id]}
               disabled={this.disabledFilters.has(item.id)}

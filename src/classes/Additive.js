@@ -1,3 +1,5 @@
+import Locale from "./Locale";
+
 export default class Additive {
 
     static get ADDITIVES() { return ADDITIVES; }
@@ -5,11 +7,14 @@ export default class Additive {
     /**
      * An additive contained in a meal
      * @param {number} code The number code
-     * @param {string} name The descriptive name
      */
-    constructor( code, name ) {
+    constructor( code ) {
         this.code = code;
-        this.name = name;
+    }
+
+    /** @type {string} The descriptive name */
+    get name() {
+        return Locale.LOCALE.ADDITIVES[this.code];
     }
 
     /**
@@ -35,48 +40,7 @@ export default class Additive {
 
 const ADDITIVES_MAP = Object.freeze(
     new Map(
-        [
-            {
-                id: 1,
-                name: "Coloring"
-            },
-            {
-                id: 2,
-                name: "Preservative"
-            },
-            {
-                id: 3,
-                name: "Antioxidant"
-            },
-            {
-                id: 4,
-                name: "Flavor enhancer"
-            },
-            {
-                id: 5,
-                name: "Fumigated"
-            },
-            {
-                id: 6,
-                name: "Blackened"
-            },
-            {
-                id: 7,
-                name: "Waxed"
-            },
-            {
-                id: 8,
-                name: "Phosphate"
-            },
-            {
-                id: 9,
-                name: "Sweetener"
-            },
-            {
-                id: 10,
-                name: "Phenylalanine source"
-            },
-        ].map( a => [a.id, new Additive(a.id, a.name)] )
+        [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ].map( id => [id, new Additive(id)] )
     )
 );
 const ADDITIVES = Object.freeze(Array.from(ADDITIVES_MAP.values()));

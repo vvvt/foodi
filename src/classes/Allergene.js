@@ -1,3 +1,5 @@
+import Locale from "./Locale";
+
 export default class Allergene {
 
     static get ALLERGENES() { return ALLERGENES; }
@@ -5,11 +7,14 @@ export default class Allergene {
     /**
      * An allergene contained in a meal
      * @param {string} code The letter code
-     * @param {string} name The descriptive name
      */
-    constructor( code, name ) {
+    constructor( code ) {
         this.code = code;
-        this.name = name;
+    }
+
+    /** @type {string} The descriptive name */
+    get name() {
+        return Locale.LOCALE.ALLERGENES[this.code];
     }
 
     /**
@@ -34,63 +39,6 @@ export default class Allergene {
 }
 
 const ALLERGENES_MAP = Object.freeze(
-    new Map([
-        {
-            id: "A",
-            name: "Gluten-containing cereals"
-        },
-        {
-            id: "B",
-            name: "Cretaceous"
-        },
-        {
-            id: "C",
-            name: "Eggs"
-        },
-        {
-            id: "D",
-            name: "Fish"
-        },
-        {
-            id: "E",
-            name: "Peanuts"
-        },
-        {
-            id: "F",
-            name: "Soy"
-        },
-        {
-            id: "G",
-            name: "Milk / Milk Sugar (Lactose)"
-        },
-        {
-            id: "H",
-            name: "Shell fruits (nuts)"
-        },
-        {
-            id: "I",
-            name: "Celery"
-        },
-        {
-            id: "J",
-            name: "Mustard"
-        },
-        {
-            id: "K",
-            name: "Sesame"
-        },
-        {
-            id: "L",
-            name: "Sulfite / sulfur dioxide"
-        },
-        {
-            id: "M",
-            name: "Lupins"
-        },
-        {
-            id: "N",
-            name: "Molluscs"
-        }
-    ].map( a => [a.id, new Allergene(a.id, a.name)] )
+    new Map([ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N" ].map( id => [id, new Allergene(id)] )
 ));
 const ALLERGENES = Object.freeze(Array.from(ALLERGENES_MAP.values()));

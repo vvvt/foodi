@@ -8,6 +8,7 @@ import MealManager from "../manager/MealManager";
 import MealDetails from "../components/MealDetails";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Spacer from "../components/Spacer";
+import Locale from "../classes/Locale";
 
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
@@ -135,7 +136,7 @@ export default class FinderScreen extends React.PureComponent {
             ListEmptyComponent={() => (
               /* Is displayed if no meals could be loaded or the canteen is closed */
               <View style={styles.emptyListMessageContainer}>
-                <Text style={styles.emptyListMessage}>No meals found :(</Text>
+                <Text style={styles.emptyListMessage}>{Locale.LOCALE.FINDER_SCREEN["list_no-meals"]}</Text>
               </View>
             )}
             ItemSeparatorComponent={() => <Spacer size={16} />}

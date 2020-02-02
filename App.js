@@ -3,23 +3,32 @@ import { createAppContainer } from "react-navigation";
 import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { AppLoading } from "expo";
+import * as Localization from "expo-localization";
 import Constants from "expo-constants";
+
+// class imports
+import Locale from "./src/classes/Locale";
 
 // manager imports
 import DatabaseManager from "./src/manager/DatabaseManager";
 import NetworkManager from "./src/manager/NetworkManager";
 import LocationManager from "./src/manager/LocationManager";
+import SettingsManager from "./src/manager/SettingsManager";
+import CanteenManager from "./src/manager/CanteenManager";
+import MealManager from "./src/manager/MealManager";
 
 // screen imports
 import FinderScreen from "./src/screens/FinderScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import FilterScreen from "./src/screens/FilterScreen";
 import MapScreen from "./src/screens/MapScreen";
-import CanteenManager from "./src/manager/CanteenManager";
-import MealManager from "./src/manager/MealManager";
 import PermissionsScreen from "./src/screens/PermissionsScreen";
-import SettingsManager from "./src/manager/SettingsManager";
+
+// component imports
 import Spacer from "./src/components/Spacer";
+
+// set language
+Locale.setLanguage( Localization.locale.split("-")[0] );
 
 /* * * * * * * * * * * *
  * ADD NEW SCREEN HERE *
@@ -29,7 +38,7 @@ const AppNavigator = createBottomTabNavigator(
         finder: {
             screen: FinderScreen,
             navigationOptions: () => ({
-                title: "Finder",
+                title: Locale.LOCALE.TAB_NAVIGATOR.finder,
                 tabBarIcon: ({tintColor}) => (
                     <Feather
                         name="search"
@@ -42,7 +51,7 @@ const AppNavigator = createBottomTabNavigator(
         filter: {
             screen: FilterScreen,
             navigationOptions: () => ({
-                title: "Filter",
+                title: Locale.LOCALE.TAB_NAVIGATOR.filter,
                 tabBarIcon: ({tintColor}) => (
                     <Feather
                         name="filter"
@@ -55,7 +64,7 @@ const AppNavigator = createBottomTabNavigator(
         map: {
             screen: MapScreen,
             navigationOptions: () => ({
-                title: "Navigation",
+                title: Locale.LOCALE.TAB_NAVIGATOR.map,
                 tabBarIcon: ({tintColor}) => (
                     <Feather
                         name="map"
@@ -68,7 +77,7 @@ const AppNavigator = createBottomTabNavigator(
         settings: {
             screen: SettingsScreen,
             navigationOptions: () => ({
-                title: "Settings",
+                title: Locale.LOCALE.TAB_NAVIGATOR.settings,
                 tabBarIcon: ({tintColor}) => (
                     <Feather
                         name="settings"

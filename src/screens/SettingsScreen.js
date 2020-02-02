@@ -8,6 +8,7 @@ import settingsStyles from "./SettingsScreen.css";
 import SettingsManager, { Setting } from "../manager/SettingsManager";
 import DatabaseManager from "../manager/DatabaseManager";
 import CanteenManager from "../manager/CanteenManager";
+import Locale from "../classes/Locale";
 
 const settingsManager = SettingsManager.instance;
 const databaseManager = DatabaseManager.instance;
@@ -53,7 +54,7 @@ export default class SettingsScreen extends React.PureComponent {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) =>
             <ToggleItem
-              title={item.title}
+              title={Locale.LOCALE.SETTINGS[item.id]}
               onValueChange={value => {
                 console.log("store " + item.id + " " + value);
                 settingsManager.storeSetting( new Setting(item.id, value) );
@@ -63,12 +64,12 @@ export default class SettingsScreen extends React.PureComponent {
             />
           }
           ItemSeparatorComponent={() => <View style={styles.itemSeperator} />}
-          ListHeaderComponent={() => <Text style={styles.header} >Settings</Text>}
+          ListHeaderComponent={() => <Text style={styles.header} >{Locale.LOCALE.SETTINGS.settings}</Text>}
         />
 
         <View style={settingsStyles.clearCacheContainer} >
           <Button
-            title="Clear cache"
+            title={Locale.LOCALE.SETTINGS["clear-cache"]}
             onPress={this.clearCache.bind(this)}
           />
         </View>

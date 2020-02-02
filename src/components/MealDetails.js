@@ -6,6 +6,7 @@ import styles from "./Item.css";
 import modal from "./MealDetails.css";
 import Util from "../classes/Util";
 import Meal from "../classes/Meal";
+import Locale from "../classes/Locale";
 
 /** @typedef {import("../classes/Meal").default} Meal */
 /** @typedef {import("../classes/Canteen").default} Canteen */
@@ -16,7 +17,7 @@ import Meal from "../classes/Meal";
  * @param isOpen 
  */
 function createAllergeneOrAdditiveString( body, hasChildren = true, isOpen = false ) {
-  if (!hasChildren) return "No " + body;
+  if (!hasChildren) return Locale.LOCALE.MEAL_DETAILS.no + " " + body;
   return body + (isOpen ? " ▼" : " ▶");
 }
 
@@ -31,8 +32,8 @@ export default class MealDetails extends React.PureComponent {
     this.hasAdditives = this.props.meal.additives.length !== 0;
 
     this.state = {
-      textAllergenes: createAllergeneOrAdditiveString("Allergenes", this.hasAllergenes),
-      textAdditives: createAllergeneOrAdditiveString("Additives", this.hasAdditives),
+      textAllergenes: createAllergeneOrAdditiveString(Locale.LOCALE.MEAL_DETAILS.allergenes, this.hasAllergenes),
+      textAdditives: createAllergeneOrAdditiveString(Locale.LOCALE.MEAL_DETAILS.additives, this.hasAdditives),
       showAllergenes: false,
       showAdditives: false
     };
@@ -45,7 +46,7 @@ export default class MealDetails extends React.PureComponent {
     if (!this.hasAllergenes) return;
     this.setState({
       showAllergenes: !this.state.showAllergenes,
-      textAllergenes: createAllergeneOrAdditiveString("Allergenes", true, !this.state.showAllergenes)
+      textAllergenes: createAllergeneOrAdditiveString(Locale.LOCALE.MEAL_DETAILS.allergenes, true, !this.state.showAllergenes)
     });
   };
 
@@ -56,7 +57,7 @@ export default class MealDetails extends React.PureComponent {
     if (!this.hasAdditives) return;
     this.setState({
       showAdditives: !this.state.showAdditives,
-      textAdditives: createAllergeneOrAdditiveString("Additives", true, !this.state.showAdditives)
+      textAdditives: createAllergeneOrAdditiveString(Locale.LOCALE.MEAL_DETAILS.additives, true, !this.state.showAdditives)
     });
   };
 
