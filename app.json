@@ -27,7 +27,7 @@
     },
     "android": {
       "package": "de.tu_dresden.app_dev.group_10.foodi",
-      "versionCode": 4,
+      "versionCode": 5,
       "config": {
       	"googleMaps": {
       		"apiKey": "api-key"	
