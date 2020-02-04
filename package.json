@@ -5,7 +5,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "build": "npm run setApiKey && expo build:android && npm run unsetApiKey",
+    "setApiKey": "SET_API_KEY=true node builder.js",
+    "unsetApiKey": "SET_API_KEY=false node builder.js"
   },
   "dependencies": {
     "@react-native-community/netinfo": "4.6.0",

@@ -20,3 +20,6 @@ web-report/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+
+# API KEY
+GOOGLE_API_KEY.txt

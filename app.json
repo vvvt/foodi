@@ -29,10 +29,10 @@
       "package": "de.tu_dresden.app_dev.group_10.foodi",
       "versionCode": 5,
       "config": {
-      	"googleMaps": {
-      		"apiKey": "api-key"	
-      	}
-  	  }
+        "googleMaps": {
+          "apiKey": "api-key"
+        }
+      }
     },
     "description": "A simple app to show all the meals of canteens around you in Dresden. A complete list of allergenes in your preferences that can be turned off and on however you want. A nice design, network traffic and battery friendly behaviour."
   }
