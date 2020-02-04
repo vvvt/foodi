@@ -84,6 +84,9 @@ const LOCALES = Object.freeze({
             "allergenes": "Allergenes",
             "additives": "Additives",
             "no": "No"
+        },
+        MAP_SCREEN: {
+            "away": "away"
         }
     },
 
@@ -170,6 +173,9 @@ const LOCALES = Object.freeze({
             "allergenes": "Allergene",
             "additives": "Zusatzstoffe",
             "no": "Keine"
+        },
+        MAP_SCREEN: {
+            "away": "entfernt"
         }
     }
 });

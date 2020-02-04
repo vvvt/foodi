@@ -6,6 +6,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import LocationManager from "../manager/LocationManager";
 import CanteenManager from "../manager/CanteenManager";
 import Util from "../classes/Util";
+import Locale from "../classes/Locale";
 
 const locationManager = LocationManager.instance;
 const canteenManager = CanteenManager.instance;
@@ -80,7 +81,7 @@ export default class MapScreen extends React.PureComponent {
                 <Marker
                     key={canteen.id}
                     title={canteen.name}
-                    description={Util.distanceToString(distance) + " away"}
+                    description={Util.distanceToString(distance) + " " + Locale.LOCALE.MAP_SCREEN.away}
                     coordinate={canteen.coordinate}
                 />
             )
