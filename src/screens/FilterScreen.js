@@ -11,8 +11,8 @@ const settingsManager = SettingsManager.instance;
 
 /** @type {{ [filterId: string]: string[] }} */
 const DISABLE_SETTING_MAP = Object.freeze({
-  "vegetarian": [ "beef", "pork", "D", "N" ],
-  "vegan": [ "beef", "pork", "D", "N", "vegetarian", "C", "G" ]
+  "vegetarian": [ "beef", "pork", "B", "D", "N" ],
+  "vegan": [ "beef", "pork", "D", "B", "N", "vegetarian", "C", "G" ]
 });
 
 export default class FilterScreen extends React.Component {
