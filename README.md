@@ -1,6 +1,6 @@
 # foodi
 
-<img src="https://img.shields.io/badge/React-16.9.0-61DBFB.svg?logo=React" /> <img src="https://img.shields.io/badge/Expo-^36.0.0-4630EB.svg?logo=Expo" />
+<img src="https://img.shields.io/badge/React-16.11.0-61DBFB.svg?logo=React" /> <img src="https://img.shields.io/badge/Expo-^38.0.0-4630EB.svg?logo=Expo" />
 
 Prototypical app for getting canteen recommendations based on user's location and set preferences.
 
