@@ -182,8 +182,8 @@ export default class LocationManager extends EventEmitter {
      */
     async requestPermissions() {
         try {
-            await Location.requestPermissionsAsync();
-            this.hasPermission = true;
+            const perm = await Permissions.askAsync( Permissions.LOCATION );
+            this.hasPermission = perm.granted;
         } catch(e) {
             this.hasPermission = false;
         }
