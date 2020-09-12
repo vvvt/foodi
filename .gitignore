@@ -23,3 +23,6 @@ web-report/
 
 # API KEY
 GOOGLE_API_KEY.txt
+
+# builds folder
+/builds
