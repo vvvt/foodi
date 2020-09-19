@@ -14,6 +14,7 @@ const canteenManager = CanteenManager.instance;
 const settingsManager = SettingsManager.instance;
 
 /** @typedef {{ meal: Meal, distance: number, canteen: import("../classes/Canteen").default }} MealWithDistance */
+/** @typedef {{ canteenId: number, date: string }} FetchedDayDatabaseRow */
 
 var currentMealDay = moment().format("YYYY-MM-DD");
 
@@ -60,6 +61,16 @@ export default class MealManager extends EventEmitter {
      * Loads all persisted meals into the cache
      */
     async initialize() {
+
+        // load fetched days from database (this prevents refetching canteens that didn't have any meals)
+        /** @type {FetchedDayDatabaseRow[]} */
+        const fetchedDays = await databaseManager.getAll( DatabaseManager.STATEMENTS.LOAD_ALL_FETCHED_DAYS );
+        fetchedDays.forEach( d => {
+            if (!this.canteenMeals.has(d.date)) this.canteenMeals.set(d.date, new Map());
+            if (!this.canteenMeals.get(d.date).has(d.canteenId)) this.canteenMeals.get(d.date).set(d.canteenId, []);
+        });
+
+        // load meals from database
         const meals = await this.loadMeals();
         meals.forEach( m => {
             if (!this.canteenMeals.has(m.date)) this.canteenMeals.set(m.date, new Map());
@@ -67,6 +78,8 @@ export default class MealManager extends EventEmitter {
             if (!canteensOfDate.has(m.canteenId)) canteensOfDate.set(m.canteenId, []);
             canteensOfDate.get(m.canteenId).push(m);
         });
+
+        console.log(`Loaded ${meals.length} meals from the database`);
     }
 
     /**
@@ -241,8 +254,14 @@ export default class MealManager extends EventEmitter {
                 promises.push(async () => {
                     try {
                         // do not prefetch if it was already
-                        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteen.id))
-                            await this.saveMeals( await this.fetchMeals(canteen.id, day, NaN, "LOW") );
+                        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteen.id)) {
+                            try {
+                                await this.saveMeals( await this.fetchMeals(canteen.id, day, NaN, "LOW") );
+                                await this._saveDayAsFetched( canteen.id, day );
+                            } catch(e) {
+                                console.error("Could not prefetch meals", e);
+                            }
+                        }
                     } catch(e) {
                         console.warn(`Could not prefetch the meals of canteen "${canteen.name}" for the date ${day}:`, e);
                     }
@@ -261,7 +280,10 @@ export default class MealManager extends EventEmitter {
     async loadOrFetchMeals( canteenId, day ) {
 
         // fetch meals (with high priority) if not done already
-        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) await this.saveMeals( await this.fetchMeals(canteenId, day, NaN, "HIGH") );
+        if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteenId)) {
+            await this.saveMeals( await this.fetchMeals(canteenId, day, NaN, "HIGH") );
+            await this._saveDayAsFetched(canteenId, day);
+        }
         return this.canteenMeals.get(day)?.get(canteenId) || [];
 
     }
@@ -290,7 +312,8 @@ export default class MealManager extends EventEmitter {
      * @returns An array of meals or an empty array
      */
     async fetchMeals( canteenId, day = moment().format("YYYY-MM-DD"), mealId = NaN, priority = "MODERATE" ) {
-        
+        console.info(`Fetching ${isNaN(mealId) ? "meals":"meal with id "+mealId} for the canteen with id ${canteenId} from ${day} with priority "${priority}"...`);
+
         // fetch from OpenMensa API
         const res = await networkManager.fetchWithParams(
             NetworkManager.ENDPOINTS.OPEN_MENSA_API + `/canteens/${canteenId}/days/${day}/meals${isNaN(mealId) ? "" : "/"+mealId}`,
@@ -303,7 +326,7 @@ export default class MealManager extends EventEmitter {
         /** @type {import("../classes/Meal").MealObj[]} */
         let mealsObjs = await res.json();
 
-        if (isNaN(mealId)) {
+        if (isNaN(mealId)) {            
             // if is an array of meals
             if (!Array.isArray(mealsObjs)) return [];
         } else {
@@ -371,6 +394,17 @@ export default class MealManager extends EventEmitter {
             })
         );
 
+    }
+
+    /**
+     * Saves the given day and canteen combination in the database. This day will not be fetched again
+     * @param {number} canteenId The canteen
+     * @param {string} day The day
+     */
+    async _saveDayAsFetched( canteenId, day ) {
+        await databaseManager.run( DatabaseManager.STATEMENTS.INSERT_INTO_FETCHED_DAYS, [canteenId, day] );
+        if (!this.canteenMeals.has(day)) this.canteenMeals.set(day, new Map());
+        if (!this.canteenMeals.get(day).has(canteenId)) this.canteenMeals.get(day).set(canteenId, []);
     }
 
 }

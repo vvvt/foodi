@@ -37,11 +37,17 @@ export default class DatabaseManager {
      */
     async initialize() {
         //await this.dropAllTables();
+
+        // enable foreign keys
         await this.exec([STATEMENTS.ENABLE_FOREIGN_KEYS]);
+
+        // create tables
         await this.run(STATEMENTS.CREATE_TABLE_CANTEENS);
-        await this.run(STATEMENTS.CREATE_TABLE_MEALS);
+        await Promise.all([ STATEMENTS.CREATE_TABLE_MEALS, STATEMENTS.CREATE_TABLE_FETCHED_DAYS ].map( s => this.run(s) ));
         await Promise.all([ STATEMENTS.CREATE_TABLE_MEAL_NOTES, STATEMENTS.CREATE_TABLE_MEAL_PRICES ].map( s => this.run(s) ));
-        await this.run(STATEMENTS.DELETE_MEALS_BEFORE_LAST_WEEK);
+        
+        // clean up
+        await Promise.all([ STATEMENTS.DELETE_FETCHED_DAYS_BEFORE_LAST_WEEK, STATEMENTS.DELETE_MEALS_BEFORE_LAST_WEEK ].map( s => this.run(s) ));
     }
 
     /**
@@ -50,8 +56,8 @@ export default class DatabaseManager {
     async dropAllTables() {
         console.warn("Dropping all database tables!");
         await Promise.all([ STATEMENTS.DROP_TABLE_MEAL_NOTES, STATEMENTS.DROP_TABLE_MEAL_PRICES ].map( s => this.run(s) ));
+        await Promise.all([ STATEMENTS.DROP_TABLE_MEALS, STATEMENTS.DROP_TABLE_FETCHED_DAYS ].map( s => this.run(s) ));
         await this.run(STATEMENTS.DROP_TABLE_CANTEENS);
-        await this.run(STATEMENTS.DROP_TABLE_MEALS);
     }
 
     /**

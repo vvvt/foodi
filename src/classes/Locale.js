@@ -72,7 +72,9 @@ const LOCALES = Object.freeze({
         SETTINGS: {
             "fetch-images-cellular": "Download images using cellular",
             "settings": "Settings",
-            "clear-cache": "Clear cache"
+            "clear-cache": "Clear cache",
+            "cache-cleared": "The cache was cleared.",
+            "cache-clear-error": "An error occured while clearing the cache!"
         },
         TAB_NAVIGATOR: {
             "finder": "Finder",
@@ -164,7 +166,9 @@ const LOCALES = Object.freeze({
         SETTINGS: {
             "fetch-images-cellular": "Bilder mit mobilen Daten laden",
             "settings": "Einstellungen",
-            "clear-cache": "Cache leeren"
+            "clear-cache": "Cache leeren",
+            "cache-cleared": "Der Cache wurde geleert.",
+            "cache-clear-error": "Der Cache konnte auf Grund eines Fehlers nicht geleert werden!"
         },
         TAB_NAVIGATOR: {
             "finder": "Finder",

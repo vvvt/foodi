@@ -123,6 +123,7 @@ export default class CanteenManager extends EventEmitter {
             console.log("Restored last prefetch position of canteens");
 
         }
+        console.log(`Loaded ${this.canteens.size} canteens from the database`);
     }
 
     /**

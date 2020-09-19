@@ -33,7 +33,7 @@ export default Object.freeze({
     INSERT_INTO_MEALS: `REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,date(?),?)`,
     LOAD_ALL_MEALS: `SELECT * FROM meals`,
     LOAD_MEALS_OF_CANTEEN: `SELECT * FROM meals WHERE canteenId=?`,
-    DELETE_MEALS_BEFORE_LAST_WEEK: `DELETE FROM meals WHERE date(date) < date('now', '-7 days')`,
+    DELETE_MEALS_BEFORE_LAST_WEEK: `DELETE FROM fetchedDays WHERE date(date) < date('now', '-7 days')`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (
@@ -63,5 +63,20 @@ export default Object.freeze({
     `,
     DROP_TABLE_MEAL_PRICES: `DROP TABLE IF EXISTS mealPrices`,
     INSERT_INTO_MEAL_PRICES: `REPLACE INTO mealPrices (mealId, priceGroup, price) VALUES (?,?,?)`,
-    LOAD_MEAL_PRICES_OF_MEAL: `SELECT priceGroup, price FROM mealPrices WHERE mealId=?`
+    LOAD_MEAL_PRICES_OF_MEAL: `SELECT priceGroup, price FROM mealPrices WHERE mealId=?`,
+
+    CREATE_TABLE_FETCHED_DAYS: `
+        CREATE TABLE IF NOT EXISTS fetchedDays (
+            canteenId INTEGER NOT NULL,
+            date DATE NOT NULL,
+            PRIMARY KEY (canteenId, date),
+            FOREIGN KEY (canteenId)
+                REFERENCES canteens (id)
+                ON DELETE CASCADE
+        )
+    `,
+    DROP_TABLE_FETCHED_DAYS: `DROP TABLE IF EXISTS fetchedDays`,
+    INSERT_INTO_FETCHED_DAYS: `REPLACE INTO fetchedDays (canteenId, date) VALUES (?,?)`,
+    LOAD_ALL_FETCHED_DAYS: `SELECT canteenId, date FROM fetchedDays`,
+    DELETE_FETCHED_DAYS_BEFORE_LAST_WEEK: `DELETE FROM meals WHERE date(date) < date('now', '-7 days')`
 });
