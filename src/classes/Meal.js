@@ -3,6 +3,8 @@ import Additive from "./Additive";
 
 import DEFAULT_IMAGE from "../assets/default-meal-image.jpg";
 
+const IMAGE_URL_PROTOCOL = "http";
+
 /** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string, image: string }} MealObj */
 /** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string, imageUrl: string }} MealDatabaseRow */
 
@@ -82,8 +84,9 @@ export default class Meal {
      */
     constructor( id, canteenId, name, date, category, prices = {}, notes = [], image = DEFAULT_IMAGE ) {
         if (!Meal.isValidMealDate(date)) throw new Error(`Invalid date format! Must be of format "YYYY-MM-DD" but was "${date}"`);
-        if (image == null || image === "https://static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg") image = DEFAULT_IMAGE;
+        if (image == null || image === "//static.studentenwerk-dresden.de/bilder/mensen/studentenwerk-dresden-lieber-mensen-gehen.jpg") image = DEFAULT_IMAGE;
         Object.keys( prices ).forEach( priceGroup => prices[priceGroup] == null ? delete prices[priceGroup] : null );
+        if (typeof image === "string" && image.startsWith("//")) image = IMAGE_URL_PROTOCOL+":"+image;
 
         this.id = id;
         this.canteenId = canteenId;
