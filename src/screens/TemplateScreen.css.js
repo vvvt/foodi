@@ -13,17 +13,24 @@ export default Object.freeze(
       marginTop: 24
     },
     finderScreenHeaderContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
+      flexDirection: "column",
       paddingVertical: 8,
       paddingHorizontal: 22,
       borderColor: "darkgrey",
       borderBottomWidth: 1
     },
+    finderScreenHeaderRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderColor: "darkgrey",
+    },
     canteenTitle: {
       fontSize: 22,
       fontWeight: "bold"
+    },
+    currentDayText: {
+      fontSize: 18
     },
     emptyListMessageContainer: {
       width: "100%",

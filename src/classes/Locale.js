@@ -1,3 +1,6 @@
+import moment from "moment";
+import "moment/locale/de";
+
 /** @typedef {"en" | "de"} CountryCode */
 
 const LOCALES = Object.freeze({
@@ -78,7 +81,10 @@ const LOCALES = Object.freeze({
             "settings": "Settings"
         },
         FINDER_SCREEN: {
-            "list_no-meals": "No meals found :("
+            "list_no-meals": "No meals found :(",
+            "today": "today",
+            "tomorrow": "tomorrow",
+            "yesterday": "yesterday",
         },
         MEAL_DETAILS: {
             "allergenes": "Allergenes",
@@ -167,7 +173,10 @@ const LOCALES = Object.freeze({
             "settings": "Einstellungen"
         },
         FINDER_SCREEN: {
-            "list_no-meals": "Keine Gerichte gefunden :("
+            "list_no-meals": "Keine Gerichte gefunden :(",
+            "today": "heute",
+            "tomorrow": "morgen",
+            "yesterday": "gestern",
         },
         MEAL_DETAILS: {
             "allergenes": "Allergene",
@@ -198,6 +207,7 @@ export default class Locale {
         if (LOCALES[language]) {
             console.log(`Changing the language from "${CURRENT_LANGUAGE}" to "${language}"...`);
             CURRENT_LANGUAGE = language;
+            moment.locale(language);
         } else {
             console.warn(`No translation found for the language "${language}", keeping the previously set language!`);
         }

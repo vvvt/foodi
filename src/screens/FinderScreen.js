@@ -9,9 +9,26 @@ import MealDetails from "../components/MealDetails";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Spacer from "../components/Spacer";
 import Locale from "../classes/Locale";
+import { Directions, FlingGestureHandler, State } from "react-native-gesture-handler";
+import moment from "moment";
 
 const canteenManager = CanteenManager.instance;
 const mealManager = MealManager.instance;
+
+/**
+ * Formats the current meal day string to a nice humanly readbable string
+ * @param {string} currentDay The current day
+ */
+function formatMealDayString( currentDay ) {
+  const d = moment(currentDay);
+  const today = moment().startOf("day");
+  const diff = d.diff(today, "days");
+  if (diff === 0) return Locale.LOCALE.FINDER_SCREEN.today;
+  if (diff === 1) return Locale.LOCALE.FINDER_SCREEN.tomorrow;
+  if (diff === -1) return Locale.LOCALE.FINDER_SCREEN.yesterday;
+  if (diff > 0) return d.format("dddd");
+  return d.format("DD.MM.");
+}
 
 export default class FinderScreen extends React.PureComponent {
 
@@ -19,7 +36,8 @@ export default class FinderScreen extends React.PureComponent {
     mealsWithDistances: mealManager.surroundingMealFiltered,
     /** @type {import("../manager/MealManager").MealWithDistance} */
     currentItemDetails: null,
-    view: canteenManager.currentLocationContext === "INSIDE" ? "inside" : "outside"
+    view: canteenManager.currentLocationContext === "INSIDE" ? "inside" : "outside",
+    currentDay: mealManager.currentMealDay
   };
 
   constructor(props) {
@@ -27,6 +45,7 @@ export default class FinderScreen extends React.PureComponent {
 
     this.onMealsChanged = this.onMealsChanged.bind(this);
     this.onLocationContextChanged = this.onLocationContextChanged.bind(this);
+    this.onDayChanged = this.onDayChanged.bind(this);
     this.close = this.close.bind(this);
 
     this.props.navigation.addListener("willFocus", this.onMealsChanged);
@@ -54,15 +73,21 @@ export default class FinderScreen extends React.PureComponent {
   componentDidMount() {
     mealManager.on("mealsChanged", this.onMealsChanged);
     canteenManager.on("locationContextChanged", this.onLocationContextChanged);
+    mealManager.on("currentDayChanged", this.onDayChanged);
   }
 
   componentWillUnmount() {
     mealManager.off("mealsChanged", this.onMealsChanged);
     canteenManager.off("locationContextChanged", this.onLocationContextChanged);
+    mealManager.off("currentDayChanged", this.onDayChanged);
   }
 
   onMealsChanged() {
     this.setState({ mealsWithDistances: mealManager.surroundingMealFiltered });
+  }
+
+  onDayChanged() {
+    this.setState({ currentDay: mealManager.currentMealDay });
   }
 
   /**
@@ -82,8 +107,21 @@ export default class FinderScreen extends React.PureComponent {
       : this.setState({ view: "outside" });
   }
 
+  /**
+   * Gets called when the user does a fling gesture (a fast swipe) on the list
+   * in a horizontal direction
+   * @param {import("react-native-gesture-handler").Directions} direction The direction the fling was executed
+   */
+  onFling( direction ) {
+    const selectedDay = moment(mealManager.currentMealDay).add( direction===Directions.LEFT?1:-1, "day" );
+    if (selectedDay.diff(moment(), "days") > 6) return; // maximum one week difference
+    const selectedDayString = selectedDay.format("YYYY-MM-DD");
+    console.log("Changed the day to display from " + mealManager.currentMealDay + " to " + selectedDayString);
+    mealManager.currentMealDay = selectedDayString;
+  }
+
   render() {
-    const { currentItemDetails } = this.state;
+    const { currentItemDetails, currentDay } = this.state;
 
     return (
       <>
@@ -109,41 +147,56 @@ export default class FinderScreen extends React.PureComponent {
 
         {/* HEADER: Switch between inside and outside mode */}
         <View style={styles.finderScreenHeaderContainer}>
-          <Text style={styles.canteenTitle}>
-            {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
-          </Text>
-          {this.state.view === "inside" ? this.INSIDE_ICON : this.OUTSIDE_ICON}
+          <View style={styles.finderScreenHeaderRow}>
+            <Text style={styles.canteenTitle}>
+              {this.state.view == "inside" ? canteenManager.nearestCanteen?.canteen.name : "Dresden"}
+            </Text>
+            {this.state.view === "inside" ? this.INSIDE_ICON : this.OUTSIDE_ICON}
+          </View>
+          <View style={styles.finderScreenHeaderRow}>
+            <Text style={styles.currentDayText} >{formatMealDayString( currentDay )}</Text>
+          </View>
         </View>
 
         {/* MEAL LIST */}
-        <SafeAreaView style={styles.container}>
-          <FlatList
-            data={
-              this.state.view == "outside"
-                ? this.state.mealsWithDistances
-                : this.state.mealsWithDistances.filter( m => m.canteen.id === canteenManager.nearestCanteen?.canteen.id )
-            }
-            keyExtractor={item => item.meal.id + ""}
-            renderItem={({ item }) => (
-              <MealItem
-                meal={item.meal}
-                canteen={item.canteen}
-                distance={item.distance}
-                view={this.state.view}
-                OnItemPressed={() => this.onMealPressed(item)}
+        <FlingGestureHandler 
+          direction={Directions.LEFT}
+          onHandlerStateChange={e => e.nativeEvent.state === State.END && this.onFling(Directions.LEFT)}
+        >
+          <FlingGestureHandler 
+            direction={Directions.RIGHT}
+            onHandlerStateChange={e => e.nativeEvent.state === State.END && this.onFling(Directions.RIGHT)}
+          >
+            <SafeAreaView style={styles.container}>
+              <FlatList
+                data={
+                  this.state.view == "outside"
+                    ? this.state.mealsWithDistances
+                    : this.state.mealsWithDistances.filter( m => m.canteen.id === canteenManager.nearestCanteen?.canteen.id )
+                }
+                keyExtractor={item => item.meal.id + ""}
+                renderItem={({ item }) => (
+                  <MealItem
+                    meal={item.meal}
+                    canteen={item.canteen}
+                    distance={item.distance}
+                    view={this.state.view}
+                    OnItemPressed={() => this.onMealPressed(item)}
+                  />
+                )}
+                ListEmptyComponent={() => (
+                  /* Is displayed if no meals could be loaded or the canteen is closed */
+                  <View style={styles.emptyListMessageContainer}>
+                    <Text style={styles.emptyListMessage}>{Locale.LOCALE.FINDER_SCREEN["list_no-meals"]}</Text>
+                  </View>
+                )}
+                ItemSeparatorComponent={() => <Spacer size={16} />}
+                ListHeaderComponent={() => <Spacer size={15} />}
+                ListFooterComponent={() => <Spacer size={15} />}
               />
-            )}
-            ListEmptyComponent={() => (
-              /* Is displayed if no meals could be loaded or the canteen is closed */
-              <View style={styles.emptyListMessageContainer}>
-                <Text style={styles.emptyListMessage}>{Locale.LOCALE.FINDER_SCREEN["list_no-meals"]}</Text>
-              </View>
-            )}
-            ItemSeparatorComponent={() => <Spacer size={16} />}
-            ListHeaderComponent={() => <Spacer size={15} />}
-            ListFooterComponent={() => <Spacer size={15} />}
-          />
-        </SafeAreaView>
+            </SafeAreaView>
+          </FlingGestureHandler>
+        </FlingGestureHandler>
       </>
     );
   }

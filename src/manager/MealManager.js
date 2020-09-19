@@ -121,13 +121,16 @@ export default class MealManager extends EventEmitter {
         canteenManager.on("canteensChanged", this.updateSurroundingMeals.bind(this));
     }
 
+    /** The currently selected day for the meals in the format YYYY-MM-DD */
     get currentMealDay() {
         return currentMealDay;
     }
 
     set currentMealDay( day ) {
-        if (day !== this.currentMealDay) surroundingMeals = new Map();
+        if (day === this.currentMealDay) return;
+        surroundingMeals = new Map();
         currentMealDay = day;
+        this.emit("currentDayChanged", this.currentMealDay);
         this.updateSurroundingMeals(canteenManager.surroundingCanteens, canteenManager.surroundingCanteens);
     }
 
