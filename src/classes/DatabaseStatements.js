@@ -33,7 +33,7 @@ export default Object.freeze({
     INSERT_INTO_MEALS: `REPLACE INTO meals (id, canteenId, name, date, category) VALUES (?,?,?,date(?),?)`,
     LOAD_ALL_MEALS: `SELECT * FROM meals`,
     LOAD_MEALS_OF_CANTEEN: `SELECT * FROM meals WHERE canteenId=?`,
-    DELETE_MEALS_BEFORE_TODAY: `DELETE FROM meals WHERE date(date) < date('now')`,
+    DELETE_MEALS_BEFORE_LAST_WEEK: `DELETE FROM meals WHERE date(date) < date('now', '-7 days')`,
 
     CREATE_TABLE_MEAL_NOTES: `
         CREATE TABLE IF NOT EXISTS mealNotes (

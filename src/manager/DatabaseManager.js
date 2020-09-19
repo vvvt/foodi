@@ -41,7 +41,7 @@ export default class DatabaseManager {
         await this.run(STATEMENTS.CREATE_TABLE_CANTEENS);
         await this.run(STATEMENTS.CREATE_TABLE_MEALS);
         await Promise.all([ STATEMENTS.CREATE_TABLE_MEAL_NOTES, STATEMENTS.CREATE_TABLE_MEAL_PRICES ].map( s => this.run(s) ));
-        await this.run(STATEMENTS.DELETE_MEALS_BEFORE_TODAY);
+        await this.run(STATEMENTS.DELETE_MEALS_BEFORE_LAST_WEEK);
     }
 
     /**
