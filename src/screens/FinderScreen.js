@@ -94,7 +94,6 @@ export default class FinderScreen extends React.PureComponent {
   }
 
   onMealsChanged() {
-    console.log("meals changed");
     this.setState({ mealsWithDistances: mealManager.surroundingMealFiltered });
   }
 
