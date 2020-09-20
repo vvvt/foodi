@@ -38,6 +38,9 @@ export default class DatabaseManager {
     async initialize() {
         //await this.dropAllTables();
 
+        const { version } = await this.getFirst("select sqlite_version() as version"); // see saveCanteens() when the version becomes >= 3.22.0
+        console.info(`Running SQLite version ${version}`);
+
         // enable foreign keys
         await this.exec([STATEMENTS.ENABLE_FOREIGN_KEYS]);
 

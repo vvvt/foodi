@@ -12,7 +12,8 @@ export default Object.freeze({
         )
     `,
     DROP_TABLE_CANTEENS: `DROP TABLE IF EXISTS canteens`,
-    INSERT_INTO_CANTEENS: `REPLACE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
+    INSERT_INTO_CANTEENS: `INSERT OR IGNORE INTO canteens (id, name, city, address, lat, lng) VALUES (?,?,?,?,?,?)`,
+    UPDATE_CANTEEN: `UPDATE canteens SET name=?, city=?, address=?, lat=?, lng=? WHERE id=?`,
     LOAD_ALL_CANTEENS: `SELECT * FROM canteens`,
     LOAD_CANTEENS_BETWEEN_COORDINATES: `SELECT * FROM canteens WHERE lat BETWEEN ? AND ? AND lng BETWEEN ? AND ?`,
 

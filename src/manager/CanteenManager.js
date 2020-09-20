@@ -296,12 +296,17 @@ export default class CanteenManager extends EventEmitter {
         // update cache
         canteens.forEach( c => this.canteens.set(c.id, c) );
 
-        // store in db
-        await databaseManager.runInTransaction(
-            canteens.map( c =>
-                [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude]
-            )
-        );
+        /*
+            Store new canteens and update existing ones.
+            TODO: When SQlite version 3.22.0 is available on expo, then use the new upsert behavior!
+            See https://sqlite.org/lang_UPSERT.html for more information
+        */
+        const statements = [];
+        canteens.forEach( c => statements.push(
+            [DatabaseManager.STATEMENTS.INSERT_INTO_CANTEENS, c.id, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude],
+            [DatabaseManager.STATEMENTS.UPDATE_CANTEEN, c.name, c.city, c.address, c.coordinate.latitude, c.coordinate.longitude, c.id]
+        ));
+        await databaseManager.runInTransaction( statements );
     }
 
     /**
