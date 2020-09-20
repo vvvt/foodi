@@ -30,6 +30,16 @@ function formatMealDayString( currentDay ) {
   return d.format("DD.MM.");
 }
 
+const ListEmptyComponent = () => (
+  /* Is displayed if no meals could be loaded or the canteen is closed */
+  <View style={styles.emptyListMessageContainer}>
+    <Text style={styles.emptyListMessage}>{Locale.LOCALE.FINDER_SCREEN["list_no-meals"]}</Text>
+  </View>
+)
+const ItemSeparatorComponent = () => <Spacer size={16} />
+const ListHeaderComponent = () => <Spacer size={15} />
+const ListFooterComponent = () => <Spacer size={15} />
+
 export default class FinderScreen extends React.PureComponent {
 
   state = {
@@ -47,6 +57,7 @@ export default class FinderScreen extends React.PureComponent {
     this.onLocationContextChanged = this.onLocationContextChanged.bind(this);
     this.onDayChanged = this.onDayChanged.bind(this);
     this.close = this.close.bind(this);
+    this.renderItem = this.renderItem.bind(this);
 
     this.props.navigation.addListener("willFocus", this.onMealsChanged);
     this.props.navigation.addListener("willFocus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
@@ -83,11 +94,12 @@ export default class FinderScreen extends React.PureComponent {
   }
 
   onMealsChanged() {
+    console.log("meals changed");
     this.setState({ mealsWithDistances: mealManager.surroundingMealFiltered });
   }
 
   onDayChanged() {
-    this.setState({ currentDay: mealManager.currentMealDay });
+    this.setState({ currentDay: mealManager.currentMealDay, mealsWithDistances: mealManager.surroundingMealFiltered });
   }
 
   /**
@@ -175,29 +187,32 @@ export default class FinderScreen extends React.PureComponent {
                     : this.state.mealsWithDistances.filter( m => m.canteen.id === canteenManager.nearestCanteen?.canteen.id )
                 }
                 keyExtractor={item => item.meal.id + ""}
-                renderItem={({ item }) => (
-                  <MealItem
-                    meal={item.meal}
-                    canteen={item.canteen}
-                    distance={item.distance}
-                    view={this.state.view}
-                    OnItemPressed={() => this.onMealPressed(item)}
-                  />
-                )}
-                ListEmptyComponent={() => (
-                  /* Is displayed if no meals could be loaded or the canteen is closed */
-                  <View style={styles.emptyListMessageContainer}>
-                    <Text style={styles.emptyListMessage}>{Locale.LOCALE.FINDER_SCREEN["list_no-meals"]}</Text>
-                  </View>
-                )}
-                ItemSeparatorComponent={() => <Spacer size={16} />}
-                ListHeaderComponent={() => <Spacer size={15} />}
-                ListFooterComponent={() => <Spacer size={15} />}
+                renderItem={this.renderItem}
+                ListEmptyComponent={ListEmptyComponent}
+                ItemSeparatorComponent={ItemSeparatorComponent}
+                ListHeaderComponent={ListHeaderComponent}
+                ListFooterComponent={ListFooterComponent}
               />
             </SafeAreaView>
           </FlingGestureHandler>
         </FlingGestureHandler>
       </>
+    );
+  }
+
+  /**
+   * Render function to render a meal in the list
+   * @param {{ item: import("../manager/MealManager").MealWithDistance }} obj An item as returned from the flatlist
+   */
+  renderItem({ item }) {
+    return (
+      <MealItem
+        meal={item.meal}
+        canteen={item.canteen}
+        distance={item.distance}
+        view={this.state.view}
+        OnItemPressed={() => this.onMealPressed(item)}
+      />
     );
   }
 

@@ -29,8 +29,7 @@ export default class MealManager extends EventEmitter {
 
         /** @type {Map<string, Map<number, Meal[]>>} Map<date, Map<canteenId, meals>> */
         this.canteenMeals = new Map();
-
-        this.surroundingMeals = Array.from(surroundingMeals.values()).sort( ({ distance: a }, { distance: b }) => a-b );;
+        this._updateSurroundingMeals( false );
     }
 
     async _onCanteensOrNetworkChanged() {
@@ -142,8 +141,10 @@ export default class MealManager extends EventEmitter {
     set currentMealDay( day ) {
         if (day === this.currentMealDay) return;
         surroundingMeals = new Map();
+        this.surroundingMeals = [];
         currentMealDay = day;
         this.emit("currentDayChanged", this.currentMealDay);
+        this.emit("mealsChanged", this.surroundingMeals);
         this.updateSurroundingMeals(canteenManager.surroundingCanteens, canteenManager.surroundingCanteens);
     }
 
@@ -152,7 +153,7 @@ export default class MealManager extends EventEmitter {
      * @param {import("./CanteenManager").CanteenWithDistance[]} currentSurroundingCanteens The currently surrounding canteens
      * @param {import("./CanteenManager").CanteenWithDistance[]} lastSurroundingCateens The canteens that were around before this function call
      */
-    updateSurroundingMeals(currentSurroundingCanteens = [], lastSurroundingCateens = []) {
+    async updateSurroundingMeals(currentSurroundingCanteens = [], lastSurroundingCateens = []) {
 
         const day = this.currentMealDay;
 
@@ -160,31 +161,50 @@ export default class MealManager extends EventEmitter {
         if (surroundingMeals.size !== 0) {
 
             // get canteens that left the tracking range
-            const canteensOutOfRange = lastSurroundingCateens.filter(
+            const canteensOutOfRange = new Set(lastSurroundingCateens.filter(
                 c1 => currentSurroundingCanteens.findIndex( c2 => c1.canteen.id === c2.canteen.id ) === -1
-            ).map( v => v.canteen.id );
+            ).map( v => v.canteen.id ));
             
             // delete meals of those canteens
-            for (let { meal: { id: mealId, canteenId } } of surroundingMeals.values()) {
-                if (canteensOutOfRange.includes( canteenId )) surroundingMeals.delete(mealId);
+            for (const v of surroundingMeals.values()) {
+                if (canteensOutOfRange.has( v.canteen.id )) surroundingMeals.delete(v.meal.id);
             }
+
+            // emit first update of meals
+            this._updateSurroundingMeals();
+            this.emit("mealsChanged", this.surroundingMeals);
 
         }
 
         // get surrounding meals and update distance for each meal
-        this.getSurroundingMeals(day, mealsWithDistances => {
+        let lastEmitTimestamp = Date.now();
+        let mealsChanged = false;
+        await this.getSurroundingMeals(day, mealsWithDistances => {
+            mealsWithDistances.forEach( v => surroundingMeals.set( v.meal.id, v ) );
 
-            // update meals map
-            mealsWithDistances.forEach( value => surroundingMeals.set( value.meal.id, value ) );
-
-            // update state with the new meals/ distances
-            this.surroundingMeals = Array.from(surroundingMeals.values()).sort( ({ distance: a }, { distance: b }) => a-b );
-            
-            // emit event
-            this.emit("mealsChanged", this.surroundingMeals);
-
+            // update already after a given amount of time (500ms)
+            const now = Date.now();
+            if (now - lastEmitTimestamp > 500) {
+                lastEmitTimestamp = now;
+                mealsChanged = false;
+                this._updateSurroundingMeals();
+            } else {
+                mealsChanged = true;
+            }
         });
 
+        // update state with the new meals/ distances
+        if (mealsChanged) this._updateSurroundingMeals();
+
+    }
+
+    /**
+     * Updates the surrounding meals array so it matches the source of truth
+     * (the surrounding meals map) again
+     */
+    _updateSurroundingMeals( emit = true ) {
+        this.surroundingMeals = Array.from(surroundingMeals.values()).sort( ({ distance: a }, { distance: b }) => a-b );
+        if (emit) this.emit("mealsChanged", this.surroundingMeals);
     }
 
     /**
@@ -222,7 +242,7 @@ export default class MealManager extends EventEmitter {
         });
 
         // return when all meals are fetched/ loaded
-        await promises;
+        await Promise.all(promises);
         return res;
 
     }
@@ -250,8 +270,8 @@ export default class MealManager extends EventEmitter {
 
         // prefetch all meals in parallel (with low priority)
         days.forEach( day =>
-            canteens.forEach( canteen =>
-                promises.push(async () => {
+            promises.push(
+                ...canteens.map( async canteen => {
                     try {
                         // do not prefetch if it was already
                         if (!this.canteenMeals.has(day) || !this.canteenMeals.get(day).has(canteen.id)) {
@@ -284,7 +304,7 @@ export default class MealManager extends EventEmitter {
             await this.saveMeals( await this.fetchMeals(canteenId, day, NaN, "HIGH") );
             await this._saveDayAsFetched(canteenId, day);
         }
-        return this.canteenMeals.get(day)?.get(canteenId) || [];
+        return this.canteenMeals.get(day).get(canteenId);
 
     }
 
@@ -320,7 +340,10 @@ export default class MealManager extends EventEmitter {
             {},
             priority
         );
-        if (res.status === 404) return [];
+        if (res.status === 404) {
+            console.warn("The server responded with status 404, returning empty array");
+            return [];
+        }
         if (!res.ok) throw new Error(`Network request failed (${res.status}${res.statusText ? " " + res.statusText : ""}`);
 
         /** @type {import("../classes/Meal").MealObj[]} */
@@ -328,7 +351,10 @@ export default class MealManager extends EventEmitter {
 
         if (isNaN(mealId)) {            
             // if is an array of meals
-            if (!Array.isArray(mealsObjs)) return [];
+            if (!Array.isArray(mealsObjs)) {
+                console.warn("The server returned an invalid meals response! Returning empty array");
+                return [];
+            }
         } else {
             // if is a single, specific meal => wrap in array
             if (typeof mealsObjs !== "object" || mealsObjs.id !== mealId) return [];
