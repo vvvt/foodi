@@ -2,6 +2,11 @@ import Allergene from "./Allergene";
 import Additive from "./Additive";
 
 import DEFAULT_IMAGE from "../assets/default-meal-image.jpg";
+import NetworkManager from "../manager/NetworkManager";
+import SettingsManager from "../manager/SettingsManager";
+
+const networkManager = NetworkManager.instance;
+const settingsManager = SettingsManager.instance;
 
 const IMAGE_URL_PROTOCOL = "http";
 
@@ -98,7 +103,7 @@ export default class Meal {
         this._originalNotes = notes;
 
         /** @type {import("react-native").ImageSourcePropType} */
-        this.image = typeof image === "string" ? { uri: image } : image;
+        this._image = typeof image === "string" ? { uri: image } : image;
 
         // extract allergenes and stuff from notes
         try {
@@ -122,7 +127,13 @@ export default class Meal {
     }
 
     get hasDefaultImage() {
-        return this.image === DEFAULT_IMAGE;
+        return this._image === DEFAULT_IMAGE;
+    }
+
+    /** @type {import("react-native").ImageSourcePropType} */
+    get image() {
+        if (networkManager.networkState.trafficLimit === 0 || settingsManager.getSetting("fetch-images-cellular").value === true) return this._image;
+        return DEFAULT_IMAGE;
     }
 
     /**

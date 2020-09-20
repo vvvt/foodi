@@ -56,7 +56,7 @@ export default class SettingsScreen extends React.PureComponent {
             <ToggleItem
               title={Locale.LOCALE.SETTINGS[item.id]}
               onValueChange={value => {
-                console.log("store " + item.id + " " + value);
+                console.log("store " + item.id + "=" + value);
                 settingsManager.storeSetting( new Setting(item.id, value) );
                 this.setState({ [item.id]: value });
               }}
