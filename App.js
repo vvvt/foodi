@@ -2,7 +2,7 @@ import React from "react";
 import { createAppContainer } from "react-navigation";
 import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from "react-navigation-tabs";
-import { AppLoading } from "expo";
+import AppLoading from "expo-app-loading";
 import * as Localization from "expo-localization";
 import Constants from "expo-constants";
 
