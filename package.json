@@ -6,9 +6,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "build": "npm run setApiKey && expo build:android && npm run unsetApiKey",
-    "setApiKey": "SET_API_KEY=true node builder.js",
-    "unsetApiKey": "SET_API_KEY=false node builder.js"
+    "build:android": "node pre-build-script android",
+    "build:ios": "node pre-build-script ios"
   },
   "dependencies": {
     "@react-native-community/netinfo": "5.9.2",
