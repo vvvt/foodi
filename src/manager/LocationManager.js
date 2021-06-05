@@ -1,6 +1,5 @@
 import * as Location from "expo-location";
 import EventEmitter from "events";
-import * as Permissions from "expo-permissions";
 import { AppState } from "react-native";
 
 import Coordinate from "../classes/Coordinate";
