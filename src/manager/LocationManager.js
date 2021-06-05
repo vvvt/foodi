@@ -179,7 +179,7 @@ export default class LocationManager extends EventEmitter {
      */
     async requestPermissions() {
         try {
-            this.hasPermission = (await Location.requestPermissionsAsync()).granted;
+            this.hasPermission = (await Location.requestForegroundPermissionsAsync()).granted;
         } catch(e) {
             this.hasPermission = false;
         }
