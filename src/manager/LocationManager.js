@@ -88,8 +88,7 @@ export default class LocationManager extends EventEmitter {
         canteenManager = cManager;
 
         // get permission for location tracking and start it
-        const permissionStatus = await Permissions.getAsync( Permissions.LOCATION );
-        this.hasPermission = permissionStatus.status === "granted";
+        await this.requestPermissions();
         if (this.hasPermission) await this.startLocationTracking();
 
         // get last device position from the settings manager
@@ -177,13 +176,11 @@ export default class LocationManager extends EventEmitter {
 
     /**
      * Requests user permission for using the location tracking service and sets the
-     * "hasPermission" property of this class accordingly. If no initial device position
-     * was received yet it tries to fetch one.
+     * "hasPermission" property of this class accordingly
      */
     async requestPermissions() {
         try {
-            const perm = await Permissions.askAsync( Permissions.LOCATION );
-            this.hasPermission = perm.granted;
+            this.hasPermission = (await Location.requestPermissionsAsync()).granted;
         } catch(e) {
             this.hasPermission = false;
         }
