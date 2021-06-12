@@ -6,7 +6,7 @@
     "platforms": [
       "android"
     ],
-    "version": "1.8.2",
+    "version": "1.8.3",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "splash": {
@@ -25,7 +25,7 @@
     },
     "android": {
       "package": "de.tu_dresden.app_dev.group_10.foodi",
-      "versionCode": 11,
+      "versionCode": 13,
       "config": {
         "googleMaps": {
           "apiKey": "api-key"

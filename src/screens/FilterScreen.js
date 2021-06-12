@@ -27,7 +27,7 @@ export default class FilterScreen extends React.Component {
 
   // the function below is called before the screen is opened for the first time (it removes this listener by itself)
   initialSettingsLoader = this.props.navigation.addListener(
-    "willFocus",
+    "focus",
     () => {
 
       // load settings from settingsmanager into state
@@ -41,7 +41,7 @@ export default class FilterScreen extends React.Component {
       this.setState(state);
 
       // remove listener
-      this.initialSettingsLoader.remove();
+      this.initialSettingsLoader();
       delete this.initialSettingsLoader;
 
     }

@@ -59,8 +59,8 @@ export default class FinderScreen extends React.PureComponent {
     this.close = this.close.bind(this);
     this.renderItem = this.renderItem.bind(this);
 
-    this.props.navigation.addListener("willFocus", this.onMealsChanged);
-    this.props.navigation.addListener("willFocus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
+    this.props.navigation.addListener("focus", this.onMealsChanged);
+    this.props.navigation.addListener("focus", () => this.onLocationContextChanged(canteenManager.currentLocationContext, this.state.view === "inside" ? "INSIDE" : "VERY_FAR"));
   }
 
   OUTSIDE_ICON = (

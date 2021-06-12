@@ -22,7 +22,7 @@ export default class SettingsScreen extends React.PureComponent {
 
   // the function below is called before the screen is opened for the first time (it removes this listener by itself)
   initialSettingsLoader = this.props.navigation.addListener(
-    "willFocus",
+    "focus",
     () => {
 
       // load settings from settingsmanager into state
@@ -33,7 +33,7 @@ export default class SettingsScreen extends React.PureComponent {
       this.setState(state);
 
       // remove listener
-      this.initialSettingsLoader.remove();
+      this.initialSettingsLoader();
       delete this.initialSettingsLoader;
 
     }

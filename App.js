@@ -1,7 +1,7 @@
 import React from "react";
-import { createAppContainer } from "react-navigation";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from '@expo/vector-icons';
-import { createBottomTabNavigator } from "react-navigation-tabs";
 import AppLoading from "expo-app-loading";
 import * as Localization from "expo-localization";
 import Constants from "expo-constants";
@@ -30,86 +30,6 @@ import Spacer from "./src/components/Spacer";
 // set language
 Locale.setLanguage( Localization.locale.split("-")[0] );
 
-/* * * * * * * * * * * *
- * ADD NEW SCREEN HERE *
- * * * * * * * * * * * */
-const AppNavigator = createBottomTabNavigator(
-    {
-        finder: {
-            screen: FinderScreen,
-            navigationOptions: () => ({
-                title: Locale.LOCALE.TAB_NAVIGATOR.finder,
-                tabBarIcon: ({tintColor}) => (
-                    <Feather
-                        name="search"
-                        size={19}
-                        color={tintColor}
-                    />
-                )
-            })
-        },
-        filter: {
-            screen: FilterScreen,
-            navigationOptions: () => ({
-                title: Locale.LOCALE.TAB_NAVIGATOR.filter,
-                tabBarIcon: ({tintColor}) => (
-                    <Feather
-                        name="filter"
-                        size={19}
-                        color={tintColor}
-                    />
-                )
-            })
-        },
-        map: {
-            screen: MapScreen,
-            navigationOptions: () => ({
-                title: Locale.LOCALE.TAB_NAVIGATOR.map,
-                tabBarIcon: ({tintColor}) => (
-                    <Feather
-                        name="map"
-                        size={19}
-                        color={tintColor}
-                    />
-                )
-            })
-        },
-        settings: {
-            screen: SettingsScreen,
-            navigationOptions: () => ({
-                title: Locale.LOCALE.TAB_NAVIGATOR.settings,
-                tabBarIcon: ({tintColor}) => (
-                    <Feather
-                        name="settings"
-                        size={19}
-                        color={tintColor}
-                    />
-                )
-            })
-        }
-
-    },
-    {
-        initialRouteName: "finder",
-        tabBarOptions: {
-            labelPosition: "below-icon",
-            activeTintColor: "#FFFFFF",
-            inactiveTintColor: "#7CD3FF",
-            activeBackgroundColor: "#0077B3",
-            inactiveBackgroundColor: "#0077B3",
-            style: {
-                height: 55,
-                paddingVertical: 8,
-                paddingHorizontal: 8,
-                backgroundColor: "#0077B3"
-            }
-        }
-    }
-);
-
-// the actual content of the app
-const AppContainer = createAppContainer(AppNavigator);
-
 // load the app and show splash screen until done
 const LOADING_STATES = Object.freeze({
     LOADING: 0,
@@ -118,7 +38,7 @@ const LOADING_STATES = Object.freeze({
     ASK_FOR_PERMISSIONS: 3
 });
 
-class AppMainContainer extends React.PureComponent {
+class AppContainer extends React.PureComponent {
 
     render() {
 
@@ -133,6 +53,8 @@ class AppMainContainer extends React.PureComponent {
 
 }
 
+const AppNavigator = createBottomTabNavigator();
+
 // the root of the app that initializes it first
 export default class App extends React.PureComponent {
 
@@ -143,7 +65,67 @@ export default class App extends React.PureComponent {
     render() {
         switch (this.state.loadingState) {
             case LOADING_STATES.LOADING_SUCCEEDED:
-                return <AppMainContainer><AppContainer/></AppMainContainer>;
+                return (
+                    <AppContainer>
+                        <NavigationContainer>
+                            <AppNavigator.Navigator
+                                screenOptions={({ route }) => {
+                                    let title = "";
+                                    let iconName = "help-circle";
+
+                                    switch (route.name) {
+                                        case "finder":
+                                            iconName = "search";
+                                            title = Locale.LOCALE.TAB_NAVIGATOR.finder;
+                                            break;
+                                        case "filter":
+                                            iconName = "filter";
+                                            title = Locale.LOCALE.TAB_NAVIGATOR.filter;
+                                            break;
+                                        case "map":
+                                            iconName = "map";
+                                            title = Locale.LOCALE.TAB_NAVIGATOR.map;
+                                            break;
+                                        case "settings":
+                                            iconName = "settings";
+                                            title = Locale.LOCALE.TAB_NAVIGATOR.settings;
+                                            break;
+                                    }
+                                    
+                                    return ({
+                                        tabBarIcon: ({ focused, color, size }) => (
+                                            <Feather
+                                                name={iconName}
+                                                size={size}
+                                                color={color}
+                                            />
+                                        ),
+                                        title
+                                    });
+                                }}
+                                tabBarOptions={{
+                                    labelPosition: "below-icon",
+                                    activeTintColor: "#FFFFFF",
+                                    inactiveTintColor: "#7CD3FF",
+                                    activeBackgroundColor: "#0077B3",
+                                    inactiveBackgroundColor: "#0077B3",
+                                    style: {
+                                        height: 55,
+                                        paddingVertical: 8,
+                                        paddingHorizontal: 8,
+                                        backgroundColor: "#0077B3"
+                                    }
+                                }}
+                                initialRouteName="finder"
+                            >
+                                <AppNavigator.Screen name="finder" component={FinderScreen} />
+                                <AppNavigator.Screen name="filter" component={FilterScreen} />
+                                <AppNavigator.Screen name="map" component={MapScreen} />
+                                <AppNavigator.Screen name="settings" component={SettingsScreen} />
+                            </AppNavigator.Navigator>
+                        </NavigationContainer>
+                    </AppContainer>
+                );
             case LOADING_STATES.LOADING_FAILED:
                 return null;
             case LOADING_STATES.LOADING:
@@ -159,11 +141,11 @@ export default class App extends React.PureComponent {
                 );
             case LOADING_STATES.ASK_FOR_PERMISSIONS:
                 return (
-                    <AppMainContainer>
+                    <AppContainer>
                         <PermissionsScreen
                             OnPermissionsGranted={() => this.setState({ loadingState: LOADING_STATES.LOADING_SUCCEEDED })}
                         />
-                    </AppMainContainer>
+                    </AppContainer>
                 );
             default:
                 return null;

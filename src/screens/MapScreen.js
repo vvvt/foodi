@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { NavigationEvents } from "react-navigation";
+import { NavigationEvents } from "@react-navigation/native";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
 import LocationManager from "../manager/LocationManager";
@@ -29,6 +29,16 @@ export default class MapScreen extends React.PureComponent {
      */
     componentDidMount() {
         canteenManager.on("canteensChanged", this.setSurroundingCanteensState);
+        this._removeNavigationSubscription = this.props.navigation.addListener("focus", () => {
+            // when this screen is focused: check if there is a target coordinate given
+            /** @type {import("../classes/Coordinate").default} */
+            const c = this.props.navigation.params?.targetCoordinate;
+            if (c) {
+                this.props.navigation.setParams({ targetCoordinate: undefined });
+                console.log(`Navigating on MapScreen to ${c.latitude},${c.longitude}`);
+                this.navigateToCoordinate(c);
+            }
+        });
     }
 
     /**
@@ -36,25 +46,13 @@ export default class MapScreen extends React.PureComponent {
      */
     componentWillUnmount() {
         canteenManager.off("canteensChanged", this.setSurroundingCanteensState);
+        this._removeNavigationSubscription();
     }
 
     render() {
 
         return (
             <View style={styles.container}>
-                <NavigationEvents
-                    onDidFocus={() => {
-                        // when this screen is focuse: check if there is a target coordinate given
-                        /** @type {import("../classes/Coordinate").default} */
-                        const c = this.props.navigation.getParam("targetCoordinate");
-                        if (c) {
-                            this.props.navigation.setParams({ targetCoordinate: undefined });
-                            console.log(`Navigating on MapScreen to ${c.latitude},${c.longitude}`);
-                            this.navigateToCoordinate(c);
-                        }
-                    }}
-                />
-
                 <MapView
                     ref={this.mapView}
                     provider={PROVIDER_GOOGLE} // remove if not using Google Maps
