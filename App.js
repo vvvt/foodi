@@ -110,10 +110,10 @@ export default class App extends React.PureComponent {
                                     activeBackgroundColor: "#0077B3",
                                     inactiveBackgroundColor: "#0077B3",
                                     style: {
-                                        height: 55,
-                                        paddingVertical: 8,
-                                        paddingHorizontal: 8,
                                         backgroundColor: "#0077B3"
+                                    },
+                                    safeAreaInsets: {
+                                        bottom: 8
                                     }
                                 }}
                                 initialRouteName="finder"
