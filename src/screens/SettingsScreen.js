@@ -67,12 +67,12 @@ export default class SettingsScreen extends React.PureComponent {
           ListHeaderComponent={() => <Text style={styles.header} >{Locale.LOCALE.SETTINGS.settings}</Text>}
         />
 
-        <View style={settingsStyles.clearCacheContainer} >
+        {/*<View style={settingsStyles.clearCacheContainer} >
           <Button
             title={Locale.LOCALE.SETTINGS["clear-cache"]}
             onPress={this.clearCache.bind(this)}
           />
-        </View>
+        </View>*/}
       </SafeAreaView>
     );
     
