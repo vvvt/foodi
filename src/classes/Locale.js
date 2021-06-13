@@ -74,7 +74,8 @@ const LOCALES = Object.freeze({
             "settings": "Settings",
             "clear-cache": "Clear cache",
             "cache-cleared": "The cache was cleared.",
-            "cache-clear-error": "An error occured while clearing the cache!"
+            "cache-clear-error": "An error occured while clearing the cache!",
+            "use-staff-prices": "Show prices for staff"
         },
         TAB_NAVIGATOR: {
             "finder": "Finder",
@@ -168,7 +169,8 @@ const LOCALES = Object.freeze({
             "settings": "Einstellungen",
             "clear-cache": "Cache leeren",
             "cache-cleared": "Der Cache wurde geleert.",
-            "cache-clear-error": "Der Cache konnte auf Grund eines Fehlers nicht geleert werden!"
+            "cache-clear-error": "Der Cache konnte auf Grund eines Fehlers nicht geleert werden!",
+            "use-staff-prices": "Preise für Bedienstete anzeigen"
         },
         TAB_NAVIGATOR: {
             "finder": "Finder",

@@ -125,7 +125,7 @@ export default class SettingsManager {
     /**
      * Gets a setting by its key
      * @param {string} key The key of the setting
-     * @returns The setting
+     * @returns The setting. The setting's value is null if it does not exist
      */
     getSetting( key ) {
         return this.settings.has(key) ? this.settings.get(key) : new Setting(key, null);

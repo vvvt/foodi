@@ -61,10 +61,7 @@ export default class MealItem extends React.PureComponent {
 
   render() {
     const { meal, canteen, distance, view } = this.props;
-    const mealPrice = meal.prices.Studierende
-      ? meal.prices.Studierende.toFixed(2) + "€"
-      : "n/a"
-    ;
+
     /** @type {JSX.Element[]} */
     const mealIcons = [];
     if (meal.isVegan) {
@@ -99,7 +96,7 @@ export default class MealItem extends React.PureComponent {
               {mealIcons.reduce( (prev, cur, i) => [...prev, <Spacer key={"spacer-"+i} size={5} vertical />, cur], [] )}
             </View>
             <Text style={[styles.cardTitle]}>
-              {mealPrice}
+              {meal.getPrice()}
             </Text>
             {view === "inside" ? null : (
               <Text

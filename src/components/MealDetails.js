@@ -68,10 +68,6 @@ export default class MealDetails extends React.PureComponent {
 
   render() {
     const { meal, canteen, distance } = this.props;
-    const mealPrice = meal.prices.Studierende
-      ? meal.prices.Studierende.toFixed(2) + "€"
-      : "n/a"
-    ;
 
     return (
       <View style={modal.item}>
@@ -121,7 +117,7 @@ export default class MealDetails extends React.PureComponent {
 
           {/* The price and distance */}
           <View style={modal.row}>
-            <Text style={styles.cardTitle}>{mealPrice}</Text>
+            <Text style={styles.cardTitle}>{meal.getPrice()}</Text>
             <Text style={styles.cardTitle}>
               {Util.distanceToString(distance)}
             </Text>

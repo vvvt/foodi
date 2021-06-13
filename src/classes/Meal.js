@@ -10,6 +10,14 @@ const settingsManager = SettingsManager.instance;
 
 const IMAGE_URL_PROTOCOL = "http";
 
+const PRICE_CATEGORIES = Object.freeze({
+    STUDENT: "Studierende",
+    STAFF: "Bedienstete",
+    PUPIL: "Schüler"
+});
+
+/** @typedef {"Studierende"|"Bedienstete"} PriceGroup */
+
 /** @typedef {{ id: number, name: string, notes: string[], prices: { [priceGroup: string]: number }, category: string, image: string }} MealObj */
 /** @typedef {{ id: number, canteenId: number, name: string, date: string, category: string, imageUrl: string }} MealDatabaseRow */
 
@@ -19,6 +27,8 @@ export default class Meal {
      * @returns {import("react-native").ImageRequireSource} The imported local image to show if no meal image is present
      */
     static get DEFAUL_MEAL_IMAGE() { return DEFAULT_IMAGE; }
+
+    static get PRICE_CATEGORIES() { return PRICE_CATEGORIES; }
 
     /**
      * Parses notes into allergenes and more meal information
@@ -134,6 +144,26 @@ export default class Meal {
     get image() {
         if (networkManager.networkState.trafficLimit === 0 || settingsManager.getSetting("fetch-images-cellular").value === true) return this._image;
         return DEFAULT_IMAGE;
+    }
+
+    /**
+     * @returns {import("../classes/Meal").PriceGroup} The current price group to use.
+     * Either staff or student
+     */
+    get userPriceGroup() {
+        return settingsManager.getSetting("use-staff-prices").value === true ? PRICE_CATEGORIES.STAFF : this.canteenId === 30 ? PRICE_CATEGORIES.PUPIL : PRICE_CATEGORIES.STUDENT;
+    }
+
+    /**
+     * Returns the price of this meal for the given price category
+     * @param {PriceGroup} priceGroup The price group. Students or staff
+     * @param asString DEFAULT: true. If true, the price as string with "€" is returned
+     */
+    getPrice( priceGroup = undefined, asString = true ) {
+        if (typeof priceGroup !== "string") priceGroup = this.userPriceGroup;
+        const price = this.prices[priceGroup];
+        if (asString) return price === undefined ? "n/a" : price.toFixed(2) + "€";
+        return price;
     }
 
     /**
