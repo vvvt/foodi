@@ -32,7 +32,7 @@ export default class MapScreen extends React.PureComponent {
         this._removeNavigationSubscription = this.props.navigation.addListener("focus", () => {
             // when this screen is focused: check if there is a target coordinate given
             /** @type {import("../classes/Coordinate").default} */
-            const c = this.props.navigation.params?.targetCoordinate;
+            const c = this.props.route.params?.targetCoordinate;
             if (c) {
                 this.props.navigation.setParams({ targetCoordinate: undefined });
                 console.log(`Navigating on MapScreen to ${c.latitude},${c.longitude}`);
